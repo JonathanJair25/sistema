@@ -129,7 +129,7 @@
 					</ul>
 				</li>
 
-				<li class="full-width divider-menu-h"></li>
+				<!-- <li class="full-width divider-menu-h"></li>
 
 				<li class="full-width">
 					<a href="#" class="full-width btn-subMenu">
@@ -173,7 +173,7 @@
 							</a>
 						</li>
 					</ul>
-				</li>
+				</li> -->
 
 				<li class="full-width divider-menu-h"></li>
 
@@ -229,7 +229,7 @@
 							<i class="fas fa-cubes fa-fw"></i>
 						</div>
 						<div class="navLateral-body-cr">
-							PRODUCTOS
+							CLIENTES
 						</div>
 						<span class="fas fa-chevron-down"></span>
 					</a>
@@ -240,7 +240,7 @@
 									<i class="fas fa-box fa-fw"></i>
 								</div>
 								<div class="navLateral-body-cr">
-									Nuevo producto
+									Nuevo cliente
 								</div>
 							</a>
 						</li>
@@ -250,7 +250,7 @@
 									<i class="fas fa-clipboard-list fa-fw"></i>
 								</div>
 								<div class="navLateral-body-cr">
-									Lista de productos
+									Lista de clientes
 								</div>
 							</a>
 						</li>
@@ -260,7 +260,7 @@
 									<i class="fas fa-boxes fa-fw"></i>
 								</div>
 								<div class="navLateral-body-cr">
-									Productos por categoría
+									Clientes por organización
 								</div>
 							</a>
 						</li>
@@ -270,7 +270,7 @@
 									<i class="fas fa-search fa-fw"></i>
 								</div>
 								<div class="navLateral-body-cr">
-									Buscar producto
+									Buscar cliente
 								</div>
 							</a>
 						</li>

@@ -28,7 +28,7 @@
 		</figure>
   	</div>
 
-	<h2 class="title has-text-centered"><?php echo $datos['producto_nombre']." (Stock: ".$datos['producto_stock_total']." ".$datos['producto_tipo_unidad'].")"; ?></h2>
+	<h2 class="title has-text-centered"><?php echo $datos['producto_nombre']." ".$datos['producto_apellidos'].""; ?></h2>
 
 	<form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/productoAjax.php" method="POST" autocomplete="off" >
 

@@ -1,7 +1,7 @@
 <?php
 
-	const APP_URL="http://localhost/VENTAS/";
-	const APP_NAME="VENTAS";
+	const APP_URL="http://localhost/sistemaredes/";
+	const APP_NAME="SISTEMA REDES";
 	const APP_SESSION_NAME="POS";
 
 	/*----------  Tipos de documentos  ----------*/
@@ -13,7 +13,7 @@
 
 	/*----------  Configuración de moneda  ----------*/
 	const MONEDA_SIMBOLO="$";
-	const MONEDA_NOMBRE="USD";
+	const MONEDA_NOMBRE="MXN";
 	const MONEDA_DECIMALES="2";
 	const MONEDA_SEPARADOR_MILLAR=",";
 	const MONEDA_SEPARADOR_DECIMAL=".";

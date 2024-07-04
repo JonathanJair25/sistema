@@ -5,7 +5,7 @@
 	            <i class="fas fa-satellite-dish fa-5x"></i>
 	        </p>
 		    <p class="title has-text-white">Error 404</p>
-		    <p class="subtitle has-text-white">no encontrada</p>
+		    <p class="subtitle has-text-white">Pagina no encontrada</p>
 	  	</div>
 	</section>
 </div>

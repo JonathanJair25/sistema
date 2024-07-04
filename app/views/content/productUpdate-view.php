@@ -35,10 +35,15 @@
 		<input type="hidden" name="modulo_producto" value="actualizar">
 		<input type="hidden" name="producto_id" value="<?php echo $datos['producto_id']; ?>">
 
+		<p class="has-text-centered" style="font-size: 1.5em;">
+            <strong>DATOS DEL CLIENTE</strong>
+        </p>
+		<br>
+		<br>
 		<div class="columns">
 		  	<div class="column">
 		    	<div class="control">
-					<label>Código de barra <?php echo CAMPO_OBLIGATORIO; ?></label>
+					<label>Código de cliente <?php echo CAMPO_OBLIGATORIO; ?></label>
 				  	<input class="input" type="text" name="producto_codigo" value="<?php echo $datos['producto_codigo']; ?>" pattern="[a-zA-Z0-9- ]{1,77}" maxlength="77" required >
 				</div>
 		  	</div>
@@ -48,7 +53,113 @@
 				  	<input class="input" type="text" name="producto_nombre" value="<?php echo $datos['producto_nombre']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100" required >
 				</div>
 		  	</div>
+			  <div class="column">
+                <div class="control">
+                    <label>Apellidos <?php echo CAMPO_OBLIGATORIO; ?></label>
+                    <input class="input" type="text" name="producto_apellidos" value="<?php echo $datos['producto_apellidos']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100" required>
+                </div>
+            </div>
+			<div class="column">
+				<label>Organización<?php echo CAMPO_OBLIGATORIO; ?></label><br>
+		    	<div class="select">
+				  	<select name="producto_categoria" >
+				    	<?php
+                            $datos_categorias=$insLogin->seleccionarDatos("Normal","categoria","*",0);
+
+                            $cc=1;
+                            while($campos_categoria=$datos_categorias->fetch()){
+                            	if($campos_categoria['categoria_id']==$datos['categoria_id']){
+                            		echo '<option value="'.$campos_categoria['categoria_id'].'" selected="" >'.$cc.' - '.$campos_categoria['categoria_nombre'].' (Actual)</option>';
+                            	}else{
+                                	echo '<option value="'.$campos_categoria['categoria_id'].'">'.$cc.' - '.$campos_categoria['categoria_nombre'].'</option>';
+                            	}
+                                $cc++;
+                            }
+                        ?>
+				  	</select>
+				</div>
+		  	</div>
 		</div>
+		<div class="columns">
+			<div class="column">
+                <div class="control">
+                    <label>Correo</label>
+                    <input class="input" type="text" name="producto_correo" value="<?php echo $datos['producto_correo']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100">
+                </div>
+            </div>
+			<div class="column">
+                <div class="control">
+                    <label>Teléfono <?php echo CAMPO_OBLIGATORIO; ?></label>
+                    <input class="input" type="text" name="producto_telefono" value="<?php echo $datos['producto_telefono']; ?>" pattern="[0-9()+]{8,20}" maxlength="100" required>
+                </div>
+            </div>
+			<div class="column">
+                <div class="control">
+                    <label>Teléfono 2</label>
+                    <input class="input" type="text" name="producto_telefono2" value="<?php echo $datos['producto_telefono2']; ?>" pattern="[0-9()+]{8,20}" maxlength="100">
+                </div>
+            </div>
+			<div class="column">
+				<div class="control">
+					<label>Fecha de registro <?php echo CAMPO_OBLIGATORIO; ?></label>
+					<input class="input" type="date" name="producto_fecha_registro" value="<?php echo $datos['producto_fecha_registro']; ?>" required>
+				</div>
+			</div>
+		</div>
+		<div class="columns">
+			<div class="column">
+                <div class="control">
+                    <label>Dirección completa <?php echo CAMPO_OBLIGATORIO; ?></label>
+                    <input class="input" type="text" name="producto_direccion" value="<?php echo $datos['producto_direccion']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,#\- ]{4,70}" maxlength="100" required>
+                </div>
+            </div>
+			<div class="column">
+                <div class="control">
+                    <label>Referencias</label>
+                    <input class="input" type="text" name="producto_referencias" value="<?php echo $datos['producto_referencias']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100">
+                </div>
+            </div>
+			<div class="column">
+                <div class="control">
+                    <label>CP</label>
+                    <input class="input" type="text" name="producto_cp" value="<?php echo $datos['producto_cp']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100">
+                </div>
+            </div>			
+		</div>
+		<p class="has-text-centered" style="font-size: 1.5em;">
+            <strong>ATRIBUTOS PERSONALIZADOS</strong>
+        </p>
+		<br>
+		<br>
+		<div class="columns">
+			<div class="column">
+		    	<div class="control">
+					<label>Poste</label>
+				  	<input class="input" type="text" name="producto_poste" value="<?php echo $datos['producto_poste']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100" >
+				</div>
+		  	</div>
+			<div class="column">
+		    	<div class="control">
+					<label>Etiqueta</label>
+				  	<input class="input" type="text" name="producto_etiqueta" value="<?php echo $datos['producto_etiqueta']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100" >
+				</div>
+		  	</div>
+			<div class="column">
+		    	<div class="control">
+					<label>Nodo-Caja</label>
+				  	<input class="input" type="text" name="producto_nodo" value="<?php echo $datos['producto_nodo']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100" >
+				</div>
+		  	</div>
+			<div class="column">
+		    	<div class="control">
+					<label>Contrato</label>
+					<input class="input" type="text" name="producto_contrato" value="<?php echo $datos['producto_contrato']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100" >
+				</div>
+			</div>	
+		</div>
+		<p class="has-text-centered" style="font-size: 1.5em;">
+                <strong>FACTURACIÓN</strong>
+        </p>
 		<div class="columns">
 		  	<div class="column">
 		    	<div class="control">

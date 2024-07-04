@@ -127,12 +127,7 @@
 				</div>
 			</div>	
 		</div>
-		<p class="has-text-centered" style="font-size: 1.5em;">
-                <strong>FACTURACIÓN</strong>
-        </p>
-		<br>
-		<br>
-		<div class="columns">
+		<div class="columns" style="display: none;">
 		  	<div class="column">
 		    	<div class="control">
 					<label>Precio de compra <?php echo CAMPO_OBLIGATORIO; ?></label>
@@ -148,11 +143,11 @@
 		  	<div class="column">
 		    	<div class="control">
 					<label>Stock o existencias <?php echo CAMPO_OBLIGATORIO; ?></label>
-				  	<input class="input" type="text" name="producto_stock" pattern="[0-9]{1,22}" maxlength="22" >
+				  	<input class="input" type="text" name="producto_stock" pattern="[0-9]{1,22}" maxlength="22" value="0" >
 				</div>
 		  	</div>
 		</div>
-		<div class="columns">
+		<div class="columns" style="display: none;">
 		  	<div class="column">
 		    	<div class="control">
 					<label>Marca</label>
@@ -179,7 +174,7 @@
 				</div>
 		  	</div>
 		</div>
-		<div class="columns">
+		<div class="columns" style="display: none;">
 			<div class="column">
 				<label>Foto o imagen del producto</label><br>
 				<div class="file is-small has-name">

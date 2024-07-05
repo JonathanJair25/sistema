@@ -25,6 +25,10 @@
 		    $nodo=$this->limpiarCadena($_POST['producto_nodo']);
 		    $contrato=$this->limpiarCadena($_POST['producto_contrato']);
 
+		    $servicios_id=$this->limpiarCadena($_POST['servicios_id']);
+		    $precio_mensual=$this->limpiarCadena($_POST['servicio_precio_mensual']);
+		    $fecha_facturacion=$this->limpiarCadena($_POST['producto_fecha_facturacion']);
+
 		    $precio_compra=$this->limpiarCadena($_POST['producto_precio_compra']);
 		    $precio_venta=$this->limpiarCadena($_POST['producto_precio_venta']);
 		    $stock=$this->limpiarCadena($_POST['producto_stock']);
@@ -51,7 +55,7 @@
 		    	$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"El CODIGO no coincide con el formato solicitado",
+					"texto"=>"El CODIGO DE CLIENTE no coincide con el formato solicitado",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
@@ -69,77 +73,6 @@
 		        exit();
 		    }
 
-		    // if($this->verificarDatos("[0-9.]{1,25}",$precio_compra)){
-		    // 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El PRECIO DE COMPRA no coincide con el formato solicitado",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-		    // }
-
-		    // if($this->verificarDatos("[0-9.]{1,25}",$precio_venta)){
-		    // 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El PRECIO DE VENTA no coincide con el formato solicitado",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-		    // }
-
-		    // if($this->verificarDatos("[0-9]{1,22}",$stock)){
-		    // 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El STOCK O EXISTENCIAS no coincide con el formato solicitado",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-		    // }
-
-		    if($marca!=""){
-		    	if($this->verificarDatos("[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,#\- ]{1,30}",$marca)){
-			    	$alerta=[
-						"tipo"=>"simple",
-						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"La MARCA no coincide con el formato solicitado",
-						"icono"=>"error"
-					];
-					return json_encode($alerta);
-			        exit();
-			    }
-		    }
-
-		    if($modelo!=""){
-		    	if($this->verificarDatos("[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,#\- ]{1,30}",$modelo)){
-			    	$alerta=[
-						"tipo"=>"simple",
-						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"El MODELO no coincide con el formato solicitado",
-						"icono"=>"error"
-					];
-					return json_encode($alerta);
-			        exit();
-			    }
-		    }
-
-		    # Comprobando presentacion del producto #
-			// if(!in_array($unidad, PRODUCTO_UNIDAD)){
-			// 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"La PRESENTACION DEL PRODUCTO no es correcta o no la ha seleccionado",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-			// }
-
 			# Verificando categoria #
 		    $check_categoria=$this->ejecutarConsulta("SELECT categoria_id FROM categoria WHERE categoria_id='$categoria'");
 		    if($check_categoria->rowCount()<=0){
@@ -152,56 +85,6 @@
 				return json_encode($alerta);
 		        exit();
 		    }
-
-		    # Verificando stock total o existencias #
-            // if($stock<=0){
-			// 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"No puedes registrar un producto con stock o existencias en 0, debes de agregar al menos una unidad",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-            // }
-
-            // # Comprobando precio de compra del producto #
-            // $precio_compra=number_format($precio_compra,MONEDA_DECIMALES,'.','');
-            // if($precio_compra<=0){
-			// 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El PRECIO DE COMPRA no puede ser menor o igual a 0",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-            // }
-
-            // # Comprobando precio de venta del producto #
-            // $precio_venta=number_format($precio_venta,MONEDA_DECIMALES,'.','');
-            // if($precio_venta<=0){
-            //     $alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El PRECIO DE VENTA no puede ser menor o igual a 0",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-			// }
-
-			// # Comprobando precio de compra y venta del producto #
-			// if($precio_compra>$precio_venta){
-			// 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El precio de compra del producto no puede ser mayor al precio de venta",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-			// }
 
 			# Comprobando codigo de producto #
 		    $check_codigo=$this->ejecutarConsulta("SELECT producto_codigo FROM producto WHERE producto_codigo='$codigo'");
@@ -376,34 +259,19 @@
 					"campo_valor"=>$contrato
 				],
 				[
-					"campo_nombre"=>"producto_stock_total",
-					"campo_marcador"=>":Stock",
-					"campo_valor"=>$stock
+					"campo_nombre"=>"servicios_id",
+					"campo_marcador"=>":Servicios_Id",
+					"campo_valor"=>$servicios_id
 				],
 				[
-					"campo_nombre"=>"producto_tipo_unidad",
-					"campo_marcador"=>":Unidad",
-					"campo_valor"=>$unidad
+					"campo_nombre"=>"servicio_precio_mensual",
+					"campo_marcador"=>":Precio_Mensual",
+					"campo_valor"=>$precio_mensual
 				],
 				[
-					"campo_nombre"=>"producto_precio_compra",
-					"campo_marcador"=>":PrecioCompra",
-					"campo_valor"=>$precio_compra
-				],
-				[
-					"campo_nombre"=>"producto_precio_venta",
-					"campo_marcador"=>":PrecioVenta",
-					"campo_valor"=>$precio_venta
-				],
-				[
-					"campo_nombre"=>"producto_marca",
-					"campo_marcador"=>":Marca",
-					"campo_valor"=>$marca
-				],
-				[
-					"campo_nombre"=>"producto_modelo",
-					"campo_marcador"=>":Modelo",
-					"campo_valor"=>$modelo
+					"campo_nombre"=>"producto_fecha_facturacion",
+					"campo_marcador"=>":Fecha_Facturacion",
+					"campo_valor"=>$fecha_facturacion
 				],
 				[
 					"campo_nombre"=>"producto_estado",
@@ -427,7 +295,7 @@
 			if($registrar_producto->rowCount()==1){
 				$alerta=[
 					"tipo"=>"limpiar",
-					"titulo"=>"Producto registrado",
+					"titulo"=>"Cliente registrado",
 					"texto"=>"El cliente ".$nombre." ".$apellidos." se registro con exito",
 					"icono"=>"success"
 				];
@@ -470,7 +338,7 @@
 			$pagina = (isset($pagina) && $pagina>0) ? (int) $pagina : 1;
 			$inicio = ($pagina>0) ? (($pagina * $registros)-$registros) : 0;
 
-			$campos="producto.producto_id,producto.producto_codigo,producto.producto_nombre,producto_stock_total,producto.producto_precio_venta,producto.producto_foto,categoria.categoria_nombre,producto.producto_apellidos,producto.producto_correo,producto.producto_telefono,producto.producto_telefono2,producto.producto_fecha_registro,producto.producto_direccion,producto.producto_referencias,producto.producto_cp,producto.producto_poste,producto.producto_etiqueta,producto.producto_nodo,producto.producto_contrato";
+			$campos="producto.producto_id,producto.producto_codigo,producto.producto_nombre,producto.producto_foto,categoria.categoria_nombre,producto.producto_apellidos,producto.producto_correo,producto.producto_telefono,producto.producto_telefono2,producto.producto_fecha_registro,producto.producto_direccion,producto.producto_referencias,producto.producto_cp,producto.producto_poste,producto.producto_etiqueta,producto.producto_nodo,producto.producto_contrato,producto.servicios_id,producto.servicio_precio_mensual,producto.producto_fecha_facturacion";
 
 			if(isset($busqueda) && $busqueda!=""){
 
@@ -518,11 +386,17 @@
 		                <div class="media-content">
 		                    <div class="content">
 		                        <p>
-		                            <strong>'.$rows['producto_nombre'].' '.$rows['producto_apellidos'].'</strong><br>
-		                            <strong>CODIGO:</strong> '.$rows['producto_codigo'].', 
-		                            <strong>PRECIO:</strong> $'.$rows['producto_precio_venta'].', 
-		                            <strong>STOCK:</strong> '.$rows['producto_stock_total'].',  
-		                            <strong>CATEGORIA:</strong> '.$rows['categoria_nombre'].'
+		                            <strong>'.$rows['producto_codigo'].' - '.$rows['producto_nombre'].' '.$rows['producto_apellidos'].'</strong><br> 
+		                            <strong>SERVICIO:</strong> '.$rows['servicios_id'].', 
+		                            <strong>PRECIO:</strong> '.$rows['servicio_precio_mensual'].',  
+		                            <strong>FECHA DE REGISTRO:</strong> '.$rows['producto_fecha_registro'].'
+		                        </p>
+		                    </div>
+							<div class="content">
+		                        <p> 
+		                            <strong>DIRECCIÓN:</strong> '.$rows['producto_direccion'].', 
+		                            <strong>TÉLEFONO:</strong> '.$rows['producto_telefono'].',  
+		                            <strong>ORGANIZACIÓN:</strong> '.$rows['categoria_nombre'].'
 		                        </p>
 		                    </div>
 		                    <div class="has-text-right">
@@ -681,13 +555,10 @@
 		    $nodo=$this->limpiarCadena($_POST['producto_nodo']);
 		    $contrato=$this->limpiarCadena($_POST['producto_contrato']);
 
-		    $precio_compra=$this->limpiarCadena($_POST['producto_precio_compra']);
-		    $precio_venta=$this->limpiarCadena($_POST['producto_precio_venta']);
-		    $stock=$this->limpiarCadena($_POST['producto_stock']);
+			$servicios_id=$this->limpiarCadena($_POST['servicios_id']);
+		    $precio_mensual=$this->limpiarCadena($_POST['servicio_precio_mensual']);
+		    $fecha_facturacion=$this->limpiarCadena($_POST['producto_fecha_facturacion']);
 
-		    $marca=$this->limpiarCadena($_POST['producto_marca']);
-		    $modelo=$this->limpiarCadena($_POST['producto_modelo']);
-		    $unidad=$this->limpiarCadena($_POST['producto_unidad']);
 		    $categoria=$this->limpiarCadena($_POST['producto_categoria']);
 
 		    # Verificando campos obligatorios #
@@ -725,77 +596,6 @@
 		        exit();
 		    }
 
-		    // if($this->verificarDatos("[0-9.]{1,25}",$precio_compra)){
-		    // 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El PRECIO DE COMPRA no coincide con el formato solicitado",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-		    // }
-
-		    // if($this->verificarDatos("[0-9.]{1,25}",$precio_venta)){
-		    // 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El PRECIO DE VENTA no coincide con el formato solicitado",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-		    // }
-
-		    // if($this->verificarDatos("[0-9]{1,22}",$stock)){
-		    // 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El STOCK O EXISTENCIAS no coincide con el formato solicitado",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-		    // }
-
-		    if($marca!=""){
-		    	if($this->verificarDatos("[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,#\- ]{1,30}",$marca)){
-			    	$alerta=[
-						"tipo"=>"simple",
-						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"La MARCA no coincide con el formato solicitado",
-						"icono"=>"error"
-					];
-					return json_encode($alerta);
-			        exit();
-			    }
-		    }
-
-		    if($modelo!=""){
-		    	if($this->verificarDatos("[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,#\- ]{1,30}",$modelo)){
-			    	$alerta=[
-						"tipo"=>"simple",
-						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"El MODELO no coincide con el formato solicitado",
-						"icono"=>"error"
-					];
-					return json_encode($alerta);
-			        exit();
-			    }
-		    }
-
-		    # Comprobando presentacion del producto #
-			// if(!in_array($unidad, PRODUCTO_UNIDAD)){
-			// 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"La PRESENTACION DEL PRODUCTO no es correcta o no la ha seleccionado",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-			// }
-
 			# Verificando categoria #
 			if($datos['categoria_id']!=$categoria){
 			    $check_categoria=$this->ejecutarConsulta("SELECT categoria_id FROM categoria WHERE categoria_id='$categoria'");
@@ -810,56 +610,6 @@
 			        exit();
 			    }
 			}
-
-		    # Verificando stock total o existencias #
-            // if($stock<=0){
-			// 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"No puedes registrar un producto con stock o existencias en 0, debes de agregar al menos una unidad",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-            // }
-
-            # Comprobando precio de compra del producto #
-            // $precio_compra=number_format($precio_compra,MONEDA_DECIMALES,'.','');
-            // if($precio_compra<=0){
-			// 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El PRECIO DE COMPRA no puede ser menor o igual a 0",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-            // }
-
-            # Comprobando precio de venta del producto #
-            // $precio_venta=number_format($precio_venta,MONEDA_DECIMALES,'.','');
-            // if($precio_venta<=0){
-            //     $alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El PRECIO DE VENTA no puede ser menor o igual a 0",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-			// }
-
-			# Comprobando precio de compra y venta del producto #
-			// if($precio_compra>$precio_venta){
-			// 	$alerta=[
-			// 		"tipo"=>"simple",
-			// 		"titulo"=>"Ocurrió un error inesperado",
-			// 		"texto"=>"El precio de compra del producto no puede ser mayor al precio de venta",
-			// 		"icono"=>"error"
-			// 	];
-			// 	return json_encode($alerta);
-		    //     exit();
-			// }
 
 			# Comprobando codigo de producto #
 			if($datos['producto_codigo']!=$codigo){
@@ -964,34 +714,24 @@
 					"campo_valor"=>$contrato
 				],
 				[
-					"campo_nombre"=>"producto_stock_total",
-					"campo_marcador"=>":Stock",
-					"campo_valor"=>$stock
+					"campo_nombre"=>"servicios_id",
+					"campo_marcador"=>":Servicios_Id",
+					"campo_valor"=>$servicios_id
 				],
 				[
-					"campo_nombre"=>"producto_tipo_unidad",
-					"campo_marcador"=>":Unidad",
-					"campo_valor"=>$unidad
+					"campo_nombre"=>"servicio_precio_mensual",
+					"campo_marcador"=>":Precio_Mensual",
+					"campo_valor"=>$precio_mensual
 				],
 				[
-					"campo_nombre"=>"producto_precio_compra",
-					"campo_marcador"=>":PrecioCompra",
-					"campo_valor"=>$precio_compra
+					"campo_nombre"=>"producto_fecha_facturacion",
+					"campo_marcador"=>":Fecha_Facturacion",
+					"campo_valor"=>$fecha_facturacion
 				],
 				[
-					"campo_nombre"=>"producto_precio_venta",
-					"campo_marcador"=>":PrecioVenta",
-					"campo_valor"=>$precio_venta
-				],
-				[
-					"campo_nombre"=>"producto_marca",
-					"campo_marcador"=>":Marca",
-					"campo_valor"=>$marca
-				],
-				[
-					"campo_nombre"=>"producto_modelo",
-					"campo_marcador"=>":Modelo",
-					"campo_valor"=>$modelo
+					"campo_nombre"=>"producto_estado",
+					"campo_marcador"=>":Estado",
+					"campo_valor"=>"Habilitado"
 				],
 				[
 					"campo_nombre"=>"categoria_id",

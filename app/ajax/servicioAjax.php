@@ -11,15 +11,15 @@
 		$insServicio = new servicioController();
 
 		if($_POST['modulo_servicio']=="registrar"){
-			echo $insServicio->registrarservicioControlador();
+			echo $insServicio->registrarServicioControlador();
 		}
 
 		if($_POST['modulo_servicio']=="eliminar"){
-			echo $insServicio->eliminarservicioControlador();
+			echo $insServicio->eliminarServicioControlador();
 		}
 
 		if($_POST['modulo_servicio']=="actualizar"){
-			echo $insServicio->actualizarservicioControlador();
+			echo $insServicio->actualizarServicioControlador();
 		}
 		
 	}else{

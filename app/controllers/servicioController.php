@@ -6,7 +6,7 @@
 	class servicioController extends mainModel{
 
 		/*----------  Controlador registrar servicio  ----------*/
-		public function registrarservicioControlador(){
+		public function registrarServicioControlador(){
 
 			# Almacenando datos#
 		    $nombre=$this->limpiarCadena($_POST['servicios_nombre']);
@@ -149,8 +149,8 @@
 		}
 
 
-		/*----------  Controlador listar cajas  ----------*/
-		public function listarCajaControlador($pagina,$registros,$url,$busqueda){
+		/*----------  Controlador listar servicios  ----------*/
+		public function listarServicioControlador($pagina,$registros,$url,$busqueda){
 
 			$pagina=$this->limpiarCadena($pagina);
 			$registros=$this->limpiarCadena($registros);
@@ -166,15 +166,15 @@
 
 			if(isset($busqueda) && $busqueda!=""){
 
-				$consulta_datos="SELECT * FROM caja WHERE caja_numero LIKE '%$busqueda%' OR caja_nombre LIKE '%$busqueda%' ORDER BY caja_numero ASC LIMIT $inicio,$registros";
+				$consulta_datos="SELECT * FROM servicios WHERE servicios_nombre LIKE '%$busqueda%' OR servicios_precio_mensual LIKE '%$busqueda%' ORDER BY servicios_nombre ASC LIMIT $inicio,$registros";
 
-				$consulta_total="SELECT COUNT(caja_id) FROM caja WHERE caja_numero LIKE '%$busqueda%' OR caja_nombre LIKE '%$busqueda%'";
+				$consulta_total="SELECT COUNT(servicios_id) FROM servicios WHERE servicios_nombre LIKE '%$busqueda%' OR servicios_precio_mensual LIKE '%$busqueda%'";
 
 			}else{
 
-				$consulta_datos="SELECT * FROM caja ORDER BY caja_numero ASC LIMIT $inicio,$registros";
+				$consulta_datos="SELECT * FROM servicios ORDER BY servicios_nombre ASC LIMIT $inicio,$registros";
 
-				$consulta_total="SELECT COUNT(caja_id) FROM caja";
+				$consulta_total="SELECT COUNT(servicios_id) FROM servicios";
 
 			}
 
@@ -191,9 +191,11 @@
 		        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
 		            <thead>
 		                <tr>
-		                    <th class="has-text-centered">Numero</th>
 		                    <th class="has-text-centered">Nombre</th>
-		                    <th class="has-text-centered">Efectivo</th>
+		                    <th class="has-text-centered">Precio (Mensual)</th>
+		                    <th class="has-text-centered">Velocidad de bajada (Mbps)</th>
+		                    <th class="has-text-centered">Velocidad de subida (Mbps)</th>
+		                    <th class="has-text-centered">Organización</th>
 		                    <th class="has-text-centered">Actualizar</th>
 		                    <th class="has-text-centered">Eliminar</th>
 		                </tr>
@@ -207,19 +209,21 @@
 				foreach($datos as $rows){
 					$tabla.='
 						<tr class="has-text-centered" >
-							<td>'.$rows['caja_numero'].'</td>
-							<td>'.$rows['caja_nombre'].'</td>
-							<td>'.$rows['caja_efectivo'].'</td>
+							<td>'.$rows['servicios_nombre'].'</td>
+							<td>'.$rows['servicios_precio_mensual'].'</td>
+							<td>'.$rows['servicios_velocidad_bajada'].'</td>
+							<td>'.$rows['servicios_velocidad_subida'].'</td>
+							<td>'.$rows['servicios_categoria_id'].'</td>
 			                <td>
-			                    <a href="'.APP_URL.'cashierUpdate/'.$rows['caja_id'].'/" class="button is-success is-rounded is-small">
+			                    <a href="'.APP_URL.'servicioUpdate/'.$rows['servicios_id'].'/" class="button is-success is-rounded is-small">
 			                    	<i class="fas fa-sync fa-fw"></i>
 			                    </a>
 			                </td>
 			                <td>
-			                	<form class="FormularioAjax" action="'.APP_URL.'app/ajax/cajaAjax.php" method="POST" autocomplete="off" >
+			                	<form class="FormularioAjax" action="'.APP_URL.'app/ajax/servicioAjax.php" method="POST" autocomplete="off" >
 
-			                		<input type="hidden" name="modulo_caja" value="eliminar">
-			                		<input type="hidden" name="caja_id" value="'.$rows['caja_id'].'">
+			                		<input type="hidden" name="modulo_servicio" value="eliminar">
+			                		<input type="hidden" name="servicios_id" value="'.$rows['servicios_id'].'">
 
 			                    	<button type="submit" class="button is-danger is-rounded is-small">
 			                    		<i class="far fa-trash-alt fa-fw"></i>
@@ -257,7 +261,7 @@
 
 			### Paginacion ###
 			if($total>0 && $pagina<=$numeroPaginas){
-				$tabla.='<p class="has-text-right">Mostrando cajas <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>';
+				$tabla.='<p class="has-text-right">Mostrando servicios <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>';
 
 				$tabla.=$this->paginadorTablas($pagina,$numeroPaginas,$url,7);
 			}
@@ -266,29 +270,18 @@
 		}
 
 
-		/*----------  Controlador eliminar caja  ----------*/
-		public function eliminarCajaControlador(){
+		/*----------  Controlador eliminar servicio  ----------*/
+		public function eliminarServicioControlador(){
 
-			$id=$this->limpiarCadena($_POST['caja_id']);
+			$id=$this->limpiarCadena($_POST['servicios_id']);
 
-			if($id==1){
-				$alerta=[
-					"tipo"=>"simple",
-					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No podemos eliminar la caja principal del sistema",
-					"icono"=>"error"
-				];
-				return json_encode($alerta);
-		        exit();
-			}
-
-			# Verificando caja #
-		    $datos=$this->ejecutarConsulta("SELECT * FROM caja WHERE caja_id='$id'");
+			# Verificando servicio #
+		    $datos=$this->ejecutarConsulta("SELECT * FROM servicios WHERE servicios_id='$id'");
 		    if($datos->rowCount()<=0){
 		        $alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos encontrado la caja en el sistema",
+					"texto"=>"No hemos encontrado el servicio en el sistema",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
@@ -297,46 +290,20 @@
 		    	$datos=$datos->fetch();
 		    }
 
-		    # Verificando ventas #
-		    $check_ventas=$this->ejecutarConsulta("SELECT caja_id FROM venta WHERE caja_id='$id' LIMIT 1");
-		    if($check_ventas->rowCount()>0){
-		        $alerta=[
-					"tipo"=>"simple",
-					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No podemos eliminar la caja del sistema ya que tiene ventas asociadas",
-					"icono"=>"error"
-				];
-				return json_encode($alerta);
-		        exit();
-		    }
+		    $eliminarServicio=$this->eliminarRegistro("servicios","servicios_id",$id);
 
-		    # Verificando usuarios #
-		    $check_usuarios=$this->ejecutarConsulta("SELECT caja_id FROM usuario WHERE caja_id='$id' LIMIT 1");
-		    if($check_usuarios->rowCount()>0){
-		        $alerta=[
-					"tipo"=>"simple",
-					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No podemos eliminar la caja del sistema ya que tiene usuarios asociados",
-					"icono"=>"error"
-				];
-				return json_encode($alerta);
-		        exit();
-		    }
-
-		    $eliminarCaja=$this->eliminarRegistro("caja","caja_id",$id);
-
-		    if($eliminarCaja->rowCount()==1){
+		    if($eliminarServicio->rowCount()==1){
 		        $alerta=[
 					"tipo"=>"recargar",
-					"titulo"=>"Caja eliminada",
-					"texto"=>"La caja ".$datos['caja_nombre']." #".$datos['caja_numero']." ha sido eliminada del sistema correctamente",
+					"titulo"=>"Servicio eliminado",
+					"texto"=>"El servicio ".$datos['servicios_nombre']." $".$datos['servicios_precio_mensual']." ha sido eliminado del sistema correctamente",
 					"icono"=>"success"
 				];
 		    }else{
 		    	$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos podido eliminar la caja ".$datos['caja_nombre']." #".$datos['caja_numero']." del sistema, por favor intente nuevamente",
+					"texto"=>"No hemos podido eliminar el servicio ".$datos['servicios_nombre']." $".$datos['servicios_precio_mensual']." del sistema, por favor intente nuevamente",
 					"icono"=>"error"
 				];
 		    }
@@ -345,18 +312,18 @@
 		}
 
 
-		/*----------  Controlador actualizar caja  ----------*/
-		public function actualizarCajaControlador(){
+		/*----------  Controlador actualizar servicio  ----------*/
+		public function actualizarServicioControlador(){
 
-			$id=$this->limpiarCadena($_POST['caja_id']);
+			$id=$this->limpiarCadena($_POST['servicios_id']);
 
-			# Verificando caja #
-		    $datos=$this->ejecutarConsulta("SELECT * FROM caja WHERE caja_id='$id'");
+			# Verificando servicio #
+		    $datos=$this->ejecutarConsulta("SELECT * FROM servicios WHERE servicios_id='$id'");
 		    if($datos->rowCount()<=0){
 		        $alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos encontrado la caja en el sistema",
+					"texto"=>"No hemos encontrado el servicio en el sistema",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
@@ -366,12 +333,14 @@
 		    }
 
 		    # Almacenando datos#
-		    $numero=$this->limpiarCadena($_POST['caja_numero']);
-		    $nombre=$this->limpiarCadena($_POST['caja_nombre']);
-		    $efectivo=$this->limpiarCadena($_POST['caja_efectivo']);
+		    $nombre=$this->limpiarCadena($_POST['servicios_nombre']);
+		    $precio_mensual=$this->limpiarCadena($_POST['servicios_precio_mensual']);
+		    $velocidad_bajada=$this->limpiarCadena($_POST['servicios_velocidad_bajada']);
+		    $velocidad_subida=$this->limpiarCadena($_POST['servicios_velocidad_subida']);
+            $categoria_id=$this->limpiarCadena($_POST['servicios_categoria_id']);
 
 		    # Verificando campos obligatorios #
-		    if($numero=="" || $nombre=="" || $efectivo==""){
+		    if($precio_mensual=="" || $nombre=="" || $categoria_id==""){
 		    	$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
@@ -383,62 +352,58 @@
 		    }
 
 		    # Verificando integridad de los datos #
-		    if($this->verificarDatos("[0-9]{1,5}",$numero)){
+		    if($this->verificarDatos("[0-9]{1,5}",$velocidad_bajada)){
 		    	$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"El NUMERO DE CAJA no coincide con el formato solicitado",
+					"texto"=>"LA VELOCIDAD DE BAJADA no coincide con el formato solicitado",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
 		        exit();
 		    }
 
-		    if($this->verificarDatos("[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ:# ]{3,70}",$nombre)){
+            if($this->verificarDatos("[0-9]{1,5}",$velocidad_subida)){
 		    	$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"El NOMBRE DE CAJA no coincide con el formato solicitado",
+					"texto"=>"LA VELOCIDAD DE SUBIDA no coincide con el formato solicitado",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
 		        exit();
 		    }
 
-		    if($this->verificarDatos("[0-9.]{1,25}",$efectivo)){
+		    if($this->verificarDatos("[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#+\-\/ ]{1,100}",$nombre)){
 		    	$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"El EFECTIVO DE CAJA no coincide con el formato solicitado",
+					"texto"=>"El NOMBRE DEL SERVICIO no coincide con el formato solicitado",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
 		        exit();
 		    }
 
-		    # Comprobando numero de caja #
-		    if($datos['caja_numero']!=$numero){
-			    $check_numero=$this->ejecutarConsulta("SELECT caja_numero FROM caja WHERE caja_numero='$numero'");
-			    if($check_numero->rowCount()>0){
-			    	$alerta=[
-						"tipo"=>"simple",
-						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"El número de caja ingresado ya se encuentra registrado en el sistema",
-						"icono"=>"error"
-					];
-					return json_encode($alerta);
-			        exit();
-			    }
+		    if($this->verificarDatos("[0-9.]{1,25}",$precio_mensual)){
+		    	$alerta=[
+					"tipo"=>"simple",
+					"titulo"=>"Ocurrió un error inesperado",
+					"texto"=>"El PRECIO DEL SERVICIO no coincide con el formato solicitado",
+					"icono"=>"error"
+				];
+				return json_encode($alerta);
+		        exit();
 		    }
 
-		    # Comprobando nombre de caja #
-		    if($datos['caja_nombre']!=$nombre){
-			    $check_nombre=$this->ejecutarConsulta("SELECT caja_nombre FROM caja WHERE caja_nombre='$nombre'");
+		    # Comprobando nombre del servicio #
+		    if($datos['servicios_nombre']!=$nombre){
+			    $check_nombre=$this->ejecutarConsulta("SELECT servicios_nombre FROM servicios WHERE servicios_nombre='$nombre'");
 			    if($check_nombre->rowCount()>0){
 			    	$alerta=[
 						"tipo"=>"simple",
 						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"El nombre o código de caja ingresado ya se encuentra registrado en el sistema",
+						"texto"=>"El nombre o código del servicio ingresado ya se encuentra registrado en el sistema",
 						"icono"=>"error"
 					];
 					return json_encode($alerta);
@@ -447,54 +412,64 @@
 		    }
 
 		    # Comprobando que el efectivo sea mayor o igual a 0 #
-			$efectivo=number_format($efectivo,2,'.','');
-			if($efectivo<0){
+			$precio_mensual=number_format($precio_mensual,2,'.','');
+			if($precio_mensual<0){
 				$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No puedes colocar una cantidad de efectivo menor a 0",
+					"texto"=>"El precio mensual del servicio no puede ser menor o igual a 0",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
 		        exit();
 			}
 
-			$caja_datos_up=[
+			$servicio_datos_up=[
 				[
-					"campo_nombre"=>"caja_numero",
-					"campo_marcador"=>":Numero",
-					"campo_valor"=>$numero
-				],
-				[
-					"campo_nombre"=>"caja_nombre",
+					"campo_nombre"=>"servicios_nombre",
 					"campo_marcador"=>":Nombre",
 					"campo_valor"=>$nombre
 				],
 				[
-					"campo_nombre"=>"caja_efectivo",
-					"campo_marcador"=>":Efectivo",
-					"campo_valor"=>$efectivo
+					"campo_nombre"=>"servicios_precio_mensual",
+					"campo_marcador"=>":Precio_Mensual",
+					"campo_valor"=>$precio_mensual
+				],
+                [
+					"campo_nombre"=>"servicios_velocidad_bajada",
+					"campo_marcador"=>":Velocidad_Bajada",
+					"campo_valor"=>$velocidad_bajada
+				],
+                [
+					"campo_nombre"=>"servicios_velocidad_subida",
+					"campo_marcador"=>":Velocidad_Subida",
+					"campo_valor"=>$velocidad_subida
+				],
+				[
+					"campo_nombre"=>"servicios_categoria_id",
+					"campo_marcador"=>":Categoria",
+					"campo_valor"=>$categoria_id
 				]
 			];
 
 			$condicion=[
-				"condicion_campo"=>"caja_id",
+				"condicion_campo"=>"servicios_id",
 				"condicion_marcador"=>":ID",
 				"condicion_valor"=>$id
 			];
 
-			if($this->actualizarDatos("caja",$caja_datos_up,$condicion)){
+			if($this->actualizarDatos("servicios",$servicio_datos_up,$condicion)){
 				$alerta=[
 					"tipo"=>"recargar",
-					"titulo"=>"Caja actualizada",
-					"texto"=>"Los datos de la caja ".$datos['caja_nombre']." #".$datos['caja_numero']." se actualizaron correctamente",
+					"titulo"=>"Servicio actualizado",
+					"texto"=>"Los datos del servicio ".$datos['servicios_nombre']." $".$datos['servicios_precio_mensual']." se actualizaron correctamente",
 					"icono"=>"success"
 				];
 			}else{
 				$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos podido actualizar los datos de la caja ".$datos['caja_nombre']." #".$datos['caja_numero'].", por favor intente nuevamente",
+					"texto"=>"No hemos podido actualizar los datos del servicio ".$datos['servicios_nombre']." $".$datos['servicios_precio_mensual'].", por favor intente nuevamente",
 					"icono"=>"error"
 				];
 			}

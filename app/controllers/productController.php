@@ -388,21 +388,25 @@
 					$tabla .= '</p>
 							</figure>
 							<div class="media-content">
-								<div class="content">
-									<p>
-										<strong>' . $rows['producto_codigo'] . ' - ' . $rows['producto_nombre'] . ' ' . $rows['producto_apellidos'] . '</strong><br> 
-										<strong>SERVICIO:</strong> ' . $rows['servicios_nombre'] . ', 
-										<strong>PRECIO:</strong> ' . $rows['servicio_precio_mensual'] . ',  
-										<strong>FECHA DE REGISTRO:</strong> ' . $rows['producto_fecha_registro'] . '
-									</p>
-								</div>
-								<div class="content">
-									<p> 
-										<strong>DIRECCIÓN:</strong> ' . $rows['producto_direccion'] . ', 
-										<strong>TÉLEFONO:</strong> ' . $rows['producto_telefono'] . ',  
-										<strong>ORGANIZACIÓN:</strong> ' . $rows['categoria_nombre'] . '
-									</p>
-								</div>
+							<div class="content">
+								<p>
+									<strong>' . $rows['producto_codigo'] . ' - ' . $rows['producto_nombre'] . ' ' . $rows['producto_apellidos'] . '</strong><br> 
+									<strong>SERVICIO:</strong> <span class="servicio-nombre">' . $rows['servicios_nombre'] . '</span> -  
+									<strong>PRECIO:</strong> <span class="servicio-precio">' . $rows['servicio_precio_mensual'] . '</span><br>  
+									<strong>DIRECCIÓN:</strong> ' . $rows['producto_direccion'] . '
+									<strong>TÉLEFONO:</strong> ' . $rows['producto_telefono'] . '<br>  
+									<strong>ORGANIZACIÓN:</strong> ' . $rows['categoria_nombre'] . '<br>
+									<strong>FECHA DE REGISTRO:</strong> ' . $rows['producto_fecha_registro'] . '
+								</p>
+							</div>
+						</div>
+						<style>
+							.servicio-nombre, .servicio-precio {
+								font-size: 1.2em; /* Ajusta el tamaño según tus necesidades */
+							}
+						</style>
+
+
 								<div class="has-text-right">
 									<a href="' . APP_URL . 'productPhoto/' . $rows['producto_id'] . '/" class="button is-info is-rounded is-small">
 										<i class="far fa-image fa-fw"></i>

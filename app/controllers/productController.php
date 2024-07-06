@@ -29,13 +29,6 @@
 		    $precio_mensual=$this->limpiarCadena($_POST['servicio_precio_mensual']);
 		    $fecha_facturacion=$this->limpiarCadena($_POST['producto_fecha_facturacion']);
 
-		    $precio_compra=$this->limpiarCadena($_POST['producto_precio_compra']);
-		    $precio_venta=$this->limpiarCadena($_POST['producto_precio_venta']);
-		    $stock=$this->limpiarCadena($_POST['producto_stock']);
-
-		    $marca=$this->limpiarCadena($_POST['producto_marca']);
-		    $modelo=$this->limpiarCadena($_POST['producto_modelo']);
-		    $unidad=$this->limpiarCadena($_POST['producto_unidad']);
 		    $categoria=$this->limpiarCadena($_POST['producto_categoria']);
 
 		    # Verificando campos obligatorios #
@@ -317,144 +310,147 @@
 			return json_encode($alerta);
 		}
 
-
 		/*----------  Controlador listar producto  ----------*/
-		public function listarProductoControlador($pagina,$registros,$url,$busqueda,$categoria){
-
-			$pagina=$this->limpiarCadena($pagina);
-			$registros=$this->limpiarCadena($registros);
-			$categoria=$this->limpiarCadena($categoria);
-
-			$url=$this->limpiarCadena($url);
-			if($categoria>0){
-				$url=APP_URL.$url."/".$categoria."/";
-			}else{
-				$url=APP_URL.$url."/";
+		public function listarProductoControlador($pagina, $registros, $url, $busqueda, $categoria) {
+			$pagina = $this->limpiarCadena($pagina);
+			$registros = $this->limpiarCadena($registros);
+			$categoria = $this->limpiarCadena($categoria);
+		
+			$url = $this->limpiarCadena($url);
+			if ($categoria > 0) {
+				$url = APP_URL . $url . "/" . $categoria . "/";
+			} else {
+				$url = APP_URL . $url . "/";
 			}
-
-			$busqueda=$this->limpiarCadena($busqueda);
-			$tabla="";
-
-			$pagina = (isset($pagina) && $pagina>0) ? (int) $pagina : 1;
-			$inicio = ($pagina>0) ? (($pagina * $registros)-$registros) : 0;
-
-			$campos="producto.producto_id,producto.producto_codigo,producto.producto_nombre,producto.producto_foto,categoria.categoria_nombre,producto.producto_apellidos,producto.producto_correo,producto.producto_telefono,producto.producto_telefono2,producto.producto_fecha_registro,producto.producto_direccion,producto.producto_referencias,producto.producto_cp,producto.producto_poste,producto.producto_etiqueta,producto.producto_nodo,producto.producto_contrato,producto.servicios_id,producto.servicio_precio_mensual,producto.producto_fecha_facturacion";
-
-			if(isset($busqueda) && $busqueda!=""){
-
-				$consulta_datos="SELECT $campos FROM producto INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id WHERE producto_codigo LIKE '%$busqueda%' OR producto_nombre LIKE '%$busqueda%' OR producto_marca LIKE '%$busqueda%' OR producto_modelo LIKE '%$busqueda%' ORDER BY producto_nombre ASC LIMIT $inicio,$registros";
-
-				$consulta_total="SELECT COUNT(producto_id) FROM producto WHERE producto_codigo LIKE '%$busqueda%' OR producto_nombre LIKE '%$busqueda%' OR producto_marca LIKE '%$busqueda%' OR producto_modelo LIKE '%$busqueda%'";
-
-			}elseif($categoria>0){
-
-		        $consulta_datos="SELECT $campos FROM producto INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id WHERE producto.categoria_id='$categoria' ORDER BY producto.producto_nombre ASC LIMIT $inicio,$registros";
-
-		        $consulta_total="SELECT COUNT(producto_id) FROM producto WHERE categoria_id='$categoria'";
-
-		    }else{
-
-				$consulta_datos="SELECT $campos FROM producto INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id ORDER BY producto_nombre ASC LIMIT $inicio,$registros";
-
-				$consulta_total="SELECT COUNT(producto_id) FROM producto";
-
+		
+			$busqueda = $this->limpiarCadena($busqueda);
+			$tabla = "";
+		
+			$pagina = (isset($pagina) && $pagina > 0) ? (int) $pagina : 1;
+			$inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
+		
+			$campos = "producto.producto_id, producto.producto_codigo, producto.producto_nombre, producto.producto_foto, categoria.categoria_nombre, producto.producto_apellidos, producto.producto_correo, producto.producto_telefono, producto.producto_telefono2, producto.producto_fecha_registro, producto.producto_direccion, producto.producto_referencias, producto.producto_cp, producto.producto_poste, producto.producto_etiqueta, producto.producto_nodo, producto.producto_contrato, producto.servicios_id, servicios.servicios_nombre, producto.servicio_precio_mensual, producto.producto_fecha_facturacion";
+		
+			if (isset($busqueda) && $busqueda != "") {
+				$consulta_datos = "SELECT $campos FROM producto 
+								   INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id 
+								   INNER JOIN servicios ON producto.servicios_id=servicios.servicios_id 
+								   WHERE producto_codigo LIKE '%$busqueda%' 
+								   OR producto_nombre LIKE '%$busqueda%'  
+								   ORDER BY producto_nombre ASC 
+								   LIMIT $inicio, $registros";
+		
+				$consulta_total = "SELECT COUNT(producto_id) FROM producto 
+								   WHERE producto_codigo LIKE '%$busqueda%' 
+								   OR producto_nombre LIKE '%$busqueda%'";
+								  
+			} elseif ($categoria > 0) {
+				$consulta_datos = "SELECT $campos FROM producto 
+								   INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id 
+								   INNER JOIN servicios ON producto.servicios_id=servicios.servicios_id 
+								   WHERE producto.categoria_id='$categoria' 
+								   ORDER BY producto.producto_nombre ASC 
+								   LIMIT $inicio, $registros";
+		
+				$consulta_total = "SELECT COUNT(producto_id) FROM producto 
+								   WHERE categoria_id='$categoria'";
+			} else {
+				$consulta_datos = "SELECT $campos FROM producto 
+								   INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id 
+								   INNER JOIN servicios ON producto.servicios_id=servicios.servicios_id 
+								   ORDER BY producto_nombre ASC 
+								   LIMIT $inicio, $registros";
+		
+				$consulta_total = "SELECT COUNT(producto_id) FROM producto";
 			}
-
+		
 			$datos = $this->ejecutarConsulta($consulta_datos);
 			$datos = $datos->fetchAll();
-
+		
 			$total = $this->ejecutarConsulta($consulta_total);
 			$total = (int) $total->fetchColumn();
-
-			$numeroPaginas =ceil($total/$registros);
-
-		    if($total>=1 && $pagina<=$numeroPaginas){
-				$contador=$inicio+1;
-				$pag_inicio=$inicio+1;
-				foreach($datos as $rows){
-					$tabla.='
-		            <article class="media pb-3 pt-3">
-		                <figure class="media-left">
-		                    <p class="image is-64x64">';
-		                        if(is_file("./app/views/productos/".$rows['producto_foto'])){
-		                            $tabla.='<img src="'.APP_URL.'app/views/productos/'.$rows['producto_foto'].'">';
-		                        }else{
-		                            $tabla.='<img src="'.APP_URL.'app/views/productos/default.png">';
-		                        }
-		            $tabla.='</p>
-		                </figure>
-		                <div class="media-content">
-		                    <div class="content">
-		                        <p>
-		                            <strong>'.$rows['producto_codigo'].' - '.$rows['producto_nombre'].' '.$rows['producto_apellidos'].'</strong><br> 
-		                            <strong>SERVICIO:</strong> '.$rows['servicios_id'].', 
-		                            <strong>PRECIO:</strong> '.$rows['servicio_precio_mensual'].',  
-		                            <strong>FECHA DE REGISTRO:</strong> '.$rows['producto_fecha_registro'].'
-		                        </p>
-		                    </div>
-							<div class="content">
-		                        <p> 
-		                            <strong>DIRECCIÓN:</strong> '.$rows['producto_direccion'].', 
-		                            <strong>TÉLEFONO:</strong> '.$rows['producto_telefono'].',  
-		                            <strong>ORGANIZACIÓN:</strong> '.$rows['categoria_nombre'].'
-		                        </p>
-		                    </div>
-		                    <div class="has-text-right">
-		                        <a href="'.APP_URL.'productPhoto/'.$rows['producto_id'].'/" class="button is-info is-rounded is-small">
-			                    	<i class="far fa-image fa-fw"></i>
-			                    </a>
-
-		                        <a href="'.APP_URL.'productUpdate/'.$rows['producto_id'].'/" class="button is-success is-rounded is-small">
-		                        	<i class="fas fa-sync fa-fw"></i>
-		                        </a>
-
-		                        <form class="FormularioAjax is-inline-block" action="'.APP_URL.'app/ajax/productoAjax.php" method="POST" autocomplete="off" >
-
-			                		<input type="hidden" name="modulo_producto" value="eliminar">
-			                		<input type="hidden" name="producto_id" value="'.$rows['producto_id'].'">
-
-			                    	<button type="submit" class="button is-danger is-rounded is-small">
-			                    		<i class="far fa-trash-alt fa-fw"></i>
-			                    	</button>
-			                    </form>
-		                    </div>
-		                </div>
-		            </article>
-
-
-		            <hr>
-		            ';
+		
+			$numeroPaginas = ceil($total / $registros);
+		
+			if ($total >= 1 && $pagina <= $numeroPaginas) {
+				$contador = $inicio + 1;
+				$pag_inicio = $inicio + 1;
+				foreach ($datos as $rows) {
+					$tabla .= '
+						<article class="media pb-3 pt-3">
+							<figure class="media-left">
+								<p class="image is-64x64">';
+									if (is_file("./app/views/productos/" . $rows['producto_foto'])) {
+										$tabla .= '<img src="' . APP_URL . 'app/views/productos/' . $rows['producto_foto'] . '">';
+									} else {
+										$tabla .= '<img src="' . APP_URL . 'app/views/productos/default.png">';
+									}
+					$tabla .= '</p>
+							</figure>
+							<div class="media-content">
+								<div class="content">
+									<p>
+										<strong>' . $rows['producto_codigo'] . ' - ' . $rows['producto_nombre'] . ' ' . $rows['producto_apellidos'] . '</strong><br> 
+										<strong>SERVICIO:</strong> ' . $rows['servicios_nombre'] . ', 
+										<strong>PRECIO:</strong> ' . $rows['servicio_precio_mensual'] . ',  
+										<strong>FECHA DE REGISTRO:</strong> ' . $rows['producto_fecha_registro'] . '
+									</p>
+								</div>
+								<div class="content">
+									<p> 
+										<strong>DIRECCIÓN:</strong> ' . $rows['producto_direccion'] . ', 
+										<strong>TÉLEFONO:</strong> ' . $rows['producto_telefono'] . ',  
+										<strong>ORGANIZACIÓN:</strong> ' . $rows['categoria_nombre'] . '
+									</p>
+								</div>
+								<div class="has-text-right">
+									<a href="' . APP_URL . 'productPhoto/' . $rows['producto_id'] . '/" class="button is-info is-rounded is-small">
+										<i class="far fa-image fa-fw"></i>
+									</a>
+		
+									<a href="' . APP_URL . 'productUpdate/' . $rows['producto_id'] . '/" class="button is-success is-rounded is-small">
+										<i class="fas fa-sync fa-fw"></i>
+									</a>
+		
+									<form class="FormularioAjax is-inline-block" action="' . APP_URL . 'app/ajax/productoAjax.php" method="POST" autocomplete="off">
+										<input type="hidden" name="modulo_producto" value="eliminar">
+										<input type="hidden" name="producto_id" value="' . $rows['producto_id'] . '">
+										<button type="submit" class="button is-danger is-rounded is-small">
+											<i class="far fa-trash-alt fa-fw"></i>
+										</button>
+									</form>
+								</div>
+							</div>
+						</article>
+						<hr>';
 					$contador++;
 				}
-				$pag_final=$contador-1;
-			}else{
-				if($total>=1){
-					$tabla.='
+				$pag_final = $contador - 1;
+			} else {
+				if ($total >= 1) {
+					$tabla .= '
 						<p class="has-text-centered pb-6"><i class="far fa-hand-point-down fa-5x"></i></p>
-			            <p class="has-text-centered">
-			                <a href="'.$url.'1/" class="button is-link is-rounded is-small mt-4 mb-4">
-			                    Haga clic acá para recargar el listado
-			                </a>
-			            </p>
-					';
-				}else{
-					$tabla.='
+						<p class="has-text-centered">
+							<a href="' . $url . '1/" class="button is-link is-rounded is-small mt-4 mb-4">
+								Haga clic acá para recargar el listado
+							</a>
+						</p>';
+				} else {
+					$tabla .= '
 						<p class="has-text-centered pb-6"><i class="far fa-grin-beam-sweat fa-5x"></i></p>
-						<p class="has-text-centered">No hay productos registrados en esta categoría</p>
-					';
+						<p class="has-text-centered">No hay productos registrados en esta categoría</p>';
 				}
 			}
-
+		
 			### Paginacion ###
-			if($total>0 && $pagina<=$numeroPaginas){
-				$tabla.='<p class="has-text-right">Mostrando productos <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>';
-
-				$tabla.=$this->paginadorTablas($pagina,$numeroPaginas,$url,7);
+			if ($total > 0 && $pagina <= $numeroPaginas) {
+				$tabla .= '<p class="has-text-right">Mostrando productos <strong>' . $pag_inicio . '</strong> al <strong>' . $pag_final . '</strong> de un <strong>total de ' . $total . '</strong></p>';
+				$tabla .= $this->paginadorTablas($pagina, $numeroPaginas, $url, 7);
 			}
-
+		
 			return $tabla;
 		}
-
+		
 
 		/*----------  Controlador eliminar producto  ----------*/
 		public function eliminarProductoControlador(){

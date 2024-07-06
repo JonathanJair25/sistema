@@ -10,27 +10,26 @@
 		<input type="hidden" name="modulo_producto" value="registrar">
 
 		<div class="columns" style="display: none;">
-		<div class="column">
-    <label>Servicio</label><br>
-    <div class="select">
-        <select name="servicios_id">
-            <?php
-                // Agregar la primera opción con servicios_id igual a 1
-                echo '<option value="1">1 - Seleccione un servicio</option>';
+			<div class="column">
+    			<label>Servicio</label><br>
+    			<div class="select">
+        			<select name="servicios_id">
+            			<?php
+                			// Agregar la primera opción con servicios_id igual a 1
+                			echo '<option value="1">1 - Seleccione un servicio</option>';
 
-                // Obtener los datos de servicios de la base de datos
-                $datos_servicios = $insLogin->seleccionarDatos("Normal", "servicios", "*", 0);
+                			// Obtener los datos de servicios de la base de datos
+                			$datos_servicios = $insLogin->seleccionarDatos("Normal", "servicios", "*", 0);
 
-                $cc = 2; // Contador para los siguientes servicios
-                while ($campos_servicios = $datos_servicios->fetch()) {
-                    echo '<option value="'.$campos_servicios['servicios_id'].'">'.$cc.' - '.$campos_servicios['servicios_nombre'].'</option>';
-                    $cc++;
-                }
-            ?>
-        </select>
-    </div>
-</div>
-
+                			$cc = 2; // Contador para los siguientes servicios
+                			while ($campos_servicios = $datos_servicios->fetch()) {
+                   			echo '<option value="'.$campos_servicios['servicios_id'].'">'.$cc.' - '.$campos_servicios['servicios_nombre'].'</option>';
+                    		$cc++;
+                			}
+           				 ?>
+        			</select>
+    			</div>
+			</div>
 			<div class="column">
 				<div class="control">
     				<label>Precio Mensual</label><br>
@@ -43,51 +42,6 @@
 					<input class="input" type="date" name="producto_fecha_facturacion">
 				</div>
 			</div>
-		  	<div class="column">
-		    	<div class="control">
-					<label>Precio de compra</label>
-				  	<input class="input" type="text" name="producto_precio_compra" pattern="[0-9.]{1,25}" maxlength="25" value="0.00" >
-				</div>
-		  	</div>
-		  	<div class="column">
-		    	<div class="control">
-					<label>Precio de venta</label>
-				  	<input class="input" type="text" name="producto_precio_venta" pattern="[0-9.]{1,25}" maxlength="25" value="0.00" >
-				</div>
-		  	</div>
-		  	<div class="column">
-		    	<div class="control">
-					<label>Stock o existencias</label>
-				  	<input class="input" type="text" name="producto_stock" pattern="[0-9]{1,22}" maxlength="22" value="0" >
-				</div>
-		  	</div>
-		</div>
-		<div class="columns" style="display: none;">
-		  	<div class="column">
-		    	<div class="control">
-					<label>Marca</label>
-				  	<input class="input" type="text" name="producto_marca" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,#\- ]{1,30}" maxlength="30" >
-				</div>
-		  	</div>
-		  	<div class="column">
-		    	<div class="control">
-					<label>Modelo</label>
-				  	<input class="input" type="text" name="producto_modelo" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,#\- ]{1,30}" maxlength="30" >
-				</div>
-		  	</div>
-		  	<div class="column">
-		    	<div class="control">
-					<label>Presentación del producto <?php echo CAMPO_OBLIGATORIO; ?></label><br>
-				  	<div class="select">
-					  	<select name="producto_unidad">
-					    	<option value="" selected="" >Seleccione una opción</option>
-	                        <?php
-	                        	echo $insLogin->generarSelect(PRODUCTO_UNIDAD,"VACIO");
-	                        ?>
-					  	</select>
-					</div>
-				</div>
-		  	</div>
 		</div>
 
 		<p class="has-text-centered" style="font-size: 1.5em;">

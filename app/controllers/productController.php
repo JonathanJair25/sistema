@@ -329,7 +329,7 @@
 			$pagina = (isset($pagina) && $pagina > 0) ? (int) $pagina : 1;
 			$inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
 		
-			$campos = "producto.producto_id, producto.producto_codigo, producto.producto_nombre, producto.producto_foto, categoria.categoria_nombre, producto.producto_apellidos, producto.producto_correo, producto.producto_telefono, producto.producto_telefono2, producto.producto_fecha_registro, producto.producto_direccion, producto.producto_referencias, producto.producto_cp, producto.producto_poste, producto.producto_etiqueta, producto.producto_nodo, producto.producto_contrato, producto.servicios_id, servicios.servicios_nombre, producto.servicio_precio_mensual, producto.producto_fecha_facturacion";
+			$campos = "producto.producto_id, producto.producto_codigo, producto.producto_nombre, producto.producto_foto, categoria.categoria_nombre, producto.producto_apellidos, producto.producto_correo, producto.producto_telefono, producto.producto_telefono2, producto.producto_fecha_registro, producto.producto_direccion, producto.producto_referencias, producto.producto_cp, producto.producto_poste, producto.producto_etiqueta, producto.producto_nodo, producto.producto_contrato, producto.servicios_id, servicios.servicios_nombre,servicios.servicios_precio_mensual, producto.servicio_precio_mensual, producto.producto_fecha_facturacion";
 		
 			if (isset($busqueda) && $busqueda != "") {
 				$consulta_datos = "SELECT $campos FROM producto 
@@ -454,6 +454,7 @@
 		
 			return $tabla;
 		}
+		
 		
 
 		/*----------  Controlador eliminar producto  ----------*/

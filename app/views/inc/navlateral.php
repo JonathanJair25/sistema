@@ -29,12 +29,67 @@
 				<li class="full-width">
 					<a href="<?php echo APP_URL; ?>dashboard/" class="full-width">
 						<div class="navLateral-body-cl">
-							<i class="fab fa-dashcube fa-fw"></i>
+							<i class="fas fa-home fa-fw"></i>
 						</div>
 						<div class="navLateral-body-cr">
 							Inicio
 						</div>
 					</a>
+				</li>
+				<li class="full-width divider-menu-h"></li>
+
+				<li class="full-width">
+					<a href="#" class="full-width btn-subMenu">
+						<div class="navLateral-body-cl">
+							<i class="fas fa-users fa-fw"></i>
+						</div>
+						<div class="navLateral-body-cr">
+							CLIENTES
+						</div>
+						<span class="fas fa-chevron-down"></span>
+					</a>
+					<ul class="full-width menu-principal sub-menu-options">
+						<li class="full-width">
+							<a href="<?php echo APP_URL; ?>productNew/" class="full-width">
+								<div class="navLateral-body-cl">
+									<i class="fas fa-user-plus fa-fw"></i>
+								</div>
+								<div class="navLateral-body-cr">
+									Nuevo cliente
+								</div>
+							</a>
+						</li>
+						<li class="full-width">
+							<a href="<?php echo APP_URL; ?>productList/" class="full-width">
+								<div class="navLateral-body-cl">
+									<i class="fas fa-clipboard-list fa-fw"></i>
+								</div>
+								<div class="navLateral-body-cr">
+									Lista de clientes
+								</div>
+							</a>
+						</li>
+						<li class="full-width">
+							<a href="<?php echo APP_URL; ?>productCategory/" class="full-width">
+								<div class="navLateral-body-cl">
+									<i class="fas fa-map-marker-alt fa-fw"></i>
+								</div>
+								<div class="navLateral-body-cr">
+									Clientes por organización
+								</div>
+							</a>
+						</li>
+						<li class="full-width">
+							<a href="<?php echo APP_URL; ?>productSearch/" class="full-width">
+								<div class="navLateral-body-cl">
+									<i class="fas fa-search fa-fw"></i>
+								</div>
+								<div class="navLateral-body-cr">
+									Buscar cliente
+								</div>
+							</a>
+						</li>
+					</ul>
 				</li>
 
 				<li class="full-width divider-menu-h"></li>
@@ -215,62 +270,6 @@
 								</div>
 								<div class="navLateral-body-cr">
 									Buscar categoría
-								</div>
-							</a>
-						</li>
-					</ul>
-				</li>
-
-				<li class="full-width divider-menu-h"></li>
-
-				<li class="full-width">
-					<a href="#" class="full-width btn-subMenu">
-						<div class="navLateral-body-cl">
-							<i class="fas fa-cubes fa-fw"></i>
-						</div>
-						<div class="navLateral-body-cr">
-							CLIENTES
-						</div>
-						<span class="fas fa-chevron-down"></span>
-					</a>
-					<ul class="full-width menu-principal sub-menu-options">
-						<li class="full-width">
-							<a href="<?php echo APP_URL; ?>productNew/" class="full-width">
-								<div class="navLateral-body-cl">
-									<i class="fas fa-box fa-fw"></i>
-								</div>
-								<div class="navLateral-body-cr">
-									Nuevo cliente
-								</div>
-							</a>
-						</li>
-						<li class="full-width">
-							<a href="<?php echo APP_URL; ?>productList/" class="full-width">
-								<div class="navLateral-body-cl">
-									<i class="fas fa-clipboard-list fa-fw"></i>
-								</div>
-								<div class="navLateral-body-cr">
-									Lista de clientes
-								</div>
-							</a>
-						</li>
-						<li class="full-width">
-							<a href="<?php echo APP_URL; ?>productCategory/" class="full-width">
-								<div class="navLateral-body-cl">
-									<i class="fas fa-boxes fa-fw"></i>
-								</div>
-								<div class="navLateral-body-cr">
-									Clientes por organización
-								</div>
-							</a>
-						</li>
-						<li class="full-width">
-							<a href="<?php echo APP_URL; ?>productSearch/" class="full-width">
-								<div class="navLateral-body-cl">
-									<i class="fas fa-search fa-fw"></i>
-								</div>
-								<div class="navLateral-body-cr">
-									Buscar cliente
 								</div>
 							</a>
 						</li>

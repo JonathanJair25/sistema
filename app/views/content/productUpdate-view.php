@@ -35,6 +35,7 @@
     		?>
 		</figure>
   	</div>
+    <h2 class="title has-text-centered"><?php echo $datos['producto_codigo']?></h2>
     <h2 class="title has-text-centered"><?php echo $datos['producto_nombre'] . " " . $datos['producto_apellidos']; ?></h2>
     <h2 class="title has-text-centered"><?php echo $servicio_nombre . ' - ' . $servicio_precio_mensual; ?></h2>
 
@@ -49,38 +50,43 @@
         </p>
         <br><br>
         <div class="columns is-centered">
-    <div class="column" style="display: none;">
-        <div class="control">
-            <label>Precio Mensual</label><br>
-            <input class="input" type="text" name="servicio_precio_mensual" value="<?php echo $servicio_precio_mensual; ?>" readonly>
-        </div>
+        <div class="column is-centered">
+    <label>Servicio<?php echo CAMPO_OBLIGATORIO; ?></label><br>
+    <div class="select">
+        <select id="servicios_id" name="servicios_id">
+            <?php
+                $datos_servicios = $insLogin->seleccionarDatos("Normal", "servicios", "*", 0);
+                $cc = 1;
+                while ($campos_servicios = $datos_servicios->fetch()) {
+                    $selected = ($campos_servicios['servicios_id'] == $datos['servicios_id']) ? 'selected' : '';
+                    echo '<option value="' . $campos_servicios['servicios_id'] . '" data-precio="' . $campos_servicios['servicios_precio_mensual'] . '" ' . $selected . '>' . $cc . ' - ' . $campos_servicios['servicios_nombre'] . ' ' . ($selected ? '(Actual)' : '') . '</option>';
+                    $cc++;
+                }
+            ?>
+        </select>
     </div>
+</div>
+<div class="column">
+            <div class="control">
+                <label>Precio Mensual</label><br>
+                <input id="servicios_precio_mensual" class="input" type="text" name="servicio_precio_mensual" value="<?php echo $datos['servicio_precio_mensual']; ?>">
+            </div>
+        </div>
     <div class="column is-centered">
         <div class="control">
             <label>La facturación empieza</label>
             <input class="input" type="date" name="producto_fecha_facturacion" value="<?php echo $datos['producto_fecha_facturacion']; ?>" required>
         </div>
     </div>
-    <div class="column is-centered">
-        <label>Servicio<?php echo CAMPO_OBLIGATORIO; ?></label><br>
-        <div class="select">
-            <select name="servicios_id">
-                <?php
-                    $datos_servicios = $insLogin->seleccionarDatos("Normal", "servicios", "*", 0);
-                    $cc = 1;
-                    while ($campos_servicios = $datos_servicios->fetch()) {
-                        if ($campos_servicios['servicios_id'] == $datos['servicios_id']) {
-                            echo '<option value="' . $campos_servicios['servicios_id'] . '" selected="">' . $cc . ' - ' . $campos_servicios['servicios_nombre'] . ' (Actual)</option>';
-                        } else {
-                            echo '<option value="' . $campos_servicios['servicios_id'] . '">' . $cc . ' - ' . $campos_servicios['servicios_nombre'] . '</option>';
-                        }
-                        $cc++;
-                    }
-                ?>
-            </select>
-        </div>
     </div>
-</div>
+    <p class="has-text-centered">
+            <button type="submit" class="button is-success is-rounded"><i class="fas fa-sync-alt"></i> &nbsp; Actualizar</button>
+    </p>
+
+
+
+
+
 
         <br><br>
         <p class="has-text-centered" style="font-size: 1.5em;">
@@ -209,29 +215,13 @@
             <small>Los campos marcados con <?php echo CAMPO_OBLIGATORIO; ?> son obligatorios</small>
         </p>
     </form>
-
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const serviceSelect = document.querySelector('select[name="servicios_id"]');
-            const priceInput = document.querySelector('input[name="servicio_precio_mensual"]');
-
-            serviceSelect.addEventListener('change', function() {
-                const selectedServiceId = this.value;
-
-                if (selectedServiceId) {
-                    fetch(`get_service_price.php?servicios_id=${selectedServiceId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            priceInput.value = data.servicios_precio_mensual;
-                        })
-                        .catch(error => console.error('Error fetching service price:', error));
-                } else {
-                    priceInput.value = '';
-                }
-            });
-        });
-    </script>
-
+    document.getElementById('servicios_id').addEventListener('change', function() {
+        var selectedOption = this.options[this.selectedIndex];
+        var precioMensual = selectedOption.getAttribute('data-precio');
+        document.getElementById('servicios_precio_mensual').value = precioMensual;
+    });
+</script>
     <?php
         } else {
             include "./app/views/inc/error_alert.php";

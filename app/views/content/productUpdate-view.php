@@ -72,13 +72,23 @@
                 <input id="servicios_precio_mensual" class="input" type="text" name="servicio_precio_mensual" value="<?php echo $datos['servicio_precio_mensual']; ?>" readonly>
             </div>
         </div>
+    </div>
+    <div class="columns is-centered">
     <div class="column is-centered">
         <div class="control">
             <label>La facturación empieza</label>
             <input class="input" type="date" name="producto_fecha_facturacion" value="<?php echo $datos['producto_fecha_facturacion']; ?>" required>
         </div>
     </div>
+    <div class="column">
+        <div class="control">
+            <label>IP<?php echo CAMPO_OBLIGATORIO; ?></label>
+            <input class="input" type="text" name="producto_ip" 
+               pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})\.){3}(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})$|^([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4}|:)$" 
+               value="<?php echo $datos['producto_ip']; ?>" maxlength="39" required>
+        </div>
     </div>
+</div>
     <p class="has-text-centered">
             <button type="submit" class="button is-success is-rounded"><i class="fas fa-sync-alt"></i> &nbsp; Actualizar</button>
     </p>
@@ -97,7 +107,7 @@
             <div class="column">
                 <div class="control">
                     <label>Código de cliente <?php echo CAMPO_OBLIGATORIO; ?></label>
-                    <input class="input" type="text" name="producto_codigo" value="<?php echo $datos['producto_codigo']; ?>" pattern="[a-zA-Z0-9- ]{1,77}" maxlength="77" required>
+                    <input class="input" type="text" name="producto_codigo" value="<?php echo $datos['producto_codigo']; ?>" pattern="[a-zA-Z0-9- ]{1,77}" maxlength="77" required readonly>
                 </div>
             </div>
             <div class="column">

@@ -77,6 +77,12 @@ $conn->close();
             </div>
             <div class="column">
                 <div class="control">
+                    <label>IP<?php echo CAMPO_OBLIGATORIO; ?></label>
+                    <input class="input" type="text" name="producto_ip" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100">
+                </div>
+            </div>
+            <div class="column">
+                <div class="control">
                     <label>La facturación empieza</label>
                     <input class="input" type="date" name="producto_fecha_facturacion">
                 </div>

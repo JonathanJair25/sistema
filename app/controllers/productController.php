@@ -5,7 +5,7 @@
 
 	class productController extends mainModel{
 
-		/*----------  Controlador registrar producto  ----------*/
+		/*----------  Controlador registrar cliente  ----------*/
 		public function registrarProductoControlador(){
 
 			# Almacenando datos#
@@ -28,6 +28,7 @@
 		    $servicios_id=$this->limpiarCadena($_POST['servicios_id']);
 		    $precio_mensual=$this->limpiarCadena($_POST['servicio_precio_mensual']);
 		    $fecha_facturacion=$this->limpiarCadena($_POST['producto_fecha_facturacion']);
+		    $ip=$this->limpiarCadena($_POST['producto_ip']);
 
 		    $categoria=$this->limpiarCadena($_POST['producto_categoria']);
 
@@ -79,7 +80,7 @@
 		        exit();
 		    }
 
-			# Comprobando codigo de producto #
+			# Comprobando codigo de cliente #
 		    $check_codigo=$this->ejecutarConsulta("SELECT producto_codigo FROM producto WHERE producto_codigo='$codigo'");
 		    if($check_codigo->rowCount()>=1){
 		        $alerta=[
@@ -92,7 +93,7 @@
 		        exit();
 		    }
 
-		    # Comprobando nombre de producto #
+		    # Comprobando nombre de cliente #
 		    $check_nombre=$this->ejecutarConsulta("SELECT producto_nombre FROM producto WHERE producto_codigo='$codigo' AND producto_nombre='$nombre'");
 		    if($check_nombre->rowCount()>=1){
 		        $alerta=[
@@ -267,6 +268,11 @@
 					"campo_valor"=>$fecha_facturacion
 				],
 				[
+					"campo_nombre"=>"producto_ip",
+					"campo_marcador"=>":Producto_Ip",
+					"campo_valor"=>$ip
+				],
+				[
 					"campo_nombre"=>"producto_estado",
 					"campo_marcador"=>":Estado",
 					"campo_valor"=>"Habilitado"
@@ -287,7 +293,7 @@
 
 			if($registrar_producto->rowCount()==1){
 				$alerta=[
-					"tipo"=>"limpiar",
+					"tipo"=>"recargar",
 					"titulo"=>"Cliente registrado",
 					"texto"=>"El cliente ".$nombre." ".$apellidos." se registro con exito",
 					"icono"=>"success"
@@ -310,7 +316,7 @@
 			return json_encode($alerta);
 		}
 
-		/*----------  Controlador listar producto  ----------*/
+		/*----------  Controlador listar clientes  ----------*/
 public function listarProductoControlador($pagina, $registros, $url, $busqueda, $categoria) {
     $pagina = $this->limpiarCadena($pagina);
     $registros = $this->limpiarCadena($registros);
@@ -335,7 +341,7 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
                producto.producto_direccion, producto.producto_referencias, producto.producto_cp, 
                producto.producto_poste, producto.producto_etiqueta, producto.producto_nodo, 
                producto.producto_contrato, producto.servicios_id, servicios.servicios_nombre, 
-               servicios.servicios_precio_mensual, producto.servicio_precio_mensual, 
+               servicios.servicios_precio_mensual, producto.servicio_precio_mensual, producto.producto_ip, 
                producto.producto_fecha_facturacion";
 
     if (isset($busqueda) && $busqueda != "") {
@@ -450,13 +456,13 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
         } else {
             $tabla .= '
             <p class="has-text-centered pb-6"><i class="far fa-grin-beam-sweat fa-5x"></i></p>
-            <p class="has-text-centered">No hay productos registrados en esta categoría</p>';
+            <p class="has-text-centered">No hay clientes registrados en esta organización</p>';
         }
     }
 
     ### Paginacion ###
     if ($total > 0 && $pagina <= $numeroPaginas) {
-        $tabla .= '<p class="has-text-right">Mostrando productos <strong>' . $pag_inicio . '</strong> al <strong>' . $pag_final . '</strong> de un <strong>total de ' . $total . '</strong></p>';
+        $tabla .= '<p class="has-text-right">Mostrando clientes <strong>' . $pag_inicio . '</strong> al <strong>' . $pag_final . '</strong> de un <strong>total de ' . $total . '</strong></p>';
         $tabla .= $this->paginadorTablas($pagina, $numeroPaginas, $url, 7);
     }
 
@@ -465,12 +471,12 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 
 		
 
-		/*----------  Controlador eliminar producto  ----------*/
+		/*----------  Controlador eliminar cliente  ----------*/
 		public function eliminarProductoControlador(){
 
 			$id=$this->limpiarCadena($_POST['producto_id']);
 
-			# Verificando producto #
+			# Verificando cliente #
 		    $datos=$this->ejecutarConsulta("SELECT * FROM producto WHERE producto_id='$id'");
 		    if($datos->rowCount()<=0){
 		        $alerta=[
@@ -509,8 +515,8 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 
 		        $alerta=[
 					"tipo"=>"recargar",
-					"titulo"=>"Producto eliminado",
-					"texto"=>"El producto '".$datos['producto_nombre']."' ha sido eliminado del sistema correctamente",
+					"titulo"=>"Cliente eliminado",
+					"texto"=>"El cliente ".$datos['producto_nombre']." ".$datos['producto_apellidos']." ha sido eliminado del sistema correctamente",
 					"icono"=>"success"
 				];
 
@@ -518,7 +524,7 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 		    	$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos podido eliminar el producto '".$datos['producto_nombre']."' del sistema, por favor intente nuevamente",
+					"texto"=>"No hemos podido eliminar el cliente ".$datos['producto_nombre']." ".$datos['producto_apellidos']." del sistema, por favor intente nuevamente",
 					"icono"=>"error"
 				];
 		    }
@@ -527,18 +533,18 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 		}
 
 
-		/*----------  Controlador actualizar producto  ----------*/
+		/*----------  Controlador actualizar cliente  ----------*/
 		public function actualizarProductoControlador(){
 
 			$id=$this->limpiarCadena($_POST['producto_id']);
 
-			# Verificando producto #
+			# Verificando cliente #
 		    $datos=$this->ejecutarConsulta("SELECT * FROM producto WHERE producto_id='$id'");
 		    if($datos->rowCount()<=0){
 		        $alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos encontrado el producto en el sistema",
+					"texto"=>"No hemos encontrado el cliente en el sistema",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
@@ -567,6 +573,7 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 			$servicios_id=$this->limpiarCadena($_POST['servicios_id']);
 		    $precio_mensual=$this->limpiarCadena($_POST['servicio_precio_mensual']);
 		    $fecha_facturacion=$this->limpiarCadena($_POST['producto_fecha_facturacion']);
+		    $ip=$this->limpiarCadena($_POST['producto_ip']);
 
 		    $categoria=$this->limpiarCadena($_POST['producto_categoria']);
 
@@ -620,14 +627,14 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 			    }
 			}
 
-			# Comprobando codigo de producto #
+			# Comprobando codigo de cliente #
 			if($datos['producto_codigo']!=$codigo){
 			    $check_codigo=$this->ejecutarConsulta("SELECT producto_codigo FROM producto WHERE producto_codigo='$codigo'");
 			    if($check_codigo->rowCount()>=1){
 			        $alerta=[
 						"tipo"=>"simple",
 						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"El código de producto que ha ingresado ya se encuentra registrado en el sistema",
+						"texto"=>"El código de cliente que ha ingresado ya se encuentra registrado en el sistema",
 						"icono"=>"error"
 					];
 					return json_encode($alerta);
@@ -635,14 +642,14 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 			    }
 			}
 
-		    # Comprobando nombre de producto #
+		    # Comprobando nombre de cliente #
 		    if($datos['producto_nombre']!=$nombre){
 			    $check_nombre=$this->ejecutarConsulta("SELECT producto_nombre FROM producto WHERE producto_codigo='$codigo' AND producto_nombre='$nombre'");
 			    if($check_nombre->rowCount()>=1){
 			        $alerta=[
 						"tipo"=>"simple",
 						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"Ya existe un producto registrado con el mismo nombre y código de barras",
+						"texto"=>"Ya existe un cliente registrado con el mismo nombre y código de cliente",
 						"icono"=>"error"
 					];
 					return json_encode($alerta);
@@ -738,6 +745,11 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 					"campo_valor"=>$fecha_facturacion
 				],
 				[
+					"campo_nombre"=>"producto_ip",
+					"campo_marcador"=>":Producto_Ip",
+					"campo_valor"=>$ip
+				],
+				[
 					"campo_nombre"=>"producto_estado",
 					"campo_marcador"=>":Estado",
 					"campo_valor"=>"Habilitado"
@@ -758,15 +770,15 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 			if($this->actualizarDatos("producto",$producto_datos_up,$condicion)){
 				$alerta=[
 					"tipo"=>"recargar",
-					"titulo"=>"Producto actualizado",
-					"texto"=>"Los datos del cliente '".$datos['producto_nombre']." ".$datos['producto_apellidos']."' se actualizaron correctamente",
+					"titulo"=>"Cliente actualizado",
+					"texto"=>"Los datos del cliente ".$datos['producto_nombre']." ".$datos['producto_apellidos']." se actualizaron correctamente",
 					"icono"=>"success"
 				];
 			}else{
 				$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos podido actualizar los datos del cliente '".$datos['producto_nombre']." ".$datos['producto_apellidos']."', por favor intente nuevamente",
+					"texto"=>"No hemos podido actualizar los datos del cliente ".$datos['producto_nombre']." ".$datos['producto_apellidos'].", por favor intente nuevamente",
 					"icono"=>"error"
 				];
 			}
@@ -775,18 +787,18 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 		}
 
 
-		/*----------  Controlador eliminar foto producto  ----------*/
+		/*----------  Controlador eliminar foto cliente  ----------*/
 		public function eliminarFotoProductoControlador(){
 
 			$id=$this->limpiarCadena($_POST['producto_id']);
 
-			# Verificando producto #
+			# Verificando cliente #
 		    $datos=$this->ejecutarConsulta("SELECT * FROM producto WHERE producto_id='$id'");
 		    if($datos->rowCount()<=0){
 		        $alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos encontrado el producto en el sistema",
+					"texto"=>"No hemos encontrado el cliente en el sistema",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
@@ -808,7 +820,7 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 		            $alerta=[
 						"tipo"=>"simple",
 						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"Error al intentar eliminar la foto del producto, por favor intente nuevamente",
+						"texto"=>"Error al intentar eliminar la foto del cliente, por favor intente nuevamente",
 						"icono"=>"error"
 					];
 					return json_encode($alerta);
@@ -818,7 +830,7 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 		    	$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos encontrado la foto del producto en el sistema",
+					"texto"=>"No hemos encontrado la foto del cliente en el sistema",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
@@ -843,14 +855,14 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 				$alerta=[
 					"tipo"=>"recargar",
 					"titulo"=>"Foto eliminada",
-					"texto"=>"La foto del producto '".$datos['producto_nombre']."' se elimino correctamente",
+					"texto"=>"La foto del cliente ".$datos['producto_nombre']." ".$datos['producto_apellidos']." se elimino correctamente",
 					"icono"=>"success"
 				];
 			}else{
 				$alerta=[
 					"tipo"=>"recargar",
 					"titulo"=>"Foto eliminada",
-					"texto"=>"No hemos podido actualizar algunos datos del producto '".$datos['producto_nombre']."', sin embargo la foto ha sido eliminada correctamente",
+					"texto"=>"No hemos podido actualizar algunos datos del cliente ".$datos['producto_nombre']." ".$datos['producto_apellidos'].", sin embargo la foto ha sido eliminada correctamente",
 					"icono"=>"warning"
 				];
 			}
@@ -859,18 +871,18 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 		}
 
 
-		/*----------  Controlador actualizar foto producto  ----------*/
+		/*----------  Controlador actualizar foto cliente  ----------*/
 		public function actualizarFotoProductoControlador(){
 
 			$id=$this->limpiarCadena($_POST['producto_id']);
 
-			# Verificando producto #
+			# Verificando cliente #
 		    $datos=$this->ejecutarConsulta("SELECT * FROM producto WHERE producto_id='$id'");
 		    if($datos->rowCount()<=0){
 		        $alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos encontrado el producto en el sistema",
+					"texto"=>"No hemos encontrado el cliente en el sistema",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
@@ -887,7 +899,7 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
     			$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No ha seleccionado una foto para el producto",
+					"texto"=>"No ha seleccionado una foto para el cliente",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
@@ -989,7 +1001,7 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 				$alerta=[
 					"tipo"=>"recargar",
 					"titulo"=>"Foto actualizada",
-					"texto"=>"La foto del producto '".$datos['producto_nombre']."' se actualizo correctamente",
+					"texto"=>"La foto del cliente '".$datos['producto_nombre']."' '".$datos['producto_apellidos']."' se actualizo correctamente",
 					"icono"=>"success"
 				];
 			}else{
@@ -997,7 +1009,7 @@ public function listarProductoControlador($pagina, $registros, $url, $busqueda, 
 				$alerta=[
 					"tipo"=>"recargar",
 					"titulo"=>"Foto actualizada",
-					"texto"=>"No hemos podido actualizar algunos datos del producto '".$datos['producto_nombre']."', sin embargo la foto ha sido actualizada",
+					"texto"=>"No hemos podido actualizar algunos datos del cliente ".$datos['producto_nombre']." ".$datos['producto_apellidos'].", sin embargo la foto ha sido actualizada",
 					"icono"=>"warning"
 				];
 			}

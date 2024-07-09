@@ -69,7 +69,7 @@
 <div class="column">
             <div class="control">
                 <label>Precio Mensual</label><br>
-                <input id="servicios_precio_mensual" class="input" type="text" name="servicio_precio_mensual" value="<?php echo $datos['servicio_precio_mensual']; ?>">
+                <input id="servicios_precio_mensual" class="input" type="text" name="servicio_precio_mensual" value="<?php echo $datos['servicio_precio_mensual']; ?>" readonly>
             </div>
         </div>
     <div class="column is-centered">

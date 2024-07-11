@@ -77,11 +77,10 @@
                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
                         <tr>
-                            <th class="has-text-centered">#</th>
-                            <th class="has-text-centered">Código de barras</th>
-                            <th class="has-text-centered">Producto</th>
-                            <th class="has-text-centered">Cant.</th>
-                            <th class="has-text-centered">Precio</th>
+                            <th class="has-text-centered">Código de cliente</th>
+                            <th class="has-text-centered">Nombre</th>
+                            <th class="has-text-centered">Meses</th>
+                            <th class="has-text-centered">Precio mensual</th>
                             <th class="has-text-centered">Subtotal</th>
                             <th class="has-text-centered">Actualizar</th>
                             <th class="has-text-centered">Remover</th>
@@ -97,7 +96,6 @@
                                 foreach($_SESSION['datos_producto_venta'] as $productos){
                         ?>
                         <tr class="has-text-centered" >
-                            <td><?php echo $cc; ?></td>
                             <td><?php echo $productos['producto_codigo']; ?></td>
                             <td><?php echo $productos['venta_detalle_descripcion']; ?></td>
                             <td>

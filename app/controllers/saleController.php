@@ -115,29 +115,13 @@
 
                 $detalle_cantidad=1;
 
-                $stock_total=$campos['producto_stock_total']-$detalle_cantidad;
-
-                if($stock_total<0){
-                    $alerta=[
-						"tipo"=>"simple",
-						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"Lo sentimos, no hay existencias disponibles del producto seleccionado",
-						"icono"=>"error"
-					];
-					return json_encode($alerta);
-			        exit();
-                }
-
-                $detalle_total=$detalle_cantidad*$campos['producto_precio_venta'];
+                $detalle_total=$detalle_cantidad*$campos['servicio_precio_mensual'];
                 $detalle_total=number_format($detalle_total,MONEDA_DECIMALES,'.','');
 
                 $_SESSION['datos_producto_venta'][$codigo]=[
                     "producto_id"=>$campos['producto_id'],
 					"producto_codigo"=>$campos['producto_codigo'],
-					"producto_stock_total"=>$stock_total,
-					"producto_stock_total_old"=>$campos['producto_stock_total'],
-                    "venta_detalle_precio_compra"=>$campos['producto_precio_compra'],
-                    "venta_detalle_precio_venta"=>$campos['producto_precio_venta'],
+                    "venta_detalle_precio_venta"=>$campos['servicio_precio_mensual'],
                     "venta_detalle_cantidad"=>1,
                     "venta_detalle_total"=>$detalle_total,
                     "venta_detalle_descripcion"=>$campos['producto_nombre']
@@ -146,30 +130,13 @@
                 $_SESSION['alerta_producto_agregado']="Se agrego <strong>".$campos['producto_nombre']."</strong> a la venta";
             }else{
                 $detalle_cantidad=($_SESSION['datos_producto_venta'][$codigo]['venta_detalle_cantidad'])+1;
-
-                $stock_total=$campos['producto_stock_total']-$detalle_cantidad;
-
-                if($stock_total<0){
-                    $alerta=[
-						"tipo"=>"simple",
-						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"Lo sentimos, no hay existencias disponibles del producto seleccionado",
-						"icono"=>"error"
-					];
-					return json_encode($alerta);
-			        exit();
-                }
-
-                $detalle_total=$detalle_cantidad*$campos['producto_precio_venta'];
+                $detalle_total=$detalle_cantidad*$campos['servicio_precio_mensual'];
                 $detalle_total=number_format($detalle_total,MONEDA_DECIMALES,'.','');
 
                 $_SESSION['datos_producto_venta'][$codigo]=[
                     "producto_id"=>$campos['producto_id'],
 					"producto_codigo"=>$campos['producto_codigo'],
-					"producto_stock_total"=>$stock_total,
-					"producto_stock_total_old"=>$campos['producto_stock_total'],
-                    "venta_detalle_precio_compra"=>$campos['producto_precio_compra'],
-                    "venta_detalle_precio_venta"=>$campos['producto_precio_venta'],
+                    "venta_detalle_precio_venta"=>$campos['servicio_precio_mensual'],
                     "venta_detalle_cantidad"=>$detalle_cantidad,
                     "venta_detalle_total"=>$detalle_total,
                     "venta_detalle_descripcion"=>$campos['producto_nombre']
@@ -199,7 +166,7 @@
 				$alerta=[
 					"tipo"=>"recargar",
 					"titulo"=>"¡Producto removido!",
-					"texto"=>"El producto se ha removido de la venta",
+					"texto"=>"El cliente se ha removido de la venta",
 					"icono"=>"success"
 				];
 				
@@ -281,32 +248,15 @@
                     $diferencia_productos="quito -".($_SESSION['datos_producto_venta'][$codigo]["venta_detalle_cantidad"]-$cantidad);
                 }
 
-
                 $detalle_cantidad=$cantidad;
 
-                $stock_total=$campos['producto_stock_total']-$detalle_cantidad;
-
-                if($stock_total<0){
-                    $alerta=[
-						"tipo"=>"simple",
-						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"Lo sentimos, no hay existencias suficientes del producto seleccionado. Existencias disponibles: ".($stock_total+$detalle_cantidad)."",
-						"icono"=>"error"
-					];
-					return json_encode($alerta);
-			        exit();
-                }
-
-                $detalle_total=$detalle_cantidad*$campos['producto_precio_venta'];
+                $detalle_total=$detalle_cantidad*$campos['servicio_precio_mensual'];
                 $detalle_total=number_format($detalle_total,MONEDA_DECIMALES,'.','');
 
                 $_SESSION['datos_producto_venta'][$codigo]=[
                     "producto_id"=>$campos['producto_id'],
 					"producto_codigo"=>$campos['producto_codigo'],
-					"producto_stock_total"=>$stock_total,
-					"producto_stock_total_old"=>$campos['producto_stock_total'],
-                    "venta_detalle_precio_compra"=>$campos['producto_precio_compra'],
-                    "venta_detalle_precio_venta"=>$campos['producto_precio_venta'],
+                    "venta_detalle_precio_venta"=>$campos['servicio_precio_mensual'],
                     "venta_detalle_cantidad"=>$detalle_cantidad,
                     "venta_detalle_total"=>$detalle_total,
                     "venta_detalle_descripcion"=>$campos['producto_nombre']
@@ -582,19 +532,7 @@
                     $datos_producto=$check_producto->fetch();
                 }
 
-                /*== Respaldando datos de BD para poder restaurar en caso de errores ==*/
-                $_SESSION['datos_producto_venta'][$productos['producto_codigo']]['producto_stock_total']=$datos_producto['producto_stock_total']-$_SESSION['datos_producto_venta'][$productos['producto_codigo']]['venta_detalle_cantidad'];
-
-                $_SESSION['datos_producto_venta'][$productos['producto_codigo']]['producto_stock_total_old']=$datos_producto['producto_stock_total'];
-
                 /*== Preparando datos para enviarlos al modelo ==*/
-                $datos_producto_up=[
-                    [
-						"campo_nombre"=>"producto_stock_total",
-						"campo_marcador"=>":Stock",
-						"campo_valor"=>$_SESSION['datos_producto_venta'][$productos['producto_codigo']]['producto_stock_total']
-					]
-                ];
 
                 $condicion=[
                     "condicion_campo"=>"producto_id",
@@ -602,25 +540,10 @@
                     "condicion_valor"=>$productos['producto_id']
                 ];
 
-                /*== Actualizando producto ==*/
-                if(!$this->actualizarDatos("producto",$datos_producto_up,$condicion)){
-                    $errores_productos=1;
-                    break;
-                }
-            }
-
             /*== Reestableciendo DB debido a errores ==*/
             if($errores_productos==1){
 
                 foreach($_SESSION['datos_producto_venta'] as $producto){
-
-                    $datos_producto_rs=[
-                        [
-							"campo_nombre"=>"producto_stock_total",
-							"campo_marcador"=>":Stock",
-							"campo_valor"=>$producto['producto_stock_total_old']
-						]
-                    ];
 
                     $condicion=[
                         "condicion_campo"=>"producto_id",
@@ -701,14 +624,6 @@
             if($agregar_venta->rowCount()!=1){
                 foreach($_SESSION['datos_producto_venta'] as $producto){
 
-                    $datos_producto_rs=[
-                        [
-							"campo_nombre"=>"producto_stock_total",
-							"campo_marcador"=>":Stock",
-							"campo_valor"=>$producto['producto_stock_total_old']
-						]
-                    ];
-
                     $condicion=[
                         "condicion_campo"=>"producto_id",
                         "condicion_marcador"=>":ID",
@@ -738,11 +653,6 @@
 						"campo_nombre"=>"venta_detalle_cantidad",
 						"campo_marcador"=>":Cantidad",
 						"campo_valor"=>$venta_detalle['venta_detalle_cantidad']
-					],
-					[
-						"campo_nombre"=>"venta_detalle_precio_compra",
-						"campo_marcador"=>":PrecioCompra",
-						"campo_valor"=>$venta_detalle['venta_detalle_precio_compra']
 					],
 					[
 						"campo_nombre"=>"venta_detalle_precio_venta",
@@ -787,14 +697,6 @@
 
                 foreach($_SESSION['datos_producto_venta'] as $producto){
 
-                    $datos_producto_rs=[
-                        [
-							"campo_nombre"=>"producto_stock_total",
-							"campo_marcador"=>":Stock",
-							"campo_valor"=>$producto['producto_stock_total_old']
-						]
-                    ];
-
                     $condicion=[
                         "condicion_campo"=>"producto_id",
                         "condicion_marcador"=>":ID",
@@ -836,14 +738,6 @@
 
                 foreach($_SESSION['datos_producto_venta'] as $producto){
 
-                    $datos_producto_rs=[
-                        [
-							"campo_nombre"=>"producto_stock_total",
-							"campo_marcador"=>":Stock",
-							"campo_valor"=>$producto['producto_stock_total_old']
-						]
-                    ];
-
                     $condicion=[
                         "condicion_campo"=>"producto_id",
                         "condicion_marcador"=>":ID",
@@ -883,201 +777,201 @@
 
 
         /*----------  Controlador listar venta  ----------*/
-		public function listarVentaControlador($pagina,$registros,$url,$busqueda){
+		// public function listarVentaControlador($pagina,$registros,$url,$busqueda){
 
-			$pagina=$this->limpiarCadena($pagina);
-			$registros=$this->limpiarCadena($registros);
+		// 	$pagina=$this->limpiarCadena($pagina);
+		// 	$registros=$this->limpiarCadena($registros);
 
-			$url=$this->limpiarCadena($url);
-			$url=APP_URL.$url."/";
+		// 	$url=$this->limpiarCadena($url);
+		// 	$url=APP_URL.$url."/";
 
-			$busqueda=$this->limpiarCadena($busqueda);
-			$tabla="";
+		// 	$busqueda=$this->limpiarCadena($busqueda);
+		// 	$tabla="";
 
-			$pagina = (isset($pagina) && $pagina>0) ? (int) $pagina : 1;
-			$inicio = ($pagina>0) ? (($pagina * $registros)-$registros) : 0;
+		// 	$pagina = (isset($pagina) && $pagina>0) ? (int) $pagina : 1;
+		// 	$inicio = ($pagina>0) ? (($pagina * $registros)-$registros) : 0;
 
-			$campos_tablas="venta.venta_id,venta.venta_codigo,venta.venta_fecha,venta.venta_hora,venta.venta_total,venta.usuario_id,venta.cliente_id,venta.caja_id,usuario.usuario_id,usuario.usuario_nombre,usuario.usuario_apellido,cliente.cliente_id,cliente.cliente_nombre,cliente.cliente_apellido";
+		// 	$campos_tablas="venta.venta_id,venta.venta_codigo,venta.venta_fecha,venta.venta_hora,venta.venta_total,venta.usuario_id,venta.cliente_id,venta.caja_id,usuario.usuario_id,usuario.usuario_nombre,usuario.usuario_apellido,cliente.cliente_id,cliente.cliente_nombre,cliente.cliente_apellido";
 
-			if(isset($busqueda) && $busqueda!=""){
+		// 	if(isset($busqueda) && $busqueda!=""){
 
-				$consulta_datos="SELECT $campos_tablas FROM venta INNER JOIN cliente ON venta.cliente_id=cliente.cliente_id INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id WHERE (venta.venta_codigo='$busqueda') ORDER BY venta.venta_id DESC LIMIT $inicio,$registros";
+		// 		$consulta_datos="SELECT $campos_tablas FROM venta INNER JOIN cliente ON venta.cliente_id=cliente.cliente_id INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id WHERE (venta.venta_codigo='$busqueda') ORDER BY venta.venta_id DESC LIMIT $inicio,$registros";
 
-				$consulta_total="SELECT COUNT(venta_id) FROM venta WHERE (venta.venta_codigo='$busqueda')";
+		// 		$consulta_total="SELECT COUNT(venta_id) FROM venta WHERE (venta.venta_codigo='$busqueda')";
 
-			}else{
+		// 	}else{
 
-				$consulta_datos="SELECT $campos_tablas FROM venta INNER JOIN cliente ON venta.cliente_id=cliente.cliente_id INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id ORDER BY venta.venta_id DESC LIMIT $inicio,$registros";
+		// 		$consulta_datos="SELECT $campos_tablas FROM venta INNER JOIN cliente ON venta.cliente_id=cliente.cliente_id INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id ORDER BY venta.venta_id DESC LIMIT $inicio,$registros";
 
-				$consulta_total="SELECT COUNT(venta_id) FROM venta";
+		// 		$consulta_total="SELECT COUNT(venta_id) FROM venta";
 
-			}
+		// 	}
 
-			$datos = $this->ejecutarConsulta($consulta_datos);
-			$datos = $datos->fetchAll();
+		// 	$datos = $this->ejecutarConsulta($consulta_datos);
+		// 	$datos = $datos->fetchAll();
 
-			$total = $this->ejecutarConsulta($consulta_total);
-			$total = (int) $total->fetchColumn();
+		// 	$total = $this->ejecutarConsulta($consulta_total);
+		// 	$total = (int) $total->fetchColumn();
 
-			$numeroPaginas =ceil($total/$registros);
+		// 	$numeroPaginas =ceil($total/$registros);
 
-			$tabla.='
-		        <div class="table-container">
-		        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-		            <thead>
-		                <tr>
-		                    <th class="has-text-centered">NRO.</th>
-		                    <th class="has-text-centered">Codigo</th>
-		                    <th class="has-text-centered">Fecha</th>
-		                    <th class="has-text-centered">Cliente</th>
-		                    <th class="has-text-centered">Vendedor</th>
-		                    <th class="has-text-centered">Total</th>
-		                    <th class="has-text-centered">Opciones</th>
-		                </tr>
-		            </thead>
-		            <tbody>
-		    ';
+		// 	$tabla.='
+		//         <div class="table-container">
+		//         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+		//             <thead>
+		//                 <tr>
+		//                     <th class="has-text-centered">NRO.</th>
+		//                     <th class="has-text-centered">Codigo</th>
+		//                     <th class="has-text-centered">Fecha</th>
+		//                     <th class="has-text-centered">Cliente</th>
+		//                     <th class="has-text-centered">Vendedor</th>
+		//                     <th class="has-text-centered">Total</th>
+		//                     <th class="has-text-centered">Opciones</th>
+		//                 </tr>
+		//             </thead>
+		//             <tbody>
+		//     ';
 
-		    if($total>=1 && $pagina<=$numeroPaginas){
-				$contador=$inicio+1;
-				$pag_inicio=$inicio+1;
-				foreach($datos as $rows){
-					$tabla.='
-						<tr class="has-text-centered" >
-							<td>'.$rows['venta_id'].'</td>
-							<td>'.$rows['venta_codigo'].'</td>
-							<td>'.date("d-m-Y", strtotime($rows['venta_fecha'])).' '.$rows['venta_hora'].'</td>
-							<td>'.$this->limitarCadena($rows['cliente_nombre'].' '.$rows['cliente_apellido'],30,"...").'</td>
-							<td>'.$this->limitarCadena($rows['usuario_nombre'].' '.$rows['usuario_apellido'],30,"...").'</td>
-							<td>'.MONEDA_SIMBOLO.number_format($rows['venta_total'],MONEDA_DECIMALES,MONEDA_SEPARADOR_DECIMAL,MONEDA_SEPARADOR_MILLAR).' '.MONEDA_NOMBRE.'</td>
-			                <td>
+		//     if($total>=1 && $pagina<=$numeroPaginas){
+		// 		$contador=$inicio+1;
+		// 		$pag_inicio=$inicio+1;
+		// 		foreach($datos as $rows){
+		// 			$tabla.='
+		// 				<tr class="has-text-centered" >
+		// 					<td>'.$rows['venta_id'].'</td>
+		// 					<td>'.$rows['venta_codigo'].'</td>
+		// 					<td>'.date("d-m-Y", strtotime($rows['venta_fecha'])).' '.$rows['venta_hora'].'</td>
+		// 					<td>'.$this->limitarCadena($rows['cliente_nombre'].' '.$rows['cliente_apellido'],30,"...").'</td>
+		// 					<td>'.$this->limitarCadena($rows['usuario_nombre'].' '.$rows['usuario_apellido'],30,"...").'</td>
+		// 					<td>'.MONEDA_SIMBOLO.number_format($rows['venta_total'],MONEDA_DECIMALES,MONEDA_SEPARADOR_DECIMAL,MONEDA_SEPARADOR_MILLAR).' '.MONEDA_NOMBRE.'</td>
+		// 	                <td>
 
-			                	<button type="button" class="button is-link is-outlined is-rounded is-small btn-sale-options" onclick="print_invoice(\''.APP_URL.'app/pdf/invoice.php?code='.$rows['venta_codigo'].'\')" title="Imprimir factura Nro. '.$rows['venta_id'].'" >
-	                                <i class="fas fa-file-invoice-dollar fa-fw"></i>
-	                            </button>
+		// 	                	<button type="button" class="button is-link is-outlined is-rounded is-small btn-sale-options" onclick="print_invoice(\''.APP_URL.'app/pdf/invoice.php?code='.$rows['venta_codigo'].'\')" title="Imprimir factura Nro. '.$rows['venta_id'].'" >
+	    //                             <i class="fas fa-file-invoice-dollar fa-fw"></i>
+	    //                         </button>
 
-                                <button type="button" class="button is-link is-outlined is-rounded is-small btn-sale-options" onclick="print_ticket(\''.APP_URL.'app/pdf/ticket.php?code='.$rows['venta_codigo'].'\')" title="Imprimir ticket Nro. '.$rows['venta_id'].'" >
-                                    <i class="fas fa-receipt fa-fw"></i>
-                                </button>
+        //                         <button type="button" class="button is-link is-outlined is-rounded is-small btn-sale-options" onclick="print_ticket(\''.APP_URL.'app/pdf/ticket.php?code='.$rows['venta_codigo'].'\')" title="Imprimir ticket Nro. '.$rows['venta_id'].'" >
+        //                             <i class="fas fa-receipt fa-fw"></i>
+        //                         </button>
 
-			                    <a href="'.APP_URL.'saleDetail/'.$rows['venta_codigo'].'/" class="button is-link is-rounded is-small" title="Informacion de venta Nro. '.$rows['venta_id'].'" >
-			                    	<i class="fas fa-shopping-bag fa-fw"></i>
-			                    </a>
+		// 	                    <a href="'.APP_URL.'saleDetail/'.$rows['venta_codigo'].'/" class="button is-link is-rounded is-small" title="Informacion de venta Nro. '.$rows['venta_id'].'" >
+		// 	                    	<i class="fas fa-shopping-bag fa-fw"></i>
+		// 	                    </a>
 
-			                	<form class="FormularioAjax is-inline-block" action="'.APP_URL.'app/ajax/ventaAjax.php" method="POST" autocomplete="off" >
+		// 	                	<form class="FormularioAjax is-inline-block" action="'.APP_URL.'app/ajax/ventaAjax.php" method="POST" autocomplete="off" >
 
-			                		<input type="hidden" name="modulo_venta" value="eliminar_venta">
-			                		<input type="hidden" name="venta_id" value="'.$rows['venta_id'].'">
+		// 	                		<input type="hidden" name="modulo_venta" value="eliminar_venta">
+		// 	                		<input type="hidden" name="venta_id" value="'.$rows['venta_id'].'">
 
-			                    	<button type="submit" class="button is-danger is-rounded is-small" title="Eliminar venta Nro. '.$rows['venta_id'].'" >
-			                    		<i class="far fa-trash-alt fa-fw"></i>
-			                    	</button>
-			                    </form>
+		// 	                    	<button type="submit" class="button is-danger is-rounded is-small" title="Eliminar venta Nro. '.$rows['venta_id'].'" >
+		// 	                    		<i class="far fa-trash-alt fa-fw"></i>
+		// 	                    	</button>
+		// 	                    </form>
 
-			                </td>
-						</tr>
-					';
-					$contador++;
-				}
-				$pag_final=$contador-1;
-			}else{
-				if($total>=1){
-					$tabla.='
-						<tr class="has-text-centered" >
-			                <td colspan="7">
-			                    <a href="'.$url.'1/" class="button is-link is-rounded is-small mt-4 mb-4">
-			                        Haga clic acá para recargar el listado
-			                    </a>
-			                </td>
-			            </tr>
-					';
-				}else{
-					$tabla.='
-						<tr class="has-text-centered" >
-			                <td colspan="7">
-			                    No hay registros en el sistema
-			                </td>
-			            </tr>
-					';
-				}
-			}
+		// 	                </td>
+		// 				</tr>
+		// 			';
+		// 			$contador++;
+		// 		}
+		// 		$pag_final=$contador-1;
+		// 	}else{
+		// 		if($total>=1){
+		// 			$tabla.='
+		// 				<tr class="has-text-centered" >
+		// 	                <td colspan="7">
+		// 	                    <a href="'.$url.'1/" class="button is-link is-rounded is-small mt-4 mb-4">
+		// 	                        Haga clic acá para recargar el listado
+		// 	                    </a>
+		// 	                </td>
+		// 	            </tr>
+		// 			';
+		// 		}else{
+		// 			$tabla.='
+		// 				<tr class="has-text-centered" >
+		// 	                <td colspan="7">
+		// 	                    No hay registros en el sistema
+		// 	                </td>
+		// 	            </tr>
+		// 			';
+		// 		}
+		// 	}
 
-			$tabla.='</tbody></table></div>';
+		// 	$tabla.='</tbody></table></div>';
 
-			### Paginacion ###
-			if($total>0 && $pagina<=$numeroPaginas){
-				$tabla.='<p class="has-text-right">Mostrando ventas <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>';
+		// 	### Paginacion ###
+		// 	if($total>0 && $pagina<=$numeroPaginas){
+		// 		$tabla.='<p class="has-text-right">Mostrando ventas <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>';
 
-				$tabla.=$this->paginadorTablas($pagina,$numeroPaginas,$url,7);
-			}
+		// 		$tabla.=$this->paginadorTablas($pagina,$numeroPaginas,$url,7);
+		// 	}
 
-			return $tabla;
-		}
-
-
-		/*----------  Controlador eliminar venta  ----------*/
-		public function eliminarVentaControlador(){
-
-			$id=$this->limpiarCadena($_POST['venta_id']);
-
-			# Verificando venta #
-		    $datos=$this->ejecutarConsulta("SELECT * FROM venta WHERE venta_id='$id'");
-		    if($datos->rowCount()<=0){
-		        $alerta=[
-					"tipo"=>"simple",
-					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos encontrado la venta en el sistema",
-					"icono"=>"error"
-				];
-				return json_encode($alerta);
-		        exit();
-		    }else{
-		    	$datos=$datos->fetch();
-		    }
-
-		    # Verificando detalles de venta #
-		    $check_detalle_venta=$this->ejecutarConsulta("SELECT venta_detalle_id FROM venta_detalle WHERE venta_codigo='".$datos['venta_codigo']."'");
-		    $check_detalle_venta=$check_detalle_venta->rowCount();
-
-		    if($check_detalle_venta>0){
-
-		        $eliminarVentaDetalle=$this->eliminarRegistro("venta_detalle","venta_codigo",$datos['venta_codigo']);
-
-		        if($eliminarVentaDetalle->rowCount()!=$check_detalle_venta){
-		        	$alerta=[
-						"tipo"=>"simple",
-						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
-						"icono"=>"error"
-					];
-					return json_encode($alerta);
-			        exit();
-		        }
-
-		    }
+		// 	return $tabla;
+		// }
 
 
-		    $eliminarVenta=$this->eliminarRegistro("venta","venta_id",$id);
+	// 	/*----------  Controlador eliminar venta  ----------*/
+	// 	public function eliminarVentaControlador(){
 
-		    if($eliminarVenta->rowCount()==1){
+	// 		$id=$this->limpiarCadena($_POST['venta_id']);
 
-		        $alerta=[
-					"tipo"=>"recargar",
-					"titulo"=>"Venta eliminada",
-					"texto"=>"La venta ha sido eliminada del sistema correctamente",
-					"icono"=>"success"
-				];
+	// 		# Verificando venta #
+	// 	    $datos=$this->ejecutarConsulta("SELECT * FROM venta WHERE venta_id='$id'");
+	// 	    if($datos->rowCount()<=0){
+	// 	        $alerta=[
+	// 				"tipo"=>"simple",
+	// 				"titulo"=>"Ocurrió un error inesperado",
+	// 				"texto"=>"No hemos encontrado la venta en el sistema",
+	// 				"icono"=>"error"
+	// 			];
+	// 			return json_encode($alerta);
+	// 	        exit();
+	// 	    }else{
+	// 	    	$datos=$datos->fetch();
+	// 	    }
 
-		    }else{
-		    	$alerta=[
-					"tipo"=>"simple",
-					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
-					"icono"=>"error"
-				];
-		    }
+	// 	    # Verificando detalles de venta #
+	// 	    $check_detalle_venta=$this->ejecutarConsulta("SELECT venta_detalle_id FROM venta_detalle WHERE venta_codigo='".$datos['venta_codigo']."'");
+	// 	    $check_detalle_venta=$check_detalle_venta->rowCount();
 
-		    return json_encode($alerta);
-		}
+	// 	    if($check_detalle_venta>0){
 
+	// 	        $eliminarVentaDetalle=$this->eliminarRegistro("venta_detalle","venta_codigo",$datos['venta_codigo']);
+
+	// 	        if($eliminarVentaDetalle->rowCount()!=$check_detalle_venta){
+	// 	        	$alerta=[
+	// 					"tipo"=>"simple",
+	// 					"titulo"=>"Ocurrió un error inesperado",
+	// 					"texto"=>"No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
+	// 					"icono"=>"error"
+	// 				];
+	// 				return json_encode($alerta);
+	// 		        exit();
+	// 	        }
+
+	// 	    }
+
+
+	// 	    $eliminarVenta=$this->eliminarRegistro("venta","venta_id",$id);
+
+	// 	    if($eliminarVenta->rowCount()==1){
+
+	// 	        $alerta=[
+	// 				"tipo"=>"recargar",
+	// 				"titulo"=>"Venta eliminada",
+	// 				"texto"=>"La venta ha sido eliminada del sistema correctamente",
+	// 				"icono"=>"success"
+	// 			];
+
+	// 	    }else{
+	// 	    	$alerta=[
+	// 				"tipo"=>"simple",
+	// 				"titulo"=>"Ocurrió un error inesperado",
+	// 				"texto"=>"No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
+	// 				"icono"=>"error"
+	// 			];
+	// 	    }
+
+	// 	    return json_encode($alerta);
 	}
+
+	 }

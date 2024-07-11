@@ -342,7 +342,7 @@
 					   producto.producto_poste, producto.producto_etiqueta, producto.producto_nodo, 
 					   producto.producto_contrato, producto.servicios_id, servicios.servicios_nombre, 
 					   servicios.servicios_precio_mensual, producto.servicio_precio_mensual, producto.producto_ip, 
-					   producto.producto_fecha_facturacion";
+					   producto.producto_fecha_facturacion, producto.producto_estado, producto.producto_credito";
 		
 			if (isset($busqueda) && $busqueda != "") {
 				$consulta_datos = "SELECT $campos FROM producto 
@@ -384,6 +384,7 @@
 			$total = (int) $total->fetchColumn();
 		
 			$numeroPaginas = ceil($total / $registros);
+			
 		
 			if ($total >= 1 && $pagina <= $numeroPaginas) {
 				$contador = $inicio + 1;
@@ -406,8 +407,7 @@
 								<div class="column">
 									<p>
 										<strong> ' . $rows['producto_codigo'] . ' - ' . $rows['producto_nombre'] . ' ' . $rows['producto_apellidos'] . '</strong><br> 
-										<strong>SERVICIO:</strong> <span class="servicio-nombre">' . $rows['servicios_nombre'] . '</span> -  
-										<strong>PRECIO:</strong> <span class="servicio-precio">' . $rows['servicio_precio_mensual'] . '</span><br>  
+										<strong>ESTADO:</strong> ' . $rows['producto_estado'] . '<br>  
 										<strong>DIRECCIÓN:</strong> ' . $rows['producto_direccion'] . '<br>
 										<strong>TÉLEFONO:</strong> ' . $rows['producto_telefono'] . '<br>  
 										<strong>FECHA DE REGISTRO:</strong> ' . $fecha_registro . '<br>
@@ -421,6 +421,16 @@
 										<strong>NODO:</strong> ' . $rows['producto_nodo'] . '<br>
 										<strong>CONTRATO:</strong> ' . $rows['producto_contrato'] . '<br>
 										<strong>IP:</strong> ' . $rows['producto_ip'] . '
+									</p>
+								</div>
+								<div class="column">
+									<p>
+										<strong>SERVICIO:</strong> <span class="servicio-nombre">' . $rows['servicios_nombre'] . '</span><br>   
+										<strong>PRECIO MENSUAL:</strong> <span class="servicio-precio">' . $rows['servicio_precio_mensual'] . '</span><br>
+										<br>
+										<strong>SALDO DE LA CUENTA:</strong><br>
+										<strong>CRÉDITO:</strong> ' . $rows['producto_credito'] . '<br>
+										<strong>PENDIENTES:</strong> <br>
 									</p>
 								</div>
 							</div>

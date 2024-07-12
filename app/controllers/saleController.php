@@ -814,135 +814,140 @@ if($errores_venta_detalle==1){
         /*----------  Controlador listar venta  ----------*/
 		public function listarVentaControlador($pagina, $registros, $url, $busqueda){
 
-			$pagina=$this->limpiarCadena($pagina);
-			$registros=$this->limpiarCadena($registros);
-
-			$url=$this->limpiarCadena($url);
-			$url=APP_URL.$url."/";
-
-			$busqueda=$this->limpiarCadena($busqueda);
-			$tabla="";
-
-			$pagina = (isset($pagina) && $pagina>0) ? (int) $pagina : 1;
-			$inicio = ($pagina>0) ? (($pagina * $registros)-$registros) : 0;
-
-			$campos_tablas="venta.venta_id,venta.venta_codigo,venta.venta_fecha,venta.venta_hora,venta.venta_total,venta.usuario_id,venta.cliente_id,venta.caja_id,usuario.usuario_id,usuario.usuario_nombre,usuario.usuario_apellido,cliente.cliente_id,cliente.cliente_nombre,cliente.cliente_apellido";
-
-			if(isset($busqueda) && $busqueda!=""){
-
-				$consulta_datos="SELECT $campos_tablas FROM venta INNER JOIN cliente ON venta.cliente_id=cliente.cliente_id INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id WHERE (venta.venta_codigo='$busqueda') ORDER BY venta.venta_id DESC LIMIT $inicio,$registros";
-
-				$consulta_total="SELECT COUNT(venta_id) FROM venta WHERE (venta.venta_codigo='$busqueda')";
-
-			}else{
-
-				$consulta_datos="SELECT $campos_tablas FROM venta INNER JOIN cliente ON venta.cliente_id=cliente.cliente_id INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id ORDER BY venta.venta_id DESC LIMIT $inicio,$registros";
-
-				$consulta_total="SELECT COUNT(venta_id) FROM venta";
-
+			$pagina = $this->limpiarCadena($pagina);
+			$registros = $this->limpiarCadena($registros);
+			$url = $this->limpiarCadena($url);
+			$url = APP_URL . $url . "/";
+			$busqueda = $this->limpiarCadena($busqueda);
+			$tabla = "";
+		
+			$pagina = (isset($pagina) && $pagina > 0) ? (int) $pagina : 1;
+			$inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
+		
+			$campos_tablas = "venta.venta_id,venta.venta_codigo,venta.venta_fecha,venta.venta_hora,venta.venta_total,
+							  venta.usuario_id,venta.cliente_id,venta.caja_id,usuario.usuario_id,usuario.usuario_nombre,
+							  usuario.usuario_apellido,cliente.cliente_id,cliente.cliente_nombre,cliente.cliente_apellido";
+		
+			if(isset($busqueda) && $busqueda != ""){
+				$consulta_datos = "SELECT $campos_tablas 
+								   FROM venta 
+								   INNER JOIN cliente ON venta.cliente_id = cliente.cliente_id 
+								   INNER JOIN usuario ON venta.usuario_id = usuario.usuario_id 
+								   WHERE (venta.venta_codigo = '$busqueda') 
+								   ORDER BY venta.venta_id DESC 
+								   LIMIT $inicio, $registros";
+		
+				$consulta_total = "SELECT COUNT(venta_id) 
+								   FROM venta 
+								   WHERE (venta.venta_codigo = '$busqueda')";
+			} else {
+				$consulta_datos = "SELECT $campos_tablas 
+								   FROM venta 
+								   INNER JOIN cliente ON venta.cliente_id = cliente.cliente_id 
+								   INNER JOIN usuario ON venta.usuario_id = usuario.usuario_id 
+								   ORDER BY venta.venta_id DESC 
+								   LIMIT $inicio, $registros";
+		
+				$consulta_total = "SELECT COUNT(venta_id) 
+								   FROM venta";
 			}
-
+		
 			$datos = $this->ejecutarConsulta($consulta_datos);
 			$datos = $datos->fetchAll();
-
+		
 			$total = $this->ejecutarConsulta($consulta_total);
 			$total = (int) $total->fetchColumn();
-
-			$numeroPaginas =ceil($total/$registros);
-
-			$tabla.='
-		        <div class="table-container">
-		        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-		            <thead>
-		                <tr>
-		                    <th class="has-text-centered">NRO.</th>
-		                    <th class="has-text-centered">Codigo</th>
-		                    <th class="has-text-centered">Fecha</th>
-		                    <th class="has-text-centered">Cliente</th>
-		                    <th class="has-text-centered">Vendedor</th>
-		                    <th class="has-text-centered">Total</th>
-		                    <th class="has-text-centered">Opciones</th>
-		                </tr>
-		            </thead>
-		            <tbody>
-		    ';
-
-		    if($total>=1 && $pagina<=$numeroPaginas){
-				$contador=$inicio+1;
-				$pag_inicio=$inicio+1;
+		
+			$numeroPaginas = ceil($total / $registros);
+		
+			$tabla .= '
+				<div class="table-container">
+					<table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+						<thead>
+							<tr>
+								<th class="has-text-centered">NRO.</th>
+								<th class="has-text-centered">Codigo</th>
+								<th class="has-text-centered">Fecha</th>
+								<th class="has-text-centered">Cliente</th>
+								<th class="has-text-centered">Vendedor</th>
+								<th class="has-text-centered">Total</th>
+								<th class="has-text-centered">Opciones</th>
+							</tr>
+						</thead>
+						<tbody>
+			';
+		
+			if($total >= 1 && $pagina <= $numeroPaginas){
+				$contador = $inicio + 1;
+				$pag_inicio = $inicio + 1;
 				foreach($datos as $rows){
-					$tabla.='
-						<tr class="has-text-centered" >
+					$tabla .= '
+						<tr class="has-text-centered">
 							<td>'.$rows['venta_id'].'</td>
 							<td>'.$rows['venta_codigo'].'</td>
 							<td>'.date("d-m-Y", strtotime($rows['venta_fecha'])).' '.$rows['venta_hora'].'</td>
-							<td>'.$this->limitarCadena($rows['cliente_nombre'].' '.$rows['cliente_apellido'],30,"...").'</td>
-							<td>'.$this->limitarCadena($rows['usuario_nombre'].' '.$rows['usuario_apellido'],30,"...").'</td>
-							<td>'.MONEDA_SIMBOLO.number_format($rows['venta_total'],MONEDA_DECIMALES,MONEDA_SEPARADOR_DECIMAL,MONEDA_SEPARADOR_MILLAR).' '.MONEDA_NOMBRE.'</td>
-			                <td>
-
-			                	<button type="button" class="button is-link is-outlined is-rounded is-small btn-sale-options" onclick="print_invoice(\''.APP_URL.'app/pdf/invoice.php?code='.$rows['venta_codigo'].'\')" title="Imprimir factura Nro. '.$rows['venta_id'].'" >
-	                                <i class="fas fa-file-invoice-dollar fa-fw"></i>
-	                            </button>
-
-                                <button type="button" class="button is-link is-outlined is-rounded is-small btn-sale-options" onclick="print_ticket(\''.APP_URL.'app/pdf/ticket.php?code='.$rows['venta_codigo'].'\')" title="Imprimir ticket Nro. '.$rows['venta_id'].'" >
-                                    <i class="fas fa-receipt fa-fw"></i>
-                                </button>
-
-			                    <a href="'.APP_URL.'saleDetail/'.$rows['venta_codigo'].'/" class="button is-link is-rounded is-small" title="Informacion de venta Nro. '.$rows['venta_id'].'" >
-			                    	<i class="fas fa-shopping-bag fa-fw"></i>
-			                    </a>
-
-			                	<form class="FormularioAjax is-inline-block" action="'.APP_URL.'app/ajax/ventaAjax.php" method="POST" autocomplete="off" >
-
-			                		<input type="hidden" name="modulo_venta" value="eliminar_venta">
-			                		<input type="hidden" name="venta_id" value="'.$rows['venta_id'].'">
-
-			                    	<button type="submit" class="button is-danger is-rounded is-small" title="Eliminar venta Nro. '.$rows['venta_id'].'" >
-			                    		<i class="far fa-trash-alt fa-fw"></i>
-			                    	</button>
-			                    </form>
-
-			                </td>
+							<td>'.$this->limitarCadena($rows['cliente_nombre'].' '.$rows['cliente_apellido'], 30, "...").'</td>
+							<td>'.$this->limitarCadena($rows['usuario_nombre'].' '.$rows['usuario_apellido'], 30, "...").'</td>
+							<td>'.MONEDA_SIMBOLO.number_format($rows['venta_total'], MONEDA_DECIMALES, MONEDA_SEPARADOR_DECIMAL, MONEDA_SEPARADOR_MILLAR).' '.MONEDA_NOMBRE.'</td>
+							<td>
+								<button type="button" class="button is-link is-outlined is-rounded is-small btn-sale-options" onclick="print_invoice(\''.APP_URL.'app/pdf/invoice.php?code='.$rows['venta_codigo'].'\')" title="Imprimir factura Nro. '.$rows['venta_id'].'" >
+									<i class="fas fa-file-invoice-dollar fa-fw"></i>
+								</button>
+		
+								<button type="button" class="button is-link is-outlined is-rounded is-small btn-sale-options" onclick="print_ticket(\''.APP_URL.'app/pdf/ticket.php?code='.$rows['venta_codigo'].'\')" title="Imprimir ticket Nro. '.$rows['venta_id'].'" >
+									<i class="fas fa-receipt fa-fw"></i>
+								</button>
+		
+								<a href="'.APP_URL.'saleDetail/'.$rows['venta_codigo'].'/" class="button is-link is-rounded is-small" title="Informacion de venta Nro. '.$rows['venta_id'].'" >
+									<i class="fas fa-shopping-bag fa-fw"></i>
+								</a>
+		
+								<form class="FormularioAjax is-inline-block" action="'.APP_URL.'app/ajax/ventaAjax.php" method="POST" autocomplete="off">
+									<input type="hidden" name="modulo_venta" value="eliminar_venta">
+									<input type="hidden" name="venta_id" value="'.$rows['venta_id'].'">
+									<button type="submit" class="button is-danger is-rounded is-small" title="Eliminar venta Nro. '.$rows['venta_id'].'" >
+										<i class="far fa-trash-alt fa-fw"></i>
+									</button>
+								</form>
+							</td>
 						</tr>
 					';
 					$contador++;
 				}
-				$pag_final=$contador-1;
-			}else{
-				if($total>=1){
-					$tabla.='
-						<tr class="has-text-centered" >
-			                <td colspan="7">
-			                    <a href="'.$url.'1/" class="button is-link is-rounded is-small mt-4 mb-4">
-			                        Haga clic acá para recargar el listado
-			                    </a>
-			                </td>
-			            </tr>
+				$pag_final = $contador - 1;
+			} else {
+				if($total >= 1){
+					$tabla .= '
+						<tr class="has-text-centered">
+							<td colspan="7">
+								<a href="'.$url.'1/" class="button is-link is-rounded is-small mt-4 mb-4">
+									Haga clic acá para recargar el listado
+								</a>
+							</td>
+						</tr>
 					';
-				}else{
-					$tabla.='
-						<tr class="has-text-centered" >
-			                <td colspan="7">
-			                    No hay registros en el sistema
-			                </td>
-			            </tr>
+				} else {
+					$tabla .= '
+						<tr class="has-text-centered">
+							<td colspan="7">
+								No hay registros en el sistema
+							</td>
+						</tr>
 					';
 				}
 			}
-
-			$tabla.='</tbody></table></div>';
-
+		
+			$tabla .= '</tbody></table></div>';
+		
 			### Paginacion ###
-			if($total>0 && $pagina<=$numeroPaginas){
-				$tabla.='<p class="has-text-right">Mostrando ventas <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>';
-
-				$tabla.=$this->paginadorTablas($pagina,$numeroPaginas,$url,7);
+			if($total > 0 && $pagina <= $numeroPaginas){
+				$tabla .= '<p class="has-text-right">Mostrando ventas <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>';
+				$tabla .= $this->paginadorTablas($pagina, $numeroPaginas, $url, 7);
 			}
-
+		
 			return $tabla;
 		}
-
+		
 
 	// 	/*----------  Controlador eliminar venta  ----------*/
 		public function eliminarVentaControlador(){

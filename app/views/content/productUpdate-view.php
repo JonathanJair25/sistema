@@ -46,9 +46,10 @@
     
     
 
-    <form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/productoAjax.php" method="POST" autocomplete="off">
-        <input type="hidden" name="modulo_producto" value="actualizar">
-        <input type="hidden" name="producto_id" value="<?php echo $datos['producto_id']; ?>">
+      <form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/productoAjax.php" method="POST" autocomplete="off">
+    <input type="hidden" name="modulo_producto" value="actualizar">
+    <input type="hidden" name="producto_id" value="<?php echo $datos['producto_id']; ?>">
+</form>
 
 
         <p class="has-text-centered" style="font-size: 1.5em;">
@@ -59,7 +60,7 @@
 <!-- Aquí se agrega el menú -->
 <ul class="menu-principal-horizontal">
     <li>
-        <a href="<?php echo APP_URL; ?>saleNew/">
+    <a href="<?php echo APP_URL; ?>productPagos/<?php echo $datos['producto_id']; ?>/">
             <i class="fas fa-cart-plus fa-fw"></i>
             <span>PAGOS</span>
         </a>

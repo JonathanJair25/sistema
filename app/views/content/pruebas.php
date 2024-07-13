@@ -316,19 +316,19 @@
 			return json_encode($alerta);
 		}
 	
-		/*----------  Controlador listar clientes  ----------*/
+		/----------  Controlador listar clientes  ----------/
 		public function listarProductoControlador($pagina, $registros, $url, $busqueda, $categoria) {
 			$pagina = $this->limpiarCadena($pagina);
 			$registros = $this->limpiarCadena($registros);
 			$categoria = $this->limpiarCadena($categoria);
 			$url = $this->limpiarCadena($url);
-			
+		
 			if ($categoria > 0) {
 				$url = APP_URL . $url . "/" . $categoria . "/";
 			} else {
 				$url = APP_URL . $url . "/";
 			}
-			
+		
 			$busqueda = $this->limpiarCadena($busqueda);
 			$tabla = "";
 		
@@ -356,7 +356,6 @@
 				$consulta_total = "SELECT COUNT(producto_id) FROM producto 
 								   WHERE producto_codigo LIKE '%$busqueda%' 
 								   OR producto_nombre LIKE '%$busqueda%'";
-								  
 			} elseif ($categoria > 0) {
 				$consulta_datos = "SELECT $campos FROM producto 
 								   INNER JOIN categoria ON producto.categoria_id=categoria.categoria_id 
@@ -384,7 +383,6 @@
 			$total = (int) $total->fetchColumn();
 		
 			$numeroPaginas = ceil($total / $registros);
-			
 		
 			if ($total >= 1 && $pagina <= $numeroPaginas) {
 				$contador = $inicio + 1;
@@ -434,58 +432,112 @@
 									</p>
 								</div>
 							</div>
-						</div>
-						
-						
-						<style>
-							.servicio-nombre, .servicio-precio {
-								font-size: 1.2em;
-							}
-						</style>
-						<div class="has-text-right">
-							<a href="' . APP_URL . 'productPhoto/' . $rows['producto_id'] . '/" class="button is-info is-rounded is-small">
-								<i class="far fa-image fa-fw"></i>
-							</a>
-							<a href="' . APP_URL . 'productUpdate/' . $rows['producto_id'] . '/" class="button is-success is-rounded is-small">
-								<i class="fas fa-sync fa-fw"></i>
-							</a>
-							<form class="FormularioAjax is-inline-block" action="' . APP_URL . 'app/ajax/productoAjax.php" method="POST" autocomplete="off">
-								<input type="hidden" name="modulo_producto" value="eliminar">
-								<input type="hidden" name="producto_id" value="' . $rows['producto_id'] . '">
-								<button type="submit" class="button is-danger is-rounded is-small">
-									<i class="far fa-trash-alt fa-fw"></i>
-								</button>
-							</form>
-						</div>
-					</article>
-					<hr>';
-					$contador++;
-				}
-				$pag_final = $contador - 1;
-			} else {
-				if ($total >= 1) {
-					$tabla .= '
-					<p class="has-text-centered pb-6"><i class="far fa-hand-point-down fa-5x"></i></p>
-					<p class="has-text-centered">
-						<a href="' . $url . '1/" class="button is-link is-rounded is-small mt-4 mb-4">
-							Haga clic acá para recargar el listado
-						</a>
-					</p>';
-				} else {
-					$tabla .= '
-					<p class="has-text-centered pb-6"><i class="far fa-grin-beam-sweat fa-5x"></i></p>
-					<p class="has-text-centered">No hay clientes registrados en esta organización</p>';
-				}
-			}
+							<div class="columns">
+								<div class="column">
+									<strong>VENTAS ASOCIADAS:</strong>
+									<div class="table-container">
+										<table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+											<thead>
+												<tr>
+													<th class="has-text-centered">NRO.</th>
+													<th class="has-text-centered">Codigo</th>
+													<th class="has-text-centered">Fecha</th>
+													<th class="has-text-centered">Cliente</th>
+													<th class="has-text-centered">Vendedor</th>
+													<th class="has-text-centered">Total</th>
+													<th class="has-text-centered">Opciones</th>
+												</tr>
+											</thead>
+											<tbody>';
 		
-			### Paginacion ###
-			if ($total > 0 && $pagina <= $numeroPaginas) {
-				$tabla .= '<p class="has-text-right">Mostrando clientes <strong>' . $pag_inicio . '</strong> al <strong>' . $pag_final . '</strong> de un <strong>total de ' . $total . '</strong></p>';
-				$tabla .= $this->paginadorTablas($pagina, $numeroPaginas, $url, 7);
-			}
+					$ventas = $this->ejecutarConsulta("SELECT venta.venta_id, venta.venta_codigo, venta.venta_fecha, venta.venta_hora, venta.venta_total,
+													  cliente.cliente_nombre, cliente.cliente_apellido, usuario.usuario_nombre, usuario.usuario_apellido
+													  FROM venta 
+													  INNER JOIN cliente ON venta.cliente_id = cliente.cliente_id 
+													  INNER JOIN usuario ON venta.usuario_id = usuario.usuario_id 
+													  WHERE venta.producto_id = " . $rows['producto_id']);
+					$ventas = $ventas->fetchAll();
 		
-			return $tabla;
-		}
+					foreach ($ventas as $venta) {
+						$tabla .= '
+												<tr class="has-text-centered">
+													<td>' . $venta['venta_id'] . '</td>
+													<td>' . $venta['venta_codigo'] . '</td>
+													<td>' . date("d-m-Y", strtotime($venta['venta_fecha'])) . ' ' . $venta['venta_hora'] . '</td>
+													<td>' . $this->limitarCadena($venta['cliente_nombre'] . ' ' . $venta['cliente_apellido'], 30, "...") . '</td>
+													<td>' . $this->limitarCadena($venta['usuario_nombre'] . ' ' . $venta['usuario_apellido'], 30, "...") . '</td>
+													<td>' . MONEDA_SIMBOLO . number_format($venta['venta_total'], MONEDA_DECIMALES, MONEDA_SEPARADOR_DECIMAL, MONEDA_SEPARADOR_MILLAR) . ' ' . MONEDA_NOMBRE . '</td>
+													<td>
+													                                                <button type="button" class="button is-link is-outlined is-rounded is-small btn-sale-options" onclick="print_invoice(\''.APP_URL.'app/pdf/invoice.php?code='.$venta['venta_codigo'].'\')" title="Imprimir factura Nro. '.$venta['venta_id'].'" >
+                                                    <i class="fas fa-file-invoice-dollar fa-fw"></i>
+                                                </button>
+
+                                                <button type="button" class="button is-link is-outlined is-rounded is-small btn-sale-options" onclick="print_ticket(\''.APP_URL.'app/pdf/ticket.php?code='.$venta['venta_codigo'].'\')" title="Imprimir ticket Nro. '.$venta['venta_id'].'" >
+                                                    <i class="fas fa-receipt fa-fw"></i>
+                                                </button>
+
+                                                <a href="'.APP_URL.'saleDetail/'.$venta['venta_codigo'].'/" class="button is-link is-rounded is-small" title="Informacion de venta Nro. '.$venta['venta_id'].'" >
+                                                    <i class="fas fa-shopping-bag fa-fw"></i>
+                                                </a>
+
+                                                <form class="FormularioAjax is-inline-block" action="'.APP_URL.'app/ajax/ventaAjax.php" method="POST" autocomplete="off">
+                                                    <input type="hidden" name="modulo_venta" value="eliminar_venta">
+                                                    <input type="hidden" name="venta_id" value="'.$venta['venta_id'].'">
+                                                    <button type="submit" class="button is-danger is-rounded is-small" title="Eliminar venta Nro. '.$venta['venta_id'].'" >
+                                                        <i class="far fa-trash-alt fa-fw"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                ';
+            }
+
+            $tabla .= '
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <hr>';
+            $contador++;
+        }
+    } else {
+        if ($total >= 1) {
+            $tabla .= '
+            <tr class="has-text-centered" >
+                <td colspan="9">
+                    <a href="' . $url . '" class="button is-link is-rounded is-small mt-2 mb-2">
+                        Haga clic acá para recargar el listado
+                    </a>
+                </td>
+            </tr>';
+        } else {
+            $tabla .= '
+            <tr class="has-text-centered" >
+                <td colspan="9">
+                    No hay registros en el sistema
+                </td>
+            </tr>';
+        }
+    }
+
+    $tabla .= '
+            </tbody>
+        </table>
+    </div>';
+
+    if ($total >= 1 && $pagina <= $numeroPaginas) {
+        $tabla .= '<p class="has-text-right">Mostrando productos ' . $pag_inicio . ' al ' . ($pag_inicio + count($datos) - 1) . ' de un total de ' . $total . '</p>';
+        $tabla .= $this->paginadorTablas($pagina, $numeroPaginas, $url, 7);
+    }
+
+    return $tabla;
+}
+		
+		
+
 		
 
 		/*----------  Controlador eliminar cliente  ----------*/

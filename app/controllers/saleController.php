@@ -608,6 +608,11 @@
 					"campo_valor"=>$_SESSION['id']
 				],
 				[
+					"campo_nombre"=>"producto_id",
+					"campo_marcador"=>":ID",
+					"campo_valor"=>$productos['producto_id']
+				],
+				[
 					"campo_nombre"=>"cliente_id",
 					"campo_marcador"=>":Cliente",
 					"campo_valor"=>$_SESSION['datos_cliente_venta']['cliente_id']

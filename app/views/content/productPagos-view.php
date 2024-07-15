@@ -5,45 +5,79 @@
 
 <div class="container pb-1 pt-1">
     <?php
-        include "./app/views/inc/btn_back.php";
+    include "./app/views/inc/btn_back.php";
 
-        // Obtén el producto_id desde la URL o de donde sea necesario
-        $id = $insLogin->limpiarCadena($url[1]);
-    
-        // Consulta los datos del producto
-        $datos = $insLogin->seleccionarDatos("Unico", "producto", "producto_id", $id);
-    
-        if ($datos->rowCount() == 1) {
-            $datos = $datos->fetch();
-    
-            // Consulta el nombre y precio del servicio asociado al producto
-            $servicio_id = $datos['servicios_id'];
-            $servicio_nombre = '';
-            $servicio_precio_mensual = '';
-            $servicio_datos = $insLogin->seleccionarDatos("Unico", "servicios", "servicios_id", $servicio_id);
-            if ($servicio_datos->rowCount() == 1) {
-                $servicio_datos = $servicio_datos->fetch();
-                $servicio_nombre = $servicio_datos['servicios_nombre'];
-                $servicio_precio_mensual = $servicio_datos['servicios_precio_mensual'];
+    // Obtén el producto_id desde la URL o de donde sea necesario
+    $id = $insLogin->limpiarCadena($url[1]);
+
+    // Consulta los datos del producto
+    $datos = $insLogin->seleccionarDatos("Unico", "producto", "producto_id", $id);
+
+    if ($datos->rowCount() == 1) {
+        $datos = $datos->fetch();
+
+        // Consulta los pagos asociados a este producto
+        $pagos = $insLogin->seleccionarDatos("Normal", "venta", "*", "producto_id = " . $id);
+
+        // Mostrar el nombre del producto
+        echo "<span class='has-text-weight-bold' style='font-size: 2rem;'>" . $datos['producto_nombre'] . " " . $datos['producto_apellidos'] . "</span><br>";
+
+        // Comienza la tabla con clases centradas
+        echo "<div class='table-container'>";
+        echo "<table class='table is-fullwidth is-bordered is-hoverable'>";
+        echo "<thead>";
+        echo "<tr>";
+        echo "<th class='has-text-centered'>Fecha de creación</th>";
+        echo "<th class='has-text-centered'>Cantidad</th>";
+        echo "<th class='has-text-centered'>Total Pagado</th>";
+        echo "<th class='has-text-centered'>Cambio</th>";
+        echo "<th class='has-text-centered'>Usuario ID</th>";
+        echo "<th class='has-text-centered'>Producto ID</th>";
+        echo "<th class='has-text-centered'>Opciones</th>";
+        echo "</tr>";
+        echo "</thead>";
+        echo "<tbody>";
+
+        if ($pagos->rowCount() > 0) {
+            while ($pago = $pagos->fetch()) {
+                // Asegurarse de que el producto_id coincide
+                if ($pago['producto_id'] == $id) {
+                    echo "<tr>";
+                    echo "<td class='has-text-centered'>" . date("d-m-Y", strtotime($pago['venta_fecha'])) . " " . $pago['venta_hora'] . "</td>";
+                    echo "<td class='has-text-centered'>" . $pago['venta_total'] . "</td>";
+                    echo "<td class='has-text-centered'>" . $pago['venta_pagado'] . "</td>";
+                    echo "<td class='has-text-centered'>" . $pago['venta_cambio'] . "</td>";
+                    echo "<td class='has-text-centered'>" . $pago['usuario_id'] . "</td>";
+                    echo "<td class='has-text-centered'>" . $pago['producto_id'] . "</td>";
+                    echo "<td class='has-text-centered'>";
+
+                    // Enlace para detalles de la venta
+                    echo "<a href='" . APP_URL . "saleDetail/" . $pago['venta_codigo'] . "/' class='button is-link is-rounded is-small' title='Información de venta Nro. " . $pago['venta_codigo'] . "' >";
+                    echo "<i class='fas fa-shopping-bag fa-fw'></i>";
+                    echo "</a>";
+
+                    // Formulario para eliminar venta
+                    echo "<form class='FormularioAjax is-inline-block' action='" . APP_URL . "app/ajax/ventaAjax.php' method='POST' autocomplete='off'>";
+                    echo "<input type='hidden' name='modulo_venta' value='eliminar_venta'>";
+                    echo "<input type='hidden' name='venta_id' value='" . $pago['venta_id'] . "'>";
+                    echo "<button type='submit' class='button is-danger is-rounded is-small' title='Eliminar venta Nro. " . $pago['venta_id'] . "' >";
+                    echo "<i class='far fa-trash-alt fa-fw'></i>";
+                    echo "</button>";
+                    echo "</form>";
+
+                    echo "</td>";
+                    echo "</tr>";
+                }
             }
-    
-            // Consulta los pagos asociados a este producto
-            $pagos = $insLogin->seleccionarDatos("Normal", "venta_detalle", "*", "producto_id = " . $datos['producto_id']);
-    
-            // Comienza el formulario y la interfaz HTML
-    ?>
-
-    
-    
-
-      <form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/productoAjax.php" method="POST" autocomplete="off">
-    <input type="hidden" name="modulo_producto" value="actualizar">
-    <input type="hidden" name="producto_id" value="<?php echo $datos['producto_id']; ?>">
-    </form>
-
-    <?php
         } else {
-            include "./app/views/inc/error_alert.php";
+            echo "<tr><td colspan='7' class='has-text-centered'>No se encontraron pagos para este producto.</td></tr>";
         }
+
+        echo "</tbody>";
+        echo "</table>";
+        echo "</div>";
+    } else {
+        include "./app/views/inc/error_alert.php";
+    }
     ?>
 </div>

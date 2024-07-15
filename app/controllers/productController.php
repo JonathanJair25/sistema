@@ -486,6 +486,23 @@
 		
 			return $tabla;
 		}
+
+		/*----------  Controlador listar clientes  ----------*/
+		public function listarPagoControlador($pagina, $registros, $url, $busqueda, $categoria) {
+			$pagina = $this->limpiarCadena($pagina);
+			$registros = $this->limpiarCadena($registros);
+			$categoria = $this->limpiarCadena($categoria);
+			$url = $this->limpiarCadena($url);
+		
+			### Paginacion ###
+			if ($total > 0 && $pagina <= $numeroPaginas) {
+				$tabla .= '<p class="has-text-right">Mostrando clientes <strong>' . $pag_inicio . '</strong> al <strong>' . $pag_final . '</strong> de un <strong>total de ' . $total . '</strong></p>';
+				$tabla .= $this->paginadorTablas($pagina, $numeroPaginas, $url, 7);
+			}
+		
+			return $tabla;
+		}
+		
 		
 
 		/*----------  Controlador eliminar cliente  ----------*/

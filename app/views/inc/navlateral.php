@@ -152,7 +152,7 @@
 					</a>
 					<ul class="full-width menu-principal sub-menu-options">
 						<li class="full-width">
-							<a href="<?php echo APP_URL; ?>cashierNew/" class="full-width">
+							<a href="<?php echo APP_URL; ?>facturasNew/" class="full-width">
 								<div class="navLateral-body-cl">
 									<i class="fas fa-cash-register fa-fw"></i>
 								</div>
@@ -162,7 +162,7 @@
 							</a>
 						</li>
 						<li class="full-width">
-							<a href="<?php echo APP_URL; ?>cashierList/" class="full-width">
+							<a href="<?php echo APP_URL; ?>facturasList/" class="full-width">
 								<div class="navLateral-body-cl">
 									<i class="fas fa-clipboard-list fa-fw"></i>
 								</div>
@@ -172,7 +172,7 @@
 							</a>
 						</li>
 						<li class="full-width">
-							<a href="<?php echo APP_URL; ?>cashierSearch/" class="full-width">
+							<a href="<?php echo APP_URL; ?>facturasSearch/" class="full-width">
 								<div class="navLateral-body-cl">
 									<i class="fas fa-search fa-fw"></i>
 								</div>

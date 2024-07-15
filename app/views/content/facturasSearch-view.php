@@ -1,13 +1,13 @@
 <div class="container is-fluid mb-6">
-    <h1 class="title">Cajas</h1>
-    <h2 class="subtitle"><i class="fas fa-search fa-fw"></i> &nbsp; Buscar Cajas</h2>
+    <h1 class="title">Facturas</h1>
+    <h2 class="subtitle"><i class="fas fa-search fa-fw"></i> &nbsp; Buscar Facturas</h2>
 </div>
 
 <div class="container pb-6 pt-6">
     <?php
     
-        use app\controllers\cashierController;
-        $insCaja = new cashierController();
+        use app\controllers\facturasController;
+        $insFacturas = new facturasController();
 
         if(!isset($_SESSION[$url[0]]) && empty($_SESSION[$url[0]])){
     ?>
@@ -40,7 +40,7 @@
         </div>
     </div>
     <?php
-            echo $insCaja->listarCajaControlador($url[1],15,$url[0],$_SESSION[$url[0]]);
+            echo $insFacturas->listarFacturasControlador($url[1],15,$url[0],$_SESSION[$url[0]]);
         }
     ?>
 </div>

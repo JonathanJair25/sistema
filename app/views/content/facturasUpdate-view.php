@@ -1,6 +1,6 @@
 <div class="container is-fluid mb-6">
-	<h1 class="title">Cajas</h1>
-	<h2 class="subtitle"><i class="fas fa-sync-alt"></i> &nbsp; Actualizar caja</h2>
+	<h1 class="title">Facturas</h1>
+	<h2 class="subtitle"><i class="fas fa-sync-alt"></i> &nbsp; Actualizar factura</h2>
 </div>
 
 <div class="container pb-6 pt-6">
@@ -10,36 +10,36 @@
 
 		$id=$insLogin->limpiarCadena($url[1]);
 
-		$datos=$insLogin->seleccionarDatos("Unico","caja","caja_id",$id);
+		$datos=$insLogin->seleccionarDatos("Unico","facturas","facturas_id",$id);
 
 		if($datos->rowCount()==1){
 			$datos=$datos->fetch();
 	?>
 
-	<h2 class="title has-text-centered"><?php echo $datos['caja_nombre']." #".$datos['caja_numero']; ?></h2>
+	<h2 class="title has-text-centered"><?php echo $datos['facturas_etiqueta']." - ".$datos['facturas_nombre']; ?></h2>
 
-	<form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/cajaAjax.php" method="POST" autocomplete="off" >
+	<form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/facturasAjax.php" method="POST" autocomplete="off" >
 
-		<input type="hidden" name="modulo_caja" value="actualizar">
-		<input type="hidden" name="caja_id" value="<?php echo $datos['caja_id']; ?>">
+		<input type="hidden" name="modulo_facturas" value="actualizar">
+		<input type="hidden" name="facturas_id" value="<?php echo $datos['facturas_id']; ?>">
 
 		<div class="columns">
 		  	<div class="column">
 		    	<div class="control">
-					<label>Numero de caja <?php echo CAMPO_OBLIGATORIO; ?></label>
-				  	<input class="input" type="text" name="caja_numero" pattern="[0-9]{1,5}" maxlength="5" value="<?php echo $datos['caja_numero']; ?>" required >
+					<label>Nombre <?php echo CAMPO_OBLIGATORIO; ?></label>
+				  	<input class="input" type="text" name="facturas_nombre" value="<?php echo $datos['facturas_nombre']; ?>" required >
 				</div>
 		  	</div>
 		  	<div class="column">
 		    	<div class="control">
-					<label>Nombre o código de caja <?php echo CAMPO_OBLIGATORIO; ?></label>
-				  	<input class="input" type="text" name="caja_nombre" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ:# ]{3,70}" maxlength="70" value="<?php echo $datos['caja_nombre']; ?>" required >
+					<label>Etiqueta <?php echo CAMPO_OBLIGATORIO; ?></label>
+				  	<input class="input" type="text" name="facturas_etiqueta" maxlength="70" value="<?php echo $datos['facturas_etiqueta']; ?>" required >
 				</div>
 		  	</div>
 		  	<div class="column">
 		    	<div class="control">
-					<label>Efectivo en caja <?php echo CAMPO_OBLIGATORIO; ?></label>
-				  	<input class="input" type="text" name="caja_efectivo" pattern="[0-9.]{1,25}" maxlength="25" value="<?php echo number_format($datos['caja_efectivo'],2,'.',''); ?>" required >
+					<label>Precio <?php echo CAMPO_OBLIGATORIO; ?></label>
+				  	<input class="input" type="text" name="facturas_precio" value="<?php echo number_format($datos['facturas_precio'],2,'.',''); ?>" required >
 				</div>
 		  	</div>
 		</div>

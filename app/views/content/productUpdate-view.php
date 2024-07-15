@@ -58,12 +58,6 @@
             <span>FACTURAS</span>
         </a>
     </li>
-    <li>
-        <a href="<?php echo APP_URL; ?>saleSearch/">
-            <i class="fas fa-search-dollar fa-fw"></i>
-            <span>Buscar venta</span>
-        </a>
-    </li>
 </ul>
 <style>
     .menu-principal-horizontal {

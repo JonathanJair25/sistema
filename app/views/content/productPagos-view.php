@@ -32,7 +32,6 @@
         echo "<th class='has-text-centered'>Total Pagado</th>";
         echo "<th class='has-text-centered'>Cambio</th>";
         echo "<th class='has-text-centered'>Usuario ID</th>";
-        echo "<th class='has-text-centered'>Producto ID</th>";
         echo "<th class='has-text-centered'>Opciones</th>";
         echo "</tr>";
         echo "</thead>";
@@ -48,7 +47,6 @@
                     echo "<td class='has-text-centered'>" . $pago['venta_pagado'] . "</td>";
                     echo "<td class='has-text-centered'>" . $pago['venta_cambio'] . "</td>";
                     echo "<td class='has-text-centered'>" . $pago['usuario_id'] . "</td>";
-                    echo "<td class='has-text-centered'>" . $pago['producto_id'] . "</td>";
                     echo "<td class='has-text-centered'>";
 
                     // Enlace para detalles de la venta

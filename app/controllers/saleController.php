@@ -954,70 +954,118 @@ if($errores_venta_detalle==1){
 		}
 		
 
-	// 	/*----------  Controlador eliminar venta  ----------*/
-		public function eliminarVentaControlador(){
+	/*----------  Controlador eliminar venta  ----------*/
+public function eliminarVentaControlador() {
 
-			$id=$this->limpiarCadena($_POST['venta_id']);
+    $id = $this->limpiarCadena($_POST['venta_id']);
 
-			# Verificando venta #
-		    $datos=$this->ejecutarConsulta("SELECT * FROM venta WHERE venta_id='$id'");
-		    if($datos->rowCount()<=0){
-		        $alerta=[
-					"tipo"=>"simple",
-					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos encontrado la venta en el sistema",
-					"icono"=>"error"
-				];
-				return json_encode($alerta);
-		        exit();
-		    }else{
-		    	$datos=$datos->fetch();
-		    }
+    # Verificando venta #
+    $datos = $this->ejecutarConsulta("SELECT * FROM venta WHERE venta_id='$id'");
+    if ($datos->rowCount() <= 0) {
+        $alerta = [
+            "tipo" => "simple",
+            "titulo" => "Ocurrió un error inesperado",
+            "texto" => "No hemos encontrado la venta en el sistema",
+            "icono" => "error"
+        ];
+        return json_encode($alerta);
+        exit();
+    } else {
+        $datos = $datos->fetch();
+    }
 
-		    # Verificando detalles de venta #
-		    $check_detalle_venta=$this->ejecutarConsulta("SELECT venta_detalle_id FROM venta_detalle WHERE venta_codigo='".$datos['venta_codigo']."'");
-		    $check_detalle_venta=$check_detalle_venta->rowCount();
+    # Verificando detalles de venta #
+    $check_detalle_venta = $this->ejecutarConsulta("SELECT * FROM venta_detalle WHERE venta_codigo='" . $datos['venta_codigo'] . "'");
+    $check_detalle_venta_count = $check_detalle_venta->rowCount();
 
-		    if($check_detalle_venta>0){
+    if ($check_detalle_venta_count > 0) {
 
-		        $eliminarVentaDetalle=$this->eliminarRegistro("venta_detalle","venta_codigo",$datos['venta_codigo']);
+        $errores_detalle = 0;
+        while ($detalle = $check_detalle_venta->fetch()) {
+            // Obtener el valor actual de producto_credito
+            $producto_id = $detalle['producto_id'];
+            $check_producto_credito = $this->ejecutarConsulta("SELECT producto_credito FROM producto WHERE producto_id='$producto_id'");
+            if ($check_producto_credito->rowCount() == 1) {
+                $producto = $check_producto_credito->fetch();
+                $producto_credito_actual = $producto['producto_credito'];
 
-		        if($eliminarVentaDetalle->rowCount()!=$check_detalle_venta){
-		        	$alerta=[
-						"tipo"=>"simple",
-						"titulo"=>"Ocurrió un error inesperado",
-						"texto"=>"No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
-						"icono"=>"error"
-					];
-					return json_encode($alerta);
-			        exit();
-		        }
+                // Restar venta_total al producto_credito actual
+                $nuevo_producto_credito = $producto_credito_actual - $detalle['venta_detalle_total'];
 
-		    }
+                // Actualizar el campo producto_credito en la tabla producto
+                $datos_producto_credito_up = [
+                    [
+                        "campo_nombre" => "producto_credito",
+                        "campo_marcador" => ":Credito",
+                        "campo_valor" => $nuevo_producto_credito
+                    ]
+                ];
+
+                $condicion_producto = [
+                    "condicion_campo" => "producto_id",
+                    "condicion_marcador" => ":ID",
+                    "condicion_valor" => $producto_id
+                ];
+
+                if (!$this->actualizarDatos("producto", $datos_producto_credito_up, $condicion_producto)) {
+                    $errores_detalle = 1;
+                    break;
+                }
+            } else {
+                $errores_detalle = 1;
+                break;
+            }
+        }
+
+        if ($errores_detalle == 1) {
+            $alerta = [
+                "tipo" => "simple",
+                "titulo" => "Ocurrió un error inesperado",
+                "texto" => "No hemos podido actualizar los créditos de los productos, por favor intente nuevamente",
+                "icono" => "error"
+            ];
+            return json_encode($alerta);
+            exit();
+        }
+
+        $eliminarVentaDetalle = $this->eliminarRegistro("venta_detalle", "venta_codigo", $datos['venta_codigo']);
+
+        if ($eliminarVentaDetalle->rowCount() != $check_detalle_venta_count) {
+            $alerta = [
+                "tipo" => "simple",
+                "titulo" => "Ocurrió un error inesperado",
+                "texto" => "No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
+                "icono" => "error"
+            ];
+            return json_encode($alerta);
+            exit();
+        }
+    }
+
+    $eliminarVenta = $this->eliminarRegistro("venta", "venta_id", $id);
+
+    if ($eliminarVenta->rowCount() == 1) {
+
+        $alerta = [
+            "tipo" => "recargar",
+            "titulo" => "Venta eliminada",
+            "texto" => "La venta ha sido eliminada del sistema correctamente",
+            "icono" => "success"
+        ];
+
+    } else {
+        $alerta = [
+            "tipo" => "simple",
+            "titulo" => "Ocurrió un error inesperado",
+            "texto" => "No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
+            "icono" => "error"
+        ];
+    }
+
+    return json_encode($alerta);
+}
+}
 
 
-		    $eliminarVenta=$this->eliminarRegistro("venta","venta_id",$id);
-
-		    if($eliminarVenta->rowCount()==1){
-
-		        $alerta=[
-					"tipo"=>"recargar",
-					"titulo"=>"Venta eliminada",
-					"texto"=>"La venta ha sido eliminada del sistema correctamente",
-					"icono"=>"success"
-				];
-
-		    }else{
-		    	$alerta=[
-					"tipo"=>"simple",
-					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
-					"icono"=>"error"
-				];
-		    }
-
-		    return json_encode($alerta);
-	}
-	}
 
 	 

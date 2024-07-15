@@ -32,24 +32,11 @@
     
             // Comienza el formulario y la interfaz HTML
     ?>
-    <!-- <div class="columns is-flex is-justify-content-center">
-    	<figure class="full-width mb-3" style="max-width: 170px;">
-    		<?php
-    			if(is_file("./app/views/productos/".$datos['producto_foto'])){
-    				echo '<img class="img-responsive" src="'.APP_URL.'app/views/productos/'.$datos['producto_foto'].'">';
-    			}else{
-    				echo '<img class="img-responsive" src="'.APP_URL.'app/views/productos/default.png">';
-    			}
-    		?>
-		</figure>
-  	</div> -->
-    
-    
 
-      <form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/productoAjax.php" method="POST" autocomplete="off">
-    <input type="hidden" name="modulo_producto" value="actualizar">
-    <input type="hidden" name="producto_id" value="<?php echo $datos['producto_id']; ?>">
-</form>
+    <form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/productoAjax.php" method="POST" autocomplete="off">
+        <input type="hidden" name="modulo_producto" value="actualizar">
+        <input type="hidden" name="producto_id" value="<?php echo $datos['producto_id']; ?>">
+   
 
 
         <p class="has-text-centered" style="font-size: 1.5em;">
@@ -401,6 +388,7 @@
         document.getElementById('servicios_precio_mensual').value = precioMensual;
     });
 </script>
+</form>
     <?php
         } else {
             include "./app/views/inc/error_alert.php";

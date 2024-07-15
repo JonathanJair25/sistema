@@ -31,7 +31,7 @@
         echo "<th class='has-text-centered'>Cantidad</th>";
         echo "<th class='has-text-centered'>Total Pagado</th>";
         echo "<th class='has-text-centered'>Cambio</th>";
-        echo "<th class='has-text-centered'>Usuario ID</th>";
+        echo "<th class='has-text-centered'>Usuario</th>";
         echo "<th class='has-text-centered'>Opciones</th>";
         echo "</tr>";
         echo "</thead>";
@@ -41,12 +41,16 @@
             while ($pago = $pagos->fetch()) {
                 // Asegurarse de que el producto_id coincide
                 if ($pago['producto_id'] == $id) {
+                    // Consulta el nombre del usuario
+                    $usuario = $insLogin->seleccionarDatos("Unico", "usuario", "usuario_id", $pago['usuario_id']);
+                    $usuario_nombre = ($usuario->rowCount() == 1) ? $usuario->fetch()['usuario_nombre'] : "Desconocido";
+
                     echo "<tr>";
                     echo "<td class='has-text-centered'>" . date("d-m-Y", strtotime($pago['venta_fecha'])) . " " . $pago['venta_hora'] . "</td>";
                     echo "<td class='has-text-centered'>" . $pago['venta_total'] . "</td>";
                     echo "<td class='has-text-centered'>" . $pago['venta_pagado'] . "</td>";
                     echo "<td class='has-text-centered'>" . $pago['venta_cambio'] . "</td>";
-                    echo "<td class='has-text-centered'>" . $pago['usuario_id'] . "</td>";
+                    echo "<td class='has-text-centered'>" . $usuario_nombre . "</td>";
                     echo "<td class='has-text-centered'>";
 
                     // Enlace para detalles de la venta

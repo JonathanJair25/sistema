@@ -28,7 +28,7 @@
             }
     
             // Consulta los pagos asociados a este producto
-            $pagos = $insLogin->seleccionarDatos("Normal", "venta_detalle", "*", "producto_id = " . $datos['producto_id']);
+
     
             // Comienza el formulario y la interfaz HTML
     ?>

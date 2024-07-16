@@ -183,9 +183,53 @@
 						</li>
 					</ul>
 				</li>
+                <li class="full-width divider-menu-h"></li>
 
-				<li class="full-width divider-menu-h"></li>
+<li class="full-width">
+    <a href="#" class="full-width btn-subMenu">
+        <div class="navLateral-body-cl">
+            <i class="fas fa-shopping-cart fa-fw"></i>
+        </div>
+        <div class="navLateral-body-cr">
+            FACTURAS
+        </div>
+        <span class="fas fa-chevron-down"></span>
+    </a>
+    <ul class="full-width menu-principal sub-menu-options">
+        <li class="full-width">
+            <a href="<?php echo APP_URL; ?>cargosNew/" class="full-width">
+                <div class="navLateral-body-cl">
+                    <i class="fas fa-cart-plus fa-fw"></i>
+                </div>
+                <div class="navLateral-body-cr">
+                    Nueva factura
+                </div>
+            </a>
+        </li>
+        <li class="full-width">
+            <a href="<?php echo APP_URL; ?>cargosList/" class="full-width">
+                <div class="navLateral-body-cl">
+                    <i class="fas fa-clipboard-list fa-fw"></i>
+                </div>
+                <div class="navLateral-body-cr">
+                    Lista de facturas
+                </div>
+            </a>
+        </li>
+        <li class="full-width">
+            <a href="<?php echo APP_URL; ?>cargosSearch/" class="full-width">
+                <div class="navLateral-body-cl">
+                    <i class="fas fa-search-dollar fa-fw"></i>
+                </div>
+                <div class="navLateral-body-cr">
+                    Buscar factura
+                </div>
+            </a>
+        </li>
+    </ul>
+</li>
 
+<li class="full-width divider-menu-h"></li>
 <li class="full-width">
     <a href="#" class="full-width btn-subMenu">
         <div class="navLateral-body-cl">
@@ -380,7 +424,7 @@
                     <i class="fas fa-file-invoice fa-fw"></i>
                 </div>
                 <div class="navLateral-body-cr">
-                    FACTURAS
+                    PRODUCTOS
                 </div>
                 <span class="fas fa-chevron-down"></span>
             </a>
@@ -391,7 +435,7 @@
                             <i class="fas fa-cash-register fa-fw"></i>
                         </div>
                         <div class="navLateral-body-cr">
-                            Nueva factura
+                            Nuevo producto
                         </div>
                     </a>
                 </li>
@@ -401,7 +445,7 @@
                             <i class="fas fa-clipboard-list fa-fw"></i>
                         </div>
                         <div class="navLateral-body-cr">
-                            Lista de facturas
+                            Lista de productos
                         </div>
                     </a>
                 </li>
@@ -411,7 +455,7 @@
                             <i class="fas fa-search fa-fw"></i>
                         </div>
                         <div class="navLateral-body-cr">
-                            Buscar factura
+                            Buscar producto
                         </div>
                     </a>
                 </li>

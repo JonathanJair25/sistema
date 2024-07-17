@@ -1,7 +1,7 @@
 <section class="full-width navLateral scroll" id="navLateral">
 	<div class="full-width navLateral-body">
 		<div class="full-width navLateral-body-logo has-text-centered tittles is-uppercase">
-			Sistema de ventas 
+			REDES ÓPTICAS
 		</div>
 		<figure class="full-width" style="height: 77px;">
 			<div class="navLateral-body-cl">
@@ -91,6 +91,61 @@
 						</li>
 					</ul>
 				</li>
+                <li class="full-width divider-menu-h"></li>
+
+				<li class="full-width">
+					<a href="#" class="full-width btn-subMenu">
+						<div class="navLateral-body-cl">
+							<i class="fas fa-users fa-fw"></i>
+						</div>
+						<div class="navLateral-body-cr">
+							SSH
+						</div>
+						<span class="fas fa-chevron-down"></span>
+					</a>
+					<ul class="full-width menu-principal sub-menu-options">
+						<li class="full-width">
+							<a href="<?php echo APP_URL; ?>sshNew/" class="full-width">
+								<div class="navLateral-body-cl">
+									<i class="fas fa-user-plus fa-fw"></i>
+								</div>
+								<div class="navLateral-body-cr">
+									Nuevo ssh
+								</div>
+							</a>
+						</li>
+						<li class="full-width">
+							<a href="<?php echo APP_URL; ?>productList/" class="full-width">
+								<div class="navLateral-body-cl">
+									<i class="fas fa-clipboard-list fa-fw"></i>
+								</div>
+								<div class="navLateral-body-cr">
+									Lista de clientes
+								</div>
+							</a>
+						</li>
+						<li class="full-width">
+							<a href="<?php echo APP_URL; ?>productCategory/" class="full-width">
+								<div class="navLateral-body-cl">
+									<i class="fas fa-map-marker-alt fa-fw"></i>
+								</div>
+								<div class="navLateral-body-cr">
+									Clientes por organización
+								</div>
+							</a>
+						</li>
+						<li class="full-width">
+							<a href="<?php echo APP_URL; ?>productSearch/" class="full-width">
+								<div class="navLateral-body-cl">
+									<i class="fas fa-search fa-fw"></i>
+								</div>
+								<div class="navLateral-body-cr">
+									Buscar cliente
+								</div>
+							</a>
+						</li>
+					</ul>
+				</li>
 
 				<!-- <li class="full-width divider-menu-h"></li>
 
@@ -143,10 +198,10 @@
 				<li class="full-width">
 					<a href="#" class="full-width btn-subMenu">
 						<div class="navLateral-body-cl">
-							<i class="fas fa-shopping-cart fa-fw"></i>
+							<i class="fas fa-credit-card fa-fw"></i>
 						</div>
 						<div class="navLateral-body-cr">
-							VENTAS
+							PAGOS
 						</div>
 						<span class="fas fa-chevron-down"></span>
 					</a>
@@ -154,10 +209,10 @@
 						<li class="full-width">
 							<a href="<?php echo APP_URL; ?>saleNew/" class="full-width">
 								<div class="navLateral-body-cl">
-									<i class="fas fa-cart-plus fa-fw"></i>
+									<i class="fas fa-money-check-alt fa-fw"></i>
 								</div>
 								<div class="navLateral-body-cr">
-									Nueva venta
+									Nuevo pago
 								</div>
 							</a>
 						</li>
@@ -167,7 +222,7 @@
 									<i class="fas fa-clipboard-list fa-fw"></i>
 								</div>
 								<div class="navLateral-body-cr">
-									Lista de ventas
+									Lista de pagos
 								</div>
 							</a>
 						</li>
@@ -177,7 +232,7 @@
 									<i class="fas fa-search-dollar fa-fw"></i>
 								</div>
 								<div class="navLateral-body-cr">
-									Buscar venta
+									Buscar pago
 								</div>
 							</a>
 						</li>
@@ -188,7 +243,7 @@
 <li class="full-width">
     <a href="#" class="full-width btn-subMenu">
         <div class="navLateral-body-cl">
-            <i class="fas fa-shopping-cart fa-fw"></i>
+            <i class="fas fa-file-invoice fa-fw"></i>
         </div>
         <div class="navLateral-body-cr">
             FACTURAS
@@ -199,7 +254,7 @@
         <li class="full-width">
             <a href="<?php echo APP_URL; ?>entradaNew/" class="full-width">
                 <div class="navLateral-body-cl">
-                    <i class="fas fa-cart-plus fa-fw"></i>
+                    <i class="fas fa-file-invoice-dollar fa-fw"></i>
                 </div>
                 <div class="navLateral-body-cr">
                     Nueva factura
@@ -289,7 +344,7 @@
         <li class="full-width">
             <a href="#" class="full-width btn-subMenu">
                 <div class="navLateral-body-cl">
-                    <i class="fas fa-tags fa-fw"></i>
+                    <i class="fas fa-building fa-fw"></i>
                 </div>
                 <div class="navLateral-body-cr">
                     ORGANIZACIONES
@@ -300,7 +355,7 @@
                 <li class="full-width">
                     <a href="<?php echo APP_URL; ?>categoryNew/" class="full-width">
                         <div class="navLateral-body-cl">
-                            <i class="fas fa-tag fa-fw"></i>
+                            <i class="fas fa-plus-square fa-fw"></i>
                         </div>
                         <div class="navLateral-body-cr">
                             Nueva organización
@@ -333,7 +388,7 @@
         <li class="full-width">
             <a href="#" class="full-width btn-subMenu">
                 <div class="navLateral-body-cl">
-                    <i class="fas fa-cubes fa-fw"></i>
+                    <i class="fas fa-concierge-bell fa-fw"></i>
                 </div>
                 <div class="navLateral-body-cr">
                     SERVICIOS
@@ -344,7 +399,7 @@
                 <li class="full-width">
                     <a href="<?php echo APP_URL; ?>servicioNew/" class="full-width">
                         <div class="navLateral-body-cl">
-                            <i class="fas fa-box fa-fw"></i>
+                            <i class="fas fa-plus-circle fa-fw"></i>
                         </div>
                         <div class="navLateral-body-cr">
                             Nuevo servicio
@@ -421,7 +476,7 @@
         <li class="full-width">
             <a href="#" class="full-width btn-subMenu">
                 <div class="navLateral-body-cl">
-                    <i class="fas fa-file-invoice fa-fw"></i>
+                    <i class="fas fa-box-open fa-fw"></i>
                 </div>
                 <div class="navLateral-body-cr">
                     PRODUCTOS
@@ -432,7 +487,7 @@
                 <li class="full-width">
                     <a href="<?php echo APP_URL; ?>facturasNew/" class="full-width">
                         <div class="navLateral-body-cl">
-                            <i class="fas fa-cash-register fa-fw"></i>
+                            <i class="fas fa-plus-square fa-fw"></i>
                         </div>
                         <div class="navLateral-body-cr">
                             Nuevo producto

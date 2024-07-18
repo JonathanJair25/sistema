@@ -19,8 +19,13 @@
         // Consulta los pagos asociados a este producto
         $pagos = $insLogin->seleccionarDatos("Normal", "venta", "*", "producto_id = " . $id);
 
-        // Mostrar el nombre del producto
-        echo "<span class='has-text-weight-bold' style='font-size: 2rem;'>" . $datos['producto_nombre'] . " " . $datos['producto_apellidos'] . "</span><br>";
+        // Mostrar el nombre del producto con el botón al lado
+        echo "<div class='is-flex is-align-items-center'>";
+        echo "<span class='has-text-weight-bold' style='font-size: 2rem;'>" . $datos['producto_nombre'] . " " . $datos['producto_apellidos'] . "</span>";
+        echo "<a href='" . APP_URL . "saleNew/" . $id . "/' class='button is-success is-rounded ml-4' title='Agregar Pago'>";
+        echo "<i class='fas fa-plus fa-fw'></i> Agregar Pago";
+        echo "</a>";
+        echo "</div><br><br>";
 
         // Comienza la tabla con clases centradas
         echo "<div class='table-container'>";

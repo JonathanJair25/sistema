@@ -5,6 +5,14 @@
 
 <div class="container pb-6 pt-6">
     <?php
+    include "./app/views/inc/btn_back.php";
+
+// Obtén el producto_id desde la URL o de donde sea necesario
+$id = $insLogin->limpiarCadena($url[1]);
+
+// Consulta los datos del producto
+$datos = $insLogin->seleccionarDatos("Unico", "producto", "producto_id", $id);
+
         $check_empresa=$insLogin->seleccionarDatos("Normal","empresa LIMIT 1","*",0);
 
         if($check_empresa->rowCount()==1){
@@ -573,6 +581,7 @@
     });
 
 </script>
+
 
 <?php
     include "./app/views/inc/print_invoice_script.php";

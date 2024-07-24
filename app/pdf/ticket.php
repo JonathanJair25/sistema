@@ -10,7 +10,7 @@
 	use app\controllers\saleController;
 	$ins_venta = new saleController();
 
-	$datos_venta=$ins_venta->seleccionarDatos("Normal","venta INNER JOIN cliente ON venta.cliente_id=cliente.cliente_id INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id INNER JOIN caja ON venta.caja_id=caja.caja_id WHERE (venta_codigo='$code')","*",0);
+	$datos_venta=$ins_venta->seleccionarDatos("Normal","venta INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id INNER JOIN caja ON venta.caja_id=caja.caja_id WHERE (venta_codigo='$code')","*",0);
 
 	if($datos_venta->rowCount()==1){
         
@@ -51,18 +51,6 @@
         $pdf->Cell(0,5,iconv("UTF-8", "ISO-8859-1","------------------------------------------------------"),0,0,'C');
         $pdf->Ln(5);
     
-        if($datos_venta['cliente_id']==1){
-            $pdf->MultiCell(0,5,iconv("UTF-8", "ISO-8859-1","Cliente: N/A"),0,'C',false);
-            $pdf->MultiCell(0,5,iconv("UTF-8", "ISO-8859-1","Documento: N/A"),0,'C',false);
-            $pdf->MultiCell(0,5,iconv("UTF-8", "ISO-8859-1","Teléfono: N/A"),0,'C',false);
-            $pdf->MultiCell(0,5,iconv("UTF-8", "ISO-8859-1","Dirección: N/A"),0,'C',false);
-        }else{
-            $pdf->MultiCell(0,5,iconv("UTF-8", "ISO-8859-1","Cliente: ".$datos_venta['cliente_nombre']." ".$datos_venta['cliente_apellido']),0,'C',false);
-            $pdf->MultiCell(0,5,iconv("UTF-8", "ISO-8859-1","Documento: ".$datos_venta['cliente_tipo_documento']." ".$datos_venta['cliente_numero_documento']),0,'C',false);
-            $pdf->MultiCell(0,5,iconv("UTF-8", "ISO-8859-1","Teléfono: ".$datos_venta['cliente_telefono']),0,'C',false);
-            $pdf->MultiCell(0,5,iconv("UTF-8", "ISO-8859-1","Dirección: ".$datos_venta['cliente_provincia'].", ".$datos_venta['cliente_ciudad'].", ".$datos_venta['cliente_direccion']),0,'C',false);
-        }
-
         $pdf->Ln(1);
         $pdf->Cell(0,5,iconv("UTF-8", "ISO-8859-1","-------------------------------------------------------------------"),0,0,'C');
         $pdf->Ln(3);

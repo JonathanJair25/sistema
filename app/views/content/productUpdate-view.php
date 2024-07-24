@@ -154,6 +154,17 @@
     
     <!-- Columna derecha con los campos del formulario -->
     <div class="column is-half">
+    <div class="field">
+        <label class="label">Estado del Producto</label>
+        <div class="control">
+            <div class="select">
+                <select name="producto_estado" required>
+                    <option value="habilitado" <?php echo ($datos['producto_estado'] == 'habilitado') ? 'selected' : ''; ?>>Habilitado</option>
+                    <option value="deshabilitado" <?php echo ($datos['producto_estado'] == 'deshabilitado') ? 'selected' : ''; ?>>Deshabilitado</option>
+                </select>
+            </div>
+        </div>
+    </div>
         <div class="field">
             <label class="label">Servicio<?php echo CAMPO_OBLIGATORIO; ?></label>
             <div class="control">
@@ -172,7 +183,6 @@
                 </div>
             </div>
         </div>
-        
         <div class="field">
             <label class="label">Precio Mensual</label>
             <div class="control">

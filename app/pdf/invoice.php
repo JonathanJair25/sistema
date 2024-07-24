@@ -11,7 +11,7 @@
 	use app\controllers\saleController;
 	$ins_venta = new saleController();
 
-	$datos_venta=$ins_venta->seleccionarDatos("Normal","venta INNER JOIN cliente ON venta.cliente_id=cliente.cliente_id INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id INNER JOIN caja ON venta.caja_id=caja.caja_id WHERE (venta_codigo='$code')","*",0);
+	$datos_venta=$ins_venta->seleccionarDatos("Normal","venta INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id INNER JOIN caja ON venta.caja_id=caja.caja_id WHERE (venta_codigo='$code')","*",0);
 
 	if($datos_venta->rowCount()==1){
 
@@ -73,52 +73,6 @@
 		$pdf->Cell(35,7,iconv("UTF-8", "ISO-8859-1",strtoupper($datos_venta['venta_id'])),0,0,'C');
 
 		$pdf->Ln(10);
-
-		if($datos_venta['cliente_id']==1){
-			$pdf->SetFont('Arial','',10);
-			$pdf->SetTextColor(39,39,51);
-			$pdf->Cell(13,7,iconv("UTF-8", "ISO-8859-1",'Cliente:'),0,0);
-			$pdf->SetTextColor(97,97,97);
-			$pdf->Cell(60,7,iconv("UTF-8", "ISO-8859-1","N/A"),0,0,'L');
-			$pdf->SetTextColor(39,39,51);
-			$pdf->Cell(8,7,iconv("UTF-8", "ISO-8859-1","Doc: "),0,0,'L');
-			$pdf->SetTextColor(97,97,97);
-			$pdf->Cell(60,7,iconv("UTF-8", "ISO-8859-1","N/A"),0,0,'L');
-			$pdf->SetTextColor(39,39,51);
-			$pdf->Cell(7,7,iconv("UTF-8", "ISO-8859-1",'Tel:'),0,0,'L');
-			$pdf->SetTextColor(97,97,97);
-			$pdf->Cell(35,7,iconv("UTF-8", "ISO-8859-1","N/A"),0,0);
-			$pdf->SetTextColor(39,39,51);
-
-			$pdf->Ln(7);
-
-			$pdf->SetTextColor(39,39,51);
-			$pdf->Cell(6,7,iconv("UTF-8", "ISO-8859-1",'Dir:'),0,0);
-			$pdf->SetTextColor(97,97,97);
-			$pdf->Cell(109,7,iconv("UTF-8", "ISO-8859-1","N/A"),0,0);
-		}else{
-			$pdf->SetFont('Arial','',10);
-			$pdf->SetTextColor(39,39,51);
-			$pdf->Cell(13,7,iconv("UTF-8", "ISO-8859-1",'Cliente:'),0,0);
-			$pdf->SetTextColor(97,97,97);
-			$pdf->Cell(60,7,iconv("UTF-8", "ISO-8859-1",$datos_venta['cliente_nombre']." ".$datos_venta['cliente_apellido']),0,0,'L');
-			$pdf->SetTextColor(39,39,51);
-			$pdf->Cell(8,7,iconv("UTF-8", "ISO-8859-1","Doc: "),0,0,'L');
-			$pdf->SetTextColor(97,97,97);
-			$pdf->Cell(60,7,iconv("UTF-8", "ISO-8859-1",$datos_venta['cliente_tipo_documento']." ".$datos_venta['cliente_numero_documento']),0,0,'L');
-			$pdf->SetTextColor(39,39,51);
-			$pdf->Cell(7,7,iconv("UTF-8", "ISO-8859-1",'Tel:'),0,0,'L');
-			$pdf->SetTextColor(97,97,97);
-			$pdf->Cell(35,7,iconv("UTF-8", "ISO-8859-1",$datos_venta['cliente_telefono']),0,0);
-			$pdf->SetTextColor(39,39,51);
-
-			$pdf->Ln(7);
-
-			$pdf->SetTextColor(39,39,51);
-			$pdf->Cell(6,7,iconv("UTF-8", "ISO-8859-1",'Dir:'),0,0);
-			$pdf->SetTextColor(97,97,97);
-			$pdf->Cell(109,7,iconv("UTF-8", "ISO-8859-1",$datos_venta['cliente_provincia'].", ".$datos_venta['cliente_ciudad'].", ".$datos_venta['cliente_direccion']),0,0);
-		}
 
 		$pdf->Ln(9);
 

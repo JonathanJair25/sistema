@@ -58,24 +58,22 @@
                     echo "<td class='has-text-centered'>" . $usuario_nombre . "</td>";
                     echo "<td class='has-text-centered'>";
 
-                    // Enlace para detalles de la venta
-                    echo "<a href='" . APP_URL . "saleDetail/" . $pago['venta_codigo'] . "/' class='button is-link is-rounded is-small' title='Información de venta Nro. " . $pago['venta_codigo'] . "' >";
-                    echo "<i class='fas fa-shopping-bag fa-fw'></i>";
-                    echo "</a>";
-
-                    // Formulario para eliminar venta
-                    echo "<form class='FormularioAjax is-inline-block' action='" . APP_URL . "app/ajax/ventaAjax.php' method='POST' autocomplete='off'>";
-                    echo "<input type='hidden' name='modulo_venta' value='eliminar_venta'>";
-                    echo "<input type='hidden' name='venta_id' value='" . $pago['venta_id'] . "'>";
-                    echo "<button type='submit' class='button is-danger is-rounded is-small' title='Eliminar venta Nro. " . $pago['venta_id'] . "' >";
-                    echo "<i class='far fa-trash-alt fa-fw'></i>";
-                    echo "</button>";
-                    echo "</form>";
-
-                    echo "</td>";
-                    echo "</tr>";
-                }
-            }
+                     // Enlace para detalles de la venta
+                     echo "<a href='" . APP_URL . "saleDetail/" . $pago['venta_codigo'] . "/' class='button is-link is-rounded is-small' title='Información de venta Nro. " . $pago['venta_codigo'] . "' >";
+                     echo "<i class='fas fa-shopping-bag fa-fw'></i>";
+                     echo "</a>";
+                     // Formulario para eliminar venta
+                     echo "<form class='FormularioAjax is-inline-block' action='" . APP_URL . "app/ajax/ventaAjax.php' method='POST' autocomplete='off'>";
+                     echo "<input type='hidden' name='modulo_venta' value='eliminar_venta'>";
+                     echo "<input type='hidden' name='venta_id' value='" . $pago['venta_id'] . "'>";
+                     echo "<button type='submit' class='button is-danger is-rounded is-small' title='Eliminar venta Nro. " . $pago['venta_id'] . "' >";
+                     echo "<i class='far fa-trash-alt fa-fw'></i>";
+                     echo "</button>";
+                     echo "</form>";
+                     echo "</td>";
+                     echo "</tr>";
+                 }
+             }
         } else {
             echo "<tr><td colspan='7' class='has-text-centered'>No se encontraron pagos para este producto.</td></tr>";
         }

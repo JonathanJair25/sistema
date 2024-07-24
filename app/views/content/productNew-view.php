@@ -95,6 +95,17 @@ $conn->close();
         <br>
         <br>
         <div class="columns">
+        <div class="column" style="display: none;">
+                <div class="control">
+                    <label>Estado del cliente</label>
+                        <div class="select">
+                            <select name="producto_estado">
+                                <option value="habilitado">Habilitado</option>
+                                <option value="deshabilitado">Deshabilitado</option>
+                            </select>
+                        </div>
+                </div>
+                </div>
             <div class="column">
                 <div class="control">
                     <label>Código de cliente <?php echo CAMPO_OBLIGATORIO; ?></label>

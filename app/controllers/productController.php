@@ -29,6 +29,7 @@
 		    $precio_mensual=$this->limpiarCadena($_POST['servicio_precio_mensual']);
 		    $fecha_facturacion=$this->limpiarCadena($_POST['producto_fecha_facturacion']);
 		    $ip=$this->limpiarCadena($_POST['producto_ip']);
+		    $estado=$this->limpiarCadena($_POST['producto_estado']);
 
 		    $categoria=$this->limpiarCadena($_POST['producto_categoria']);
 
@@ -275,7 +276,7 @@
 				[
 					"campo_nombre"=>"producto_estado",
 					"campo_marcador"=>":Estado",
-					"campo_valor"=>"Habilitado"
+					"campo_valor"=>$estado
 				],
 				[
 					"campo_nombre"=>"producto_foto",
@@ -594,6 +595,7 @@
 		    $precio_mensual=$this->limpiarCadena($_POST['servicio_precio_mensual']);
 		    $fecha_facturacion=$this->limpiarCadena($_POST['producto_fecha_facturacion']);
 		    $ip=$this->limpiarCadena($_POST['producto_ip']);
+			$estado=$this->limpiarCadena($_POST['producto_estado']);
 
 		    $categoria=$this->limpiarCadena($_POST['producto_categoria']);
 
@@ -772,7 +774,7 @@
 				[
 					"campo_nombre"=>"producto_estado",
 					"campo_marcador"=>":Estado",
-					"campo_valor"=>"Habilitado"
+					"campo_valor"=>$estado
 				],
 				[
 					"campo_nombre"=>"categoria_id",

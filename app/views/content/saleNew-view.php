@@ -1,7 +1,18 @@
 <div class="container is-fluid mb-6">
-	<h1 class="title">Ventas</h1>
-	<h2 class="subtitle"><i class="fas fa-cart-plus fa-fw"></i> &nbsp; Nueva venta</h2>
+    <h1 class="title">PAGOS</h1>
+    <?php
+    // Obtén el producto_id desde la URL o de donde sea necesario
+    $id = $insLogin->limpiarCadena($url[1]);
+    
+    ?>
+    <h2 class="subtitle">
+        <i class="fas fa-cart-plus fa-fw"></i> &nbsp; Nuevo Pago
+        <?php if (isset($id)): ?>
+            <span class="is-size-5"> - Producto ID: <?php echo htmlspecialchars($id); ?></span>
+        <?php endif; ?>
+    </h2>
 </div>
+
 
 <div class="container pb-6 pt-6">
     <?php
@@ -23,27 +34,31 @@ $datos = $insLogin->seleccionarDatos("Unico", "producto", "producto_id", $id);
         <div class="column pb-6">
 
             <p class="has-text-centered pt-6 pb-6">
-                <small>Para agregar productos debe de digitar el código de barras en el campo "Código de producto" y luego presionar &nbsp; <strong class="is-uppercase" ><i class="far fa-check-circle"></i> &nbsp; Agregar producto</strong>. También puede agregar el producto mediante la opción &nbsp; <strong class="is-uppercase"><i class="fas fa-search"></i> &nbsp; Buscar producto</strong>. Ademas puede escribir el código de barras y presionar la tecla <strong class="is-uppercase">enter</strong></small>
+                <small>Para agregar productos debe de digitar el código del cliente en el campo "Código de cliente" y luego presionar &nbsp; <strong class="is-uppercase" ><i class="far fa-check-circle"></i> &nbsp; Agregar cliente</strong>. También puede agregar el cliente mediante la opción &nbsp; <strong class="is-uppercase"><i class="fas fa-search"></i> &nbsp; Buscar cliente</strong>. Ademas puede escribir el código de cliente y presionar la tecla <strong class="is-uppercase">enter</strong></small>
             </p>
             <form class="pt-6 pb-6" id="sale-barcode-form" autocomplete="off">
-                <div class="columns">
-                    <div class="column is-one-quarter">
-                        <button type="button" class="button is-link is-light js-modal-trigger" data-target="modal-js-product" ><i class="fas fa-search"></i> &nbsp; Buscar producto</button>
-                    </div>
-                    <div class="column">
-                        <div class="field is-grouped">
-                            <p class="control is-expanded">
-                                <input class="input" type="text" pattern="[a-zA-Z0-9- ]{1,70}" maxlength="70"  autofocus="autofocus" placeholder="Código de barras" id="sale-barcode-input" >
-                            </p>
-                            <a class="control">
-                                <button type="submit" class="button is-info">
-                                    <i class="far fa-check-circle"></i> &nbsp; Agregar producto
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </form>
+    <div class="columns">
+        <div class="column is-one-quarter">
+            <button type="button" class="button is-link is-light js-modal-trigger" data-target="modal-js-product" >
+                <i class="fas fa-search"></i> &nbsp; Buscar cliente
+            </button>
+        </div>
+        <div class="column">
+            <div class="field is-grouped">
+                <p class="control is-expanded">
+                    <input class="input" type="text" pattern="[a-zA-Z0-9- ]{1,70}" maxlength="70" autofocus="autofocus" placeholder="Código de cliente" id="sale-barcode-input" value="<?php echo htmlspecialchars($id); ?>" >
+                </p>
+                <a class="control">
+                <button type="submit" class="button is-info" id="add-product-btn" disabled>
+    <i class="far fa-check-circle"></i> &nbsp; Agregar cliente
+</button>
+
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
             <?php
                 if(isset($_SESSION['alerta_producto_agregado']) && $_SESSION['alerta_producto_agregado']!=""){
                     echo '
@@ -151,7 +166,7 @@ $datos = $insLogin->seleccionarDatos("Unico", "producto", "producto_id", $id);
                         ?>
                         <tr class="has-text-centered" >
                             <td colspan="8">
-                                No hay productos agregados
+                                No hay cliente agregado
                             </td>
                         </tr>
                         <?php } ?>
@@ -161,7 +176,7 @@ $datos = $insLogin->seleccionarDatos("Unico", "producto", "producto_id", $id);
         </div>
 
         <div class="column is-one-quarter">
-            <h2 class="title has-text-centered">Datos de la venta</h2>
+            <h2 class="title has-text-centered">Datos del pago</h2>
             <hr>
 
             <?php if($_SESSION['venta_total']>0){ ?>
@@ -194,56 +209,6 @@ $datos = $insLogin->seleccionarDatos("Unico", "producto", "producto_id", $id);
                 </div>
                 <br>
 
-                <label>Cliente</label>
-                <?php
-                    if(isset($_SESSION['datos_cliente_venta']) && count($_SESSION['datos_cliente_venta'])>=1 && $_SESSION['datos_cliente_venta']['cliente_id']!=1){
-                ?>
-                <div class="field has-addons mb-5">
-                    <div class="control">
-                        <input class="input" type="text" readonly id="venta_cliente" value="<?php echo $_SESSION['datos_cliente_venta']['cliente_nombre']." ".$_SESSION['datos_cliente_venta']['cliente_apellido']; ?>" >
-                    </div>
-                    <div class="control">
-                        <a class="button is-danger" title="Remove cliente" id="btn_remove_client" onclick="remover_cliente(<?php echo $_SESSION['datos_cliente_venta']['cliente_id']; ?>)">
-                            <i class="fas fa-user-times fa-fw"></i>
-                        </a>
-                    </div>
-                </div>
-                <?php 
-                    }else{
-                        $datos_cliente=$insLogin->seleccionarDatos("Normal","cliente WHERE cliente_id='1'","*",0);
-                        if($datos_cliente->rowCount()==1){
-                            $datos_cliente=$datos_cliente->fetch();
-
-                            $_SESSION['datos_cliente_venta']=[
-                                "cliente_id"=>$datos_cliente['cliente_id'],
-                                "cliente_tipo_documento"=>$datos_cliente['cliente_tipo_documento'],
-                                "cliente_numero_documento"=>$datos_cliente['cliente_numero_documento'],
-                                "cliente_nombre"=>$datos_cliente['cliente_nombre'],
-                                "cliente_apellido"=>$datos_cliente['cliente_apellido']
-                            ];
-
-                        }else{
-                            $_SESSION['datos_cliente_venta']=[
-                                "cliente_id"=>1,
-                                "cliente_tipo_documento"=>"N/A",
-                                "cliente_numero_documento"=>"N/A",
-                                "cliente_nombre"=>"Publico",
-                                "cliente_apellido"=>"General"
-                            ];
-                        }
-                ?>
-                <div class="field has-addons mb-5">
-                    <div class="control">
-                        <input class="input" type="text" readonly id="venta_cliente" value="<?php echo $_SESSION['datos_cliente_venta']['cliente_nombre']." ".$_SESSION['datos_cliente_venta']['cliente_apellido']; ?>" >
-                    </div>
-                    <div class="control">
-                        <a class="button is-info js-modal-trigger" data-target="modal-js-client" title="Agregar cliente" id="btn_add_client" >
-                            <i class="fas fa-user-plus fa-fw"></i>
-                        </a>
-                    </div>
-                </div>
-                <?php } ?>
-
                 <div class="control mb-5">
                     <label>Total pagado por cliente <?php echo CAMPO_OBLIGATORIO; ?></label>
                     <input class="input" type="text" name="venta_abono" id="venta_abono" value="0.00" pattern="[0-9.]{1,25}" maxlength="25" >
@@ -258,7 +223,7 @@ $datos = $insLogin->seleccionarDatos("Unico", "producto", "producto_id", $id);
 
                 <?php if($_SESSION['venta_total']>0){ ?>
                 <p class="has-text-centered">
-                    <button type="submit" class="button is-info is-rounded"><i class="far fa-save"></i> &nbsp; Guardar venta</button>
+                    <button type="submit" class="button is-info is-rounded"><i class="far fa-save"></i> &nbsp; Guardar pago</button>
                 </p>
                 <?php } ?>
                 <p class="has-text-centered pt-6">
@@ -492,72 +457,6 @@ $datos = $insLogin->seleccionarDatos("Unico", "producto", "producto_id", $id);
         }
     }
 
-
-    /*----------  Agregar cliente  ----------*/
-    function agregar_cliente(id){
-
-        Swal.fire({
-            title: '¿Quieres agregar este cliente?',
-            text: "Se va a agregar este cliente para realizar una venta",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Si, agregar',
-            cancelButtonText: 'No, cancelar'
-        }).then((result) => {
-            if (result.isConfirmed){
-
-                let datos = new FormData();
-                datos.append("cliente_id", id);
-                datos.append("modulo_venta", "agregar_cliente");
-
-                fetch('<?php echo APP_URL; ?>app/ajax/ventaAjax.php',{
-                    method: 'POST',
-                    body: datos
-                })
-                .then(respuesta => respuesta.json())
-                .then(respuesta =>{
-                    return alertas_ajax(respuesta);
-                });
-
-            }
-        });
-    }
-
-
-    /*----------  Remover cliente  ----------*/
-    function remover_cliente(id){
-
-        Swal.fire({
-            title: '¿Quieres remover este cliente?',
-            text: "Se va a quitar el cliente seleccionado de la venta",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Si, remover',
-            cancelButtonText: 'No, cancelar'
-        }).then((result) => {
-            if (result.isConfirmed){
-
-                let datos = new FormData();
-                datos.append("cliente_id", id);
-                datos.append("modulo_venta", "remover_cliente");
-
-                fetch('<?php echo APP_URL; ?>app/ajax/ventaAjax.php',{
-                    method: 'POST',
-                    body: datos
-                })
-                .then(respuesta => respuesta.json())
-                .then(respuesta =>{
-                    return alertas_ajax(respuesta);
-                });
-
-            }
-        });
-    }
-
     /*----------  Calcular cambio  ----------*/
     let venta_abono_input = document.querySelector("#venta_abono");
     venta_abono_input.addEventListener('keyup', function(e){
@@ -579,6 +478,25 @@ $datos = $insLogin->seleccionarDatos("Unico", "producto", "producto_id", $id);
             document.querySelector('#venta_cambio').value="0.00";
         }
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const saleInputBarcode = document.querySelector("#sale-barcode-input");
+    const addProductBtn = document.querySelector("#add-product-btn");
+
+    saleInputBarcode.addEventListener('input', function () {
+        if (saleInputBarcode.value.trim() !== "") {
+            addProductBtn.disabled = false;
+        } else {
+            addProductBtn.disabled = true;
+        }
+    });
+
+    // Activar el botón si el campo ya tiene un valor al cargar la página
+    if (saleInputBarcode.value.trim() !== "") {
+        addProductBtn.disabled = false;
+    }
+});
+
 
 </script>
 

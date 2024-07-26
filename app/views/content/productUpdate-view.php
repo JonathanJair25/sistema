@@ -53,7 +53,7 @@
         </a>
     </li>
     <li>
-        <a href="<?php echo APP_URL; ?>saleList/">
+        <a href="<?php echo APP_URL; ?>facturasPagos/<?php echo $datos['producto_id']; ?>/">
             <i class="fas fa-clipboard-list fa-fw"></i>
             <span>FACTURAS</span>
         </a>

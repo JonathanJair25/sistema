@@ -10,7 +10,7 @@
 
 		$code=$insLogin->limpiarCadena($url[1]);
 
-		$datos=$insLogin->seleccionarDatos("Normal","venta INNER JOIN cliente ON venta.cliente_id=cliente.cliente_id INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id INNER JOIN caja ON venta.caja_id=caja.caja_id WHERE (venta_codigo='".$code."')","*",0);
+		$datos=$insLogin->seleccionarDatos("Normal","venta INNER JOIN usuario ON venta.usuario_id=usuario.usuario_id INNER JOIN caja ON venta.caja_id=caja.caja_id WHERE (venta_codigo='".$code."')","*",0);
 
 		if($datos->rowCount()==1){
 			$datos_venta=$datos->fetch();
@@ -47,16 +47,9 @@
 				<div class="has-text-weight-bold">Vendedor</div>
 				<span class="has-text-link"><?php echo $datos_venta['usuario_nombre']." ".$datos_venta['usuario_apellido']; ?></span>
 			</div>
-
-			<div class="full-width sale-details text-condensedLight">
-				<div class="has-text-weight-bold">Cliente</div>
-				<span class="has-text-link"><?php echo $datos_venta['cliente_nombre']." ".$datos_venta['cliente_apellido']; ?></span>
-			</div>
-
 		</div>
 
 		<div class="column">
-
 			<div class="full-width sale-details text-condensedLight">
 				<div class="has-text-weight-bold">Total</div>
 				<span class="has-text-link"><?php echo MONEDA_SIMBOLO.number_format($datos_venta['venta_total'],MONEDA_DECIMALES,MONEDA_SEPARADOR_DECIMAL,MONEDA_SEPARADOR_MILLAR).' '.MONEDA_NOMBRE; ?></span>

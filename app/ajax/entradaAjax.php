@@ -12,7 +12,7 @@
 
 		/*--------- Buscar producto por codigo ---------*/
 		if($_POST['modulo_entrada']=="buscar_codigo"){
-			echo $insEntrada->buscarCodigoEntradaControlador();
+			echo $insEntrada->buscarCodigoVentaControlador();
 		}
 
 		/*--------- Agregar producto a carrito ---------*/
@@ -32,27 +32,27 @@
 
 		/*--------- Buscar cliente ---------*/
 		if($_POST['modulo_entrada']=="buscar_cliente"){
-			echo $insEntrada->buscarClienteEntradaControlador();
+			echo $insEntrada->buscarClienteVentaControlador();
 		}
 
 		/*--------- Agregar cliente a carrito ---------*/
 		if($_POST['modulo_entrada']=="agregar_cliente"){
-			echo $insEntrada->agregarClienteEntradaControlador();
+			echo $insEntrada->agregarClienteVentaControlador();
 		}
 
 		/*--------- Remover cliente de carrito ---------*/
 		if($_POST['modulo_entrada']=="remover_cliente"){
-			echo $insEntrada->removerClienteEntradaControlador();
+			echo $insEntrada->removerClienteVentaControlador();
 		}
 
-		/*--------- Registrar Entrada ---------*/
-		if($_POST['modulo_entrada']=="registrar_entrada"){
-			echo $insEntrada->registrarEntradaControlador();
+		/*--------- Registrar venta ---------*/
+		if($_POST['modulo_entrada']=="registrar_venta"){
+			echo $insEntrada->registrarVentaControlador();
 		}
 
-		/*--------- Eliminar Entrada ---------*/
-		if($_POST['modulo_entrada']=="eliminar_entrada"){
-			echo $insEntrada->eliminarEntradaControlador();
+		/*--------- Eliminar venta ---------*/
+		if($_POST['modulo_entrada']=="eliminar_venta"){
+			echo $insEntrada->eliminarVentaControlador();
 		}
 		
 	}else{

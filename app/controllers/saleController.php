@@ -268,8 +268,10 @@ public function agregarProductoCarritoControlador(){
                 $_SESSION['alerta_producto_agregado']="Se $diferencia_productos <strong>".$campos['producto_nombre']."</strong> a la venta. Total en carrito <strong>$detalle_cantidad</strong>";
 
                 $alerta=[
-					"tipo"=>"redireccionar",
-					"url"=>APP_URL."saleNew/"
+					"tipo"=>"recargar",
+                    "titulo"=>"Cantidad actualizada",
+                    "texto"=>"Los Meses se actualizarón correctamente",
+					"icono" => "success"
 				];
 
 				return json_encode($alerta);

@@ -343,7 +343,7 @@
 					   producto.producto_poste, producto.producto_etiqueta, producto.producto_nodo, 
 					   producto.producto_contrato, producto.servicios_id, servicios.servicios_nombre, 
 					   servicios.servicios_precio_mensual, producto.servicio_precio_mensual, producto.producto_ip, 
-					   producto.producto_fecha_facturacion, producto.producto_estado, producto.producto_credito";
+					   producto.producto_fecha_facturacion, producto.producto_estado, producto.producto_credito, producto.saldo_cuenta, producto.saldo_pendiente";
 		
 			if (isset($busqueda) && $busqueda != "") {
 				$consulta_datos = "SELECT $campos FROM producto 
@@ -429,9 +429,9 @@
 										<strong>SERVICIO:</strong> <span class="servicio-nombre">' . $rows['servicios_nombre'] . '</span><br>   
 										<strong>PRECIO MENSUAL:</strong> <span class="servicio-precio">' . $rows['servicio_precio_mensual'] . '</span><br>
 										<br>
-										<strong>SALDO DE LA CUENTA:</strong><br>
+										<strong>SALDO DE LA CUENTA:</strong> ' . $rows['saldo_cuenta'] . '<br>
 										<strong>CRÉDITO:</strong> ' . $rows['producto_credito'] . '<br>
-										<strong>PENDIENTES:</strong> <br>
+										<strong>PENDIENTES:</strong> ' . $rows['saldo_pendiente'] . '<br>
 									</p>
 								</div>
 							</div>

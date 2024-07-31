@@ -56,7 +56,7 @@
 
                      // Formulario para eliminar venta
                      echo "<form class='FormularioAjax is-inline-block' action='" . APP_URL . "app/ajax/entradaAjax.php' method='POST' autocomplete='off'>";
-                     echo "<input type='hidden' name='modulo_entrada' value='eliminar_entrada'>";
+                     echo "<input type='hidden' name='modulo_entrada' value='eliminar_venta'>";
                      echo "<input type='hidden' name='entrada_id' value='" . $pago['entrada_id'] . "'>";
                      echo "<button type='submit' class='button is-danger is-rounded is-small' title='Eliminar venta Nro. " . $pago['entrada_id'] . "' >";
                      echo "<i class='far fa-trash-alt fa-fw'></i>";

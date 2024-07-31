@@ -66,7 +66,7 @@ $datos = $insLogin->seleccionarDatos("Unico", "facturas", "facturas_id", $id);
                     unset($_SESSION['alerta_factura_agregado']);
                 }
 
-                if(isset($_SESSION['venta_codigo_factura']) && $_SESSION['venta_codigo_factura']!=""){
+                if(isset($_SESSION['entrada_codigo_factura']) && $_SESSION['entrada_codigo_factura']!=""){
             ?>
             <div class="notification is-info is-light mb-2 mt-2">
                 <h4 class="has-text-centered has-text-weight-bold">Venta realizada</h4>
@@ -75,13 +75,13 @@ $datos = $insLogin->seleccionarDatos("Unico", "facturas", "facturas_id", $id);
                 <div class="container">
                     <div class="columns">
                         <div class="column has-text-centered">
-                            <button type="button" class="button is-link is-light" onclick="print_ticket('<?php echo APP_URL."app/pdf/ticket.php?code=".$_SESSION['venta_codigo_factura']; ?>')" >
+                            <button type="button" class="button is-link is-light" onclick="print_ticket('<?php echo APP_URL."app/pdf/ticket.php?code=".$_SESSION['entrada_codigo_factura']; ?>')" >
                                 <i class="fas fa-receipt fa-2x"></i> &nbsp;
                                 Imprimir ticket de venta
                             </buttona>
                         </div>
                         <div class="column has-text-centered">
-                            <button type="button" class="button is-link is-light" onclick="print_invoice('<?php echo APP_URL."app/pdf/invoice.php?code=".$_SESSION['venta_codigo_factura']; ?>')" >
+                            <button type="button" class="button is-link is-light" onclick="print_invoice('<?php echo APP_URL."app/pdf/invoice.php?code=".$_SESSION['entrada_codigo_factura']; ?>')" >
                                 <i class="fas fa-file-invoice-dollar fa-2x"></i> &nbsp;
                                 Imprimir factura de venta
                             </button>
@@ -90,7 +90,7 @@ $datos = $insLogin->seleccionarDatos("Unico", "facturas", "facturas_id", $id);
                 </div>
             </div>
             <?php
-                    unset($_SESSION['venta_codigo_factura']);
+                    unset($_SESSION['entrada_codigo_factura']);
                 }
             ?>
             <div class="table-container">
@@ -110,7 +110,7 @@ $datos = $insLogin->seleccionarDatos("Unico", "facturas", "facturas_id", $id);
                         <?php
                             if(isset($_SESSION['datos_factura_cliente']) && count($_SESSION['datos_factura_cliente'])>=1){
 
-                                $_SESSION['venta_total']=0;
+                                $_SESSION['entrada_total']=0;
                                 $cc=1;
 
                                 foreach($_SESSION['datos_factura_cliente'] as $facturas){
@@ -144,7 +144,7 @@ $datos = $insLogin->seleccionarDatos("Unico", "facturas", "facturas_id", $id);
                         </tr>
                         <?php
                                 $cc++;
-                                $_SESSION['venta_total']+=$facturas['entrada_detalle_total'];
+                                $_SESSION['entrada_total']+=$facturas['entrada_detalle_total'];
                             }
                         ?>
                         <tr class="has-text-centered" >
@@ -153,13 +153,13 @@ $datos = $insLogin->seleccionarDatos("Unico", "facturas", "facturas_id", $id);
                                 TOTAL
                             </td>
                             <td class="has-text-weight-bold">
-                                <?php echo MONEDA_SIMBOLO.number_format($_SESSION['venta_total'],MONEDA_DECIMALES,MONEDA_SEPARADOR_DECIMAL,MONEDA_SEPARADOR_MILLAR)." ".MONEDA_NOMBRE; ?>
+                                <?php echo MONEDA_SIMBOLO.number_format($_SESSION['entrada_total'],MONEDA_DECIMALES,MONEDA_SEPARADOR_DECIMAL,MONEDA_SEPARADOR_MILLAR)." ".MONEDA_NOMBRE; ?>
                             </td>
                             <td colspan="2"></td>
                         </tr>
                         <?php
                             }else{
-                                    $_SESSION['venta_total']=0;
+                                    $_SESSION['entrada_total']=0;
                         ?>
                         <tr class="has-text-centered" >
                             <td colspan="8">
@@ -176,7 +176,7 @@ $datos = $insLogin->seleccionarDatos("Unico", "facturas", "facturas_id", $id);
             <h2 class="title has-text-centered">Datos de la factura</h2>
             <hr>
 
-            <?php if($_SESSION['venta_total']>0){ ?>
+            <?php if($_SESSION['entrada_total']>0){ ?>
             <form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/entradaAjax.php" method="POST" autocomplete="off" name="formsale" >
                 <input type="hidden" name="modulo_entrada" value="registrar_venta">
             <?php }else { ?>
@@ -187,15 +187,20 @@ $datos = $insLogin->seleccionarDatos("Unico", "facturas", "facturas_id", $id);
                     <label>Fecha</label>
                     <input class="input" type="date" value="<?php echo date("Y-m-d"); ?>">
                 </div>
+                <div class="control mb-5" style="display: none;">
+                    <label>Cliente</label>
+                    <input class="input" type="text" name="producto_id" value="<?php echo $id; ?>" readonly>
+                </div>
+                
 
-                <h4 class="subtitle is-5 has-text-centered has-text-weight-bold mb-5"><small>TOTAL: <?php echo MONEDA_SIMBOLO.number_format($_SESSION['venta_total'],MONEDA_DECIMALES,MONEDA_SEPARADOR_DECIMAL,MONEDA_SEPARADOR_MILLAR)." ".MONEDA_NOMBRE; ?></small></h4>
+                <h4 class="subtitle is-5 has-text-centered has-text-weight-bold mb-5"><small>TOTAL: <?php echo MONEDA_SIMBOLO.number_format($_SESSION['entrada_total'],MONEDA_DECIMALES,MONEDA_SEPARADOR_DECIMAL,MONEDA_SEPARADOR_MILLAR)." ".MONEDA_NOMBRE; ?></small></h4>
 
-                <?php if($_SESSION['venta_total']>0){ ?>
+                <?php if($_SESSION['entrada_total']>0){ ?>
                 <p class="has-text-centered">
                     <button type="submit" class="button is-info is-rounded"><i class="far fa-save"></i> &nbsp; Guardar factura</button>
                 </p>
                 <?php } ?>
-                <input type="hidden" value="<?php echo number_format($_SESSION['venta_total'],MONEDA_DECIMALES,MONEDA_SEPARADOR_DECIMAL,""); ?>" id="venta_total_hidden">
+                <input type="hidden" value="<?php echo number_format($_SESSION['entrada_total'],MONEDA_DECIMALES,MONEDA_SEPARADOR_DECIMAL,""); ?>" id="entrada_total_hidden">
             </form>
         </div>
 

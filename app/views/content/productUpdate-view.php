@@ -102,7 +102,7 @@
     <div class="column">
         <div class="control has-text-centered">
             <label class="has-text-centered">Saldo de la cuenta <?php echo CAMPO_OBLIGATORIO; ?></label>
-            <input class="input" type="text" name="producto_codigo" value="<?php echo $datos['producto_codigo']; ?>" pattern="[a-zA-Z0-9- ]{1,77}" maxlength="77" required readonly style="text-align: center; font-size: 20px;">
+            <input class="input" type="text" name="producto_codigo" value="<?php echo $datos['saldo_cuenta']; ?>" pattern="[a-zA-Z0-9- ]{1,77}" maxlength="77" required readonly style="text-align: center; font-size: 20px;">
         </div>
     </div>
     <div class="column">
@@ -114,7 +114,7 @@
     <div class="column">
         <div class="control has-text-centered">
             <label class="has-text-centered">Pendientes <?php echo CAMPO_OBLIGATORIO; ?></label>
-            <input class="input" type="text" name="producto_codigo" value="<?php echo $datos['producto_codigo']; ?>" pattern="[a-zA-Z0-9- ]{1,77}" maxlength="77" required readonly style="text-align: center; font-size: 20px;">
+            <input class="input" type="text" name="producto_codigo" value="<?php echo $datos['saldo_pendiente']; ?>" pattern="[a-zA-Z0-9- ]{1,77}" maxlength="77" required readonly style="text-align: center; font-size: 20px;">
         </div>
     </div>
 </div>

@@ -34,7 +34,7 @@
 		    $categoria=$this->limpiarCadena($_POST['producto_categoria']);
 
 		    # Verificando campos obligatorios #
-            if($codigo=="" || $nombre=="" || $apellidos=="" || $categoria=="" || $telefono=="" || $direccion==""){
+            if($codigo=="" || $nombre=="" || $categoria=="" || $telefono=="" || $direccion==""){
             	$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
@@ -600,7 +600,7 @@
 		    $categoria=$this->limpiarCadena($_POST['producto_categoria']);
 
 		    # Verificando campos obligatorios #
-            if($codigo=="" || $nombre=="" || $apellidos=="" || $categoria=="" || $telefono=="" || $direccion==""){
+            if($codigo=="" || $nombre=="" || $categoria=="" || $telefono=="" || $direccion==""){
             	$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",

@@ -236,7 +236,7 @@
         <div class="column">
             <div class="control">
                 <label>Apellidos <?php echo CAMPO_OBLIGATORIO; ?></label>
-                <input class="input" type="text" name="producto_apellidos" value="<?php echo $datos['producto_apellidos']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100" required>
+                <input class="input" type="text" name="producto_apellidos" value="<?php echo $datos['producto_apellidos']; ?>" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ().,$#\-\/ ]{1,100}" maxlength="100">
             </div>
         </div>
         <div class="column">

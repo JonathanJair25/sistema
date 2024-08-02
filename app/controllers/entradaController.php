@@ -263,7 +263,7 @@ public function agregarProductoCarritoControlador(){
         }
 
 
-        /*---------- Controlador actualizar producto de venta ----------*/
+        /*---------- Controlador registrar facturas ----------*/
         public function registrarVentaControlador(){
             if($_SESSION['entrada_total'] <= 0 || !isset($_SESSION['datos_factura_cliente']) || count($_SESSION['datos_factura_cliente']) <= 0){
                 $alerta = [
@@ -689,113 +689,129 @@ public function agregarProductoCarritoControlador(){
 		}
 		
 
-	/*----------  Controlador eliminar venta  ----------*/
-    public function eliminarVentaControlador() {
+	/*----------  Controlador eliminar factura  ----------*/
+public function eliminarVentaControlador() {
+    $id = $this->limpiarCadena($_POST['entrada_id']);
 
-        $id = $this->limpiarCadena($_POST['entrada_id']);
-    
-        # Verificando venta #
-        $datos = $this->ejecutarConsulta("SELECT * FROM entrada WHERE entrada_id='$id'");
-        if ($datos->rowCount() <= 0) {
+    // Verificando la existencia de la venta
+    $datos = $this->ejecutarConsulta("SELECT * FROM entrada WHERE entrada_id='$id'");
+    if ($datos->rowCount() <= 0) {
+        $alerta = [
+            "tipo" => "simple",
+            "titulo" => "Ocurrió un error inesperado",
+            "texto" => "No hemos encontrado la venta en el sistema",
+            "icono" => "error"
+        ];
+        return json_encode($alerta);
+        exit();
+    } else {
+        $datos = $datos->fetch();
+    }
+
+    // Verificando los detalles de la venta
+    $check_detalle_venta = $this->ejecutarConsulta("SELECT * FROM entrada_detalle WHERE entrada_codigo='" . $datos['entrada_codigo'] . "'");
+    $check_detalle_venta_count = $check_detalle_venta->rowCount();
+
+    if ($check_detalle_venta_count > 0) {
+        $errores_detalle = 0;
+        while ($detalle = $check_detalle_venta->fetch()) {
+            // Obtener el valor actual de saldo_cuenta, saldo_pendiente y producto_credito
+            $producto_id = $detalle['producto_id'];
+            $check_producto_saldo = $this->ejecutarConsulta("SELECT saldo_cuenta, saldo_pendiente, producto_credito FROM producto WHERE producto_id='$producto_id'");
+            if ($check_producto_saldo->rowCount() == 1) {
+                $producto = $check_producto_saldo->fetch();
+                $saldo_cuenta_actual = $producto['saldo_cuenta'];
+                $saldo_pendiente_actual = $producto['saldo_pendiente'];
+                $producto_credito_actual = $producto['producto_credito'];
+
+                $factura_total = $detalle['entrada_detalle_total'];
+
+                // Ajustar los saldos según la eliminación de la factura
+                $nuevo_saldo_cuenta = $saldo_cuenta_actual + $factura_total;
+                $nuevo_producto_credito = $producto_credito_actual + $factura_total;
+                $nuevo_saldo_pendiente = $saldo_pendiente_actual > 0 ? $saldo_pendiente_actual - $factura_total : 0;
+
+                // Actualizar los campos saldo_cuenta, saldo_pendiente y producto_credito en la tabla producto
+                $datos_producto_saldo_up = [
+                    [
+                        "campo_nombre" => "saldo_cuenta",
+                        "campo_marcador" => ":SaldoCuenta",
+                        "campo_valor" => $nuevo_saldo_cuenta
+                    ],
+                    [
+                        "campo_nombre" => "saldo_pendiente",
+                        "campo_marcador" => ":SaldoPendiente",
+                        "campo_valor" => $nuevo_saldo_pendiente
+                    ],
+                    [
+                        "campo_nombre" => "producto_credito",
+                        "campo_marcador" => ":Credito",
+                        "campo_valor" => $nuevo_producto_credito
+                    ]
+                ];
+
+                $condicion_producto = [
+                    "condicion_campo" => "producto_id",
+                    "condicion_marcador" => ":ID",
+                    "condicion_valor" => $producto_id
+                ];
+
+                if (!$this->actualizarDatos("producto", $datos_producto_saldo_up, $condicion_producto)) {
+                    $errores_detalle = 1;
+                    break;
+                }
+            } else {
+                $errores_detalle = 1;
+                break;
+            }
+        }
+
+        if ($errores_detalle == 1) {
             $alerta = [
                 "tipo" => "simple",
                 "titulo" => "Ocurrió un error inesperado",
-                "texto" => "No hemos encontrado la venta en el sistema",
+                "texto" => "No hemos podido actualizar los saldos de los productos, por favor intente nuevamente",
                 "icono" => "error"
             ];
             return json_encode($alerta);
             exit();
-        } else {
-            $datos = $datos->fetch();
         }
-    
-        # Verificando detalles de venta #
-        $check_detalle_venta = $this->ejecutarConsulta("SELECT * FROM entrada_detalle WHERE entrada_codigo='" . $datos['entrada_codigo'] . "'");
-        $check_detalle_venta_count = $check_detalle_venta->rowCount();
-    
-        if ($check_detalle_venta_count > 0) {
-    
-            $errores_detalle = 0;
-            while ($detalle = $check_detalle_venta->fetch()) {
-                // Obtener el valor actual de saldo_cuenta
-                $producto_id = $detalle['producto_id'];
-                $check_producto_saldo = $this->ejecutarConsulta("SELECT saldo_cuenta FROM producto WHERE producto_id='$producto_id'");
-                if ($check_producto_saldo->rowCount() == 1) {
-                    $producto = $check_producto_saldo->fetch();
-                    $saldo_cuenta_actual = $producto['saldo_cuenta'];
-    
-                    // Restar entrada_detalle_total al saldo_cuenta actual
-                    $nuevo_saldo_cuenta = $saldo_cuenta_actual + $detalle['entrada_detalle_total'];
-    
-                    // Actualizar el campo saldo_cuenta en la tabla producto
-                    $datos_producto_saldo_up = [
-                        [
-                            "campo_nombre" => "saldo_cuenta",
-                            "campo_marcador" => ":SaldoCuenta",
-                            "campo_valor" => $nuevo_saldo_cuenta
-                        ]
-                    ];
-    
-                    $condicion_producto = [
-                        "condicion_campo" => "producto_id",
-                        "condicion_marcador" => ":ID",
-                        "condicion_valor" => $producto_id
-                    ];
-    
-                    if (!$this->actualizarDatos("producto", $datos_producto_saldo_up, $condicion_producto)) {
-                        $errores_detalle = 1;
-                        break;
-                    }
-                } else {
-                    $errores_detalle = 1;
-                    break;
-                }
-            }
-    
-            if ($errores_detalle == 1) {
-                $alerta = [
-                    "tipo" => "simple",
-                    "titulo" => "Ocurrió un error inesperado",
-                    "texto" => "No hemos podido actualizar los saldos de los productos, por favor intente nuevamente",
-                    "icono" => "error"
-                ];
-                return json_encode($alerta);
-                exit();
-            }
-    
-            $eliminarVentaDetalle = $this->eliminarRegistro("entrada_detalle", "entrada_codigo", $datos['entrada_codigo']);
-    
-            if ($eliminarVentaDetalle->rowCount() != $check_detalle_venta_count) {
-                $alerta = [
-                    "tipo" => "simple",
-                    "titulo" => "Ocurrió un error inesperado",
-                    "texto" => "No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
-                    "icono" => "error"
-                ];
-                return json_encode($alerta);
-                exit();
-            }
-        }
-    
-        $eliminarVenta = $this->eliminarRegistro("entrada", "entrada_id", $id);
-    
-        if ($eliminarVenta->rowCount() == 1) {
-            $alerta = [
-                "tipo" => "recargar",
-                "titulo" => "Venta eliminada",
-                "texto" => "La venta ha sido eliminada del sistema correctamente",
-                "icono" => "success"
-            ];
-        } else {
+
+        // Eliminando detalles de la venta
+        $eliminarVentaDetalle = $this->eliminarRegistro("entrada_detalle", "entrada_codigo", $datos['entrada_codigo']);
+
+        if ($eliminarVentaDetalle->rowCount() != $check_detalle_venta_count) {
             $alerta = [
                 "tipo" => "simple",
                 "titulo" => "Ocurrió un error inesperado",
                 "texto" => "No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
                 "icono" => "error"
             ];
+            return json_encode($alerta);
+            exit();
         }
-    
-        return json_encode($alerta);
     }
+
+    // Eliminando la venta
+    $eliminarVenta = $this->eliminarRegistro("entrada", "entrada_id", $id);
+
+    if ($eliminarVenta->rowCount() == 1) {
+        $alerta = [
+            "tipo" => "recargar",
+            "titulo" => "Venta eliminada",
+            "texto" => "La venta ha sido eliminada del sistema correctamente",
+            "icono" => "success"
+        ];
+    } else {
+        $alerta = [
+            "tipo" => "simple",
+            "titulo" => "Ocurrió un error inesperado",
+            "texto" => "No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
+            "icono" => "error"
+        ];
+    }
+
+    return json_encode($alerta);
+}
     }
     

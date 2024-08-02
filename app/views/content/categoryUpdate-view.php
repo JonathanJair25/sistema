@@ -16,7 +16,7 @@
 			$datos=$datos->fetch();
 	?>
 
-	<h2 class="title has-text-centered"><?php echo $datos['categoria_nombre']." (".$datos['categoria_router'].")"; ?></h2>
+	<h2 class="title has-text-centered"><?php echo $datos['categoria_nombre']." (".$datos['categoria_ip'].")"; ?></h2>
 
 	<form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/categoriaAjax.php" method="POST" autocomplete="off" >
 
@@ -32,8 +32,14 @@
 		  	</div>
 		  	<div class="column">
 		    	<div class="control">
-					<label>Ubicación</label>
-				  	<input class="input" type="text" name="categoria_router" value="<?php echo $datos['categoria_router']; ?>"  maxlength="150" >
+					<label>Ip Router</label>
+				  	<input class="input" type="text" name="categoria_ip" value="<?php echo $datos['categoria_ip']; ?>"  maxlength="150" >
+				</div>
+		  	</div>
+		  	<div class="column">
+		    	<div class="control">
+					<label>Puerto</label>
+				  	<input class="input" type="text" name="categoria_puerto" value="<?php echo $datos['categoria_puerto']; ?>"  maxlength="150" >
 				</div>
 		  	</div>
 		</div>

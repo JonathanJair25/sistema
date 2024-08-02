@@ -820,18 +820,17 @@ if($errores_venta_detalle==1){
 		}
 		
 
-	/*----------  Controlador eliminar venta  ----------*/
+	/*----------  Controlador eliminar pago  ----------*/
 public function eliminarVentaControlador() {
-
     $id = $this->limpiarCadena($_POST['venta_id']);
 
-    # Verificando venta #
+    # Verificando pago #
     $datos = $this->ejecutarConsulta("SELECT * FROM venta WHERE venta_id='$id'");
     if ($datos->rowCount() <= 0) {
         $alerta = [
             "tipo" => "simple",
             "titulo" => "Ocurrió un error inesperado",
-            "texto" => "No hemos encontrado la venta en el sistema",
+            "texto" => "No hemos encontrado el pago en el sistema",
             "icono" => "error"
         ];
         return json_encode($alerta);
@@ -840,30 +839,36 @@ public function eliminarVentaControlador() {
         $datos = $datos->fetch();
     }
 
-    # Verificando detalles de venta #
-    $check_detalle_venta = $this->ejecutarConsulta("SELECT * FROM venta_detalle WHERE venta_codigo='" . $datos['venta_codigo'] . "'");
-    $check_detalle_venta_count = $check_detalle_venta->rowCount();
+    # Verificando detalles del pago #
+    $check_detalle_pago = $this->ejecutarConsulta("SELECT * FROM venta_detalle WHERE venta_codigo='" . $datos['venta_codigo'] . "'");
+    $check_detalle_pago_count = $check_detalle_pago->rowCount();
 
-    if ($check_detalle_venta_count > 0) {
-
+    if ($check_detalle_pago_count > 0) {
         $errores_detalle = 0;
-        while ($detalle = $check_detalle_venta->fetch()) {
-            // Obtener el valor actual de producto_credito
+        while ($detalle = $check_detalle_pago->fetch()) {
+            // Obtener el valor actual de producto_credito y saldo_cuenta
             $producto_id = $detalle['producto_id'];
-            $check_producto_credito = $this->ejecutarConsulta("SELECT producto_credito FROM producto WHERE producto_id='$producto_id'");
+            $check_producto_credito = $this->ejecutarConsulta("SELECT producto_credito, saldo_cuenta FROM producto WHERE producto_id='$producto_id'");
             if ($check_producto_credito->rowCount() == 1) {
                 $producto = $check_producto_credito->fetch();
                 $producto_credito_actual = $producto['producto_credito'];
+                $producto_cuenta_actual = $producto['saldo_cuenta'];
 
-                // Restar venta_total al producto_credito actual
+                // Restar pago_total al producto_credito actual
                 $nuevo_producto_credito = $producto_credito_actual - $detalle['venta_detalle_total'];
+                $nuevo_producto_cuenta = $producto_cuenta_actual - $detalle['venta_detalle_total'];
 
-                // Actualizar el campo producto_credito en la tabla producto
+                // Actualizar el campo producto_credito y saldo_cuenta en la tabla producto
                 $datos_producto_credito_up = [
                     [
                         "campo_nombre" => "producto_credito",
                         "campo_marcador" => ":Credito",
                         "campo_valor" => $nuevo_producto_credito
+                    ],
+                    [
+                        "campo_nombre" => "saldo_cuenta",
+                        "campo_marcador" => ":Cuenta",
+                        "campo_valor" => $nuevo_producto_cuenta
                     ]
                 ];
 
@@ -894,13 +899,13 @@ public function eliminarVentaControlador() {
             exit();
         }
 
-        $eliminarVentaDetalle = $this->eliminarRegistro("venta_detalle", "venta_codigo", $datos['venta_codigo']);
+        $eliminarPagoDetalle = $this->eliminarRegistro("venta_detalle", "venta_codigo", $datos['venta_codigo']);
 
-        if ($eliminarVentaDetalle->rowCount() != $check_detalle_venta_count) {
+        if ($eliminarPagoDetalle->rowCount() != $check_detalle_pago_count) {
             $alerta = [
                 "tipo" => "simple",
                 "titulo" => "Ocurrió un error inesperado",
-                "texto" => "No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
+                "texto" => "No hemos podido eliminar el pago del sistema, por favor intente nuevamente",
                 "icono" => "error"
             ];
             return json_encode($alerta);
@@ -908,22 +913,20 @@ public function eliminarVentaControlador() {
         }
     }
 
-    $eliminarVenta = $this->eliminarRegistro("venta", "venta_id", $id);
+    $eliminarPago = $this->eliminarRegistro("venta", "venta_id", $id);
 
-    if ($eliminarVenta->rowCount() == 1) {
-
+    if ($eliminarPago->rowCount() == 1) {
         $alerta = [
             "tipo" => "recargar",
-            "titulo" => "Venta eliminada",
-            "texto" => "La venta ha sido eliminada del sistema correctamente",
+            "titulo" => "Pago eliminado",
+            "texto" => "El pago ha sido eliminado del sistema correctamente",
             "icono" => "success"
         ];
-
     } else {
         $alerta = [
             "tipo" => "simple",
             "titulo" => "Ocurrió un error inesperado",
-            "texto" => "No hemos podido eliminar la venta del sistema, por favor intente nuevamente",
+            "texto" => "No hemos podido eliminar el pago del sistema, por favor intente nuevamente",
             "icono" => "error"
         ];
     }
@@ -931,6 +934,7 @@ public function eliminarVentaControlador() {
     return json_encode($alerta);
 }
 }
+
 
 
 

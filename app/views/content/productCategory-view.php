@@ -42,6 +42,7 @@
 
                     echo '
                         <h2 class="title has-text-centered">'.$categoria['categoria_nombre'].'</h2>
+                        <p class="has-text-centered pb-6" >'.$categoria['categoria_ip'].'</p>
                         <p class="has-text-centered pb-6" >'.$categoria['categoria_router'].'</p>
                     ';
 

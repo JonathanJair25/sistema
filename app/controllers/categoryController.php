@@ -10,7 +10,8 @@
 
 			# Almacenando datos#
 		    $nombre=$this->limpiarCadena($_POST['categoria_nombre']);
-		    $router=$this->limpiarCadena($_POST['categoria_router']);
+		    $router=$this->limpiarCadena($_POST['categoria_ip']);
+		    $router=$this->limpiarCadena($_POST['categoria_puerto']);
 
 		    # Verificando campos obligatorios #
             if($nombre==""){
@@ -57,9 +58,14 @@
 					"campo_valor"=>$nombre
 				],
 				[
-					"campo_nombre"=>"categoria_router",
+					"campo_nombre"=>"categoria_ip",
 					"campo_marcador"=>":Router",
 					"campo_valor"=>$router
+				],
+				[
+					"campo_nombre"=>"categoria_puerto",
+					"campo_marcador"=>":Puerto",
+					"campo_valor"=>$puerto
 				]
 			];
 
@@ -102,9 +108,9 @@
 
 			if(isset($busqueda) && $busqueda!=""){
 
-				$consulta_datos="SELECT * FROM categoria WHERE categoria_nombre LIKE '%$busqueda%' OR categoria_router LIKE '%$busqueda%' ORDER BY categoria_nombre ASC LIMIT $inicio,$registros";
+				$consulta_datos="SELECT * FROM categoria WHERE categoria_nombre LIKE '%$busqueda%' OR categoria_ip LIKE '%$busqueda%' ORDER BY categoria_nombre ASC LIMIT $inicio,$registros";
 
-				$consulta_total="SELECT COUNT(categoria_id) FROM categoria WHERE categoria_nombre LIKE '%$busqueda%' OR categoria_router LIKE '%$busqueda%'";
+				$consulta_total="SELECT COUNT(categoria_id) FROM categoria WHERE categoria_nombre LIKE '%$busqueda%' OR categoria_ip LIKE '%$busqueda%'";
 
 			}else{
 
@@ -129,7 +135,8 @@
 					<tr>
 						<th class="has-text-centered">#</th>
 						<th class="has-text-centered">Nombre</th>
-						<th class="has-text-centered">IP Router</th>';
+						<th class="has-text-centered">IP Router</th>
+						<th class="has-text-centered">Puerto</th>';
 
 			if ($_SESSION['rol'] == 1) {
 				$tabla .= '
@@ -152,7 +159,8 @@
 					<tr class="has-text-centered">
 						<td>' . $contador . '</td>
 						<td>' . $rows['categoria_nombre'] . '</td>
-						<td>' . $rows['categoria_router'] . '</td>';
+						<td>' . $rows['categoria_ip'] . '</td>
+						<td>' . $rows['categoria_puerto'] . '</td>';
 					
 					if ($_SESSION['rol'] == 1) {
 						$tabla .= '
@@ -297,7 +305,8 @@
 
 		    # Almacenando datos#
 		    $nombre=$this->limpiarCadena($_POST['categoria_nombre']);
-		    $router=$this->limpiarCadena($_POST['categoria_router']);
+		    $router=$this->limpiarCadena($_POST['categoria_ip']);
+		    $puerto=$this->limpiarCadena($_POST['categoria_puerto']);
 
 		    # Verificando campos obligatorios #
             if($nombre==""){
@@ -346,9 +355,14 @@
 					"campo_valor"=>$nombre
 				],
 				[
-					"campo_nombre"=>"categoria_router",
+					"campo_nombre"=>"categoria_ip",
 					"campo_marcador"=>":Router",
 					"campo_valor"=>$router
+				],
+				[
+					"campo_nombre"=>"categoria_puerto",
+					"campo_marcador"=>":Puerto",
+					"campo_valor"=>$puerto
 				]
 			];
 

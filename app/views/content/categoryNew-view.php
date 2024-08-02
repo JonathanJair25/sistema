@@ -19,7 +19,13 @@
 		  	<div class="column">
 		    	<div class="control">
 					<label>IP router</label>
-				  	<input class="input" type="text" name="categoria_router" maxlength="150" >
+				  	<input class="input" type="text" name="categoria_ip" maxlength="150" >
+				</div>
+		  	</div>
+		  	<div class="column">
+		    	<div class="control">
+					<label>Puerto</label>
+				  	<input class="input" type="text" name="categoria_puerto" maxlength="150" >
 				</div>
 		  	</div>
 		</div>

@@ -538,39 +538,65 @@ foreach($_SESSION['datos_producto_venta'] as $venta_detalle){
         break;
     }
 
-    // Obtener el valor actual de producto_credito
-    $producto_id = $venta_detalle['producto_id'];
-    $check_producto_credito = $this->ejecutarConsulta("SELECT producto_credito FROM producto WHERE producto_id='$producto_id'");
-    if($check_producto_credito->rowCount() == 1){
-        $producto = $check_producto_credito->fetch();
-        $producto_credito_actual = $producto['producto_credito'];
+// Obtener los valores actuales de producto_credito, saldo_pendiente y saldo_cuenta
+$producto_id = $venta_detalle['producto_id'];
+$check_producto = $this->ejecutarConsulta("SELECT producto_credito, saldo_pendiente, saldo_cuenta FROM producto WHERE producto_id='$producto_id'");
+if($check_producto->rowCount() == 1){
+    $producto = $check_producto->fetch();
+    $producto_credito_actual = $producto['producto_credito'];
+    $saldo_pendiente_actual = $producto['saldo_pendiente'];
+    $saldo_cuenta_actual = $producto['saldo_cuenta'];
 
-        // Sumar venta_total al producto_credito actual
-        $nuevo_producto_credito = $producto_credito_actual + $venta_detalle['venta_detalle_total'];
-
-        // Actualizar el campo producto_credito en la tabla producto
-        $datos_producto_credito_up=[
-            [
-                "campo_nombre"=>"producto_credito",
-                "campo_marcador"=>":Credito",
-                "campo_valor"=>$nuevo_producto_credito
-            ]
-        ];
-
-        $condicion_producto=[
-            "condicion_campo"=>"producto_id",
-            "condicion_marcador"=>":ID",
-            "condicion_valor"=>$producto_id
-        ];
-
-        if(!$this->actualizarDatos("producto",$datos_producto_credito_up,$condicion_producto)){
-            $errores_venta_detalle=1;
-            break;
-        }
+    // Pago total
+    $pago_total = $venta_detalle['venta_detalle_total'];
+    
+    // Primero, cubrimos el saldo pendiente
+    if ($pago_total >= $saldo_pendiente_actual) {
+        $pago_sobrante = $pago_total - $saldo_pendiente_actual;
+        $nuevo_saldo_pendiente = 0;
+        $nuevo_producto_credito = $producto_credito_actual + $pago_sobrante;
     } else {
-        $errores_venta_detalle=1;
+        $nuevo_saldo_pendiente = $saldo_pendiente_actual - $pago_total;
+        $nuevo_producto_credito = $producto_credito_actual;
+    }
+
+    // Calcular nuevo saldo_cuenta
+    $nuevo_saldo_cuenta = $nuevo_producto_credito - $nuevo_saldo_pendiente;
+
+    // Actualizar los campos producto_credito, saldo_pendiente y saldo_cuenta en la tabla producto
+    $datos_producto_credito_up = [
+        [
+            "campo_nombre" => "producto_credito",
+            "campo_marcador" => ":Credito",
+            "campo_valor" => $nuevo_producto_credito
+        ],
+        [
+            "campo_nombre" => "saldo_pendiente",
+            "campo_marcador" => ":SaldoPendiente",
+            "campo_valor" => $nuevo_saldo_pendiente
+        ],
+        [
+            "campo_nombre" => "saldo_cuenta",
+            "campo_marcador" => ":SaldoCuenta",
+            "campo_valor" => $nuevo_saldo_cuenta
+        ]
+    ];
+
+    $condicion_producto = [
+        "condicion_campo" => "producto_id",
+        "condicion_marcador" => ":ID",
+        "condicion_valor" => $producto_id
+    ];
+
+    if(!$this->actualizarDatos("producto", $datos_producto_credito_up, $condicion_producto)){
+        $errores_venta_detalle = 1;
         break;
     }
+} else {
+    $errores_venta_detalle = 1;
+    break;
+}
+
 }
 
 /*== Reestableciendo DB debido a errores ==*/

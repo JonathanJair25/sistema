@@ -122,90 +122,100 @@
 
 			$numeroPaginas =ceil($total/$registros);
 
-			$tabla.='
-		        <div class="table-container">
-		        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-		            <thead>
-		                <tr>
-		                    <th class="has-text-centered">#</th>
-		                    <th class="has-text-centered">Nombre</th>
-		                    <th class="has-text-centered">IP Router</th>
-		                    <th class="has-text-centered">Clientes</th>
-		                    <th class="has-text-centered">Actualizar</th>
-		                    <th class="has-text-centered">Eliminar</th>
-		                </tr>
-		            </thead>
-		            <tbody>
-		    ';
+						$tabla = '
+			<div class="table-container">
+			<table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+				<thead>
+					<tr>
+						<th class="has-text-centered">#</th>
+						<th class="has-text-centered">Nombre</th>
+						<th class="has-text-centered">IP Router</th>';
 
-		    if($total>=1 && $pagina<=$numeroPaginas){
-				$contador=$inicio+1;
-				$pag_inicio=$inicio+1;
-				foreach($datos as $rows){
-					$tabla.='
-						<tr class="has-text-centered" >
-							<td>'.$contador.'</td>
-							<td>'.$rows['categoria_nombre'].'</td>
-							<td>'.$rows['categoria_router'].'</td>
-							<td>
-			                    <a href="'.APP_URL.'productCategory/'.$rows['categoria_id'].'/" class="button is-info is-rounded is-small">
-			                    	<i class="fas fa-boxes fa-fw"></i>
-			                    </a>
-			                </td>
-			                <td>
-			                    <a href="'.APP_URL.'categoryUpdate/'.$rows['categoria_id'].'/" class="button is-success is-rounded is-small">
-			                    	<i class="fas fa-sync fa-fw"></i>
-			                    </a>
-			                </td>
-			                <td>
-			                	<form class="FormularioAjax" action="'.APP_URL.'app/ajax/categoriaAjax.php" method="POST" autocomplete="off" >
+			if ($_SESSION['rol'] == 1) {
+				$tabla .= '
+					<th class="has-text-centered">Clientes</th>
+					<th class="has-text-centered">Actualizar</th>
+					<th class="has-text-centered">Eliminar</th>';
+			}
 
-			                		<input type="hidden" name="modulo_categoria" value="eliminar">
-			                		<input type="hidden" name="categoria_id" value="'.$rows['categoria_id'].'">
+			$tabla .= '
+					</tr>
+				</thead>
+				<tbody>
+			';
 
-			                    	<button type="submit" class="button is-danger is-rounded is-small">
-			                    		<i class="far fa-trash-alt fa-fw"></i>
-			                    	</button>
-			                    </form>
-			                </td>
-						</tr>
+			if ($total >= 1 && $pagina <= $numeroPaginas) {
+				$contador = $inicio + 1;
+				$pag_inicio = $inicio + 1;
+				foreach ($datos as $rows) {
+					$tabla .= '
+					<tr class="has-text-centered">
+						<td>' . $contador . '</td>
+						<td>' . $rows['categoria_nombre'] . '</td>
+						<td>' . $rows['categoria_router'] . '</td>';
+					
+					if ($_SESSION['rol'] == 1) {
+						$tabla .= '
+						<td>
+							<a href="' . APP_URL . 'productCategory/' . $rows['categoria_id'] . '/" class="button is-info is-rounded is-small">
+								<i class="fas fa-boxes fa-fw"></i>
+							</a>
+						</td>
+						<td>
+							<a href="' . APP_URL . 'categoryUpdate/' . $rows['categoria_id'] . '/" class="button is-success is-rounded is-small">
+								<i class="fas fa-sync fa-fw"></i>
+							</a>
+						</td>
+						<td>
+							<form class="FormularioAjax" action="' . APP_URL . 'app/ajax/categoriaAjax.php" method="POST" autocomplete="off" >
+								<input type="hidden" name="modulo_categoria" value="eliminar">
+								<input type="hidden" name="categoria_id" value="' . $rows['categoria_id'] . '">
+								<button type="submit" class="button is-danger is-rounded is-small">
+									<i class="far fa-trash-alt fa-fw"></i>
+								</button>
+							</form>
+						</td>';
+					}
+					
+					$tabla .= '
+					</tr>
 					';
 					$contador++;
 				}
-				$pag_final=$contador-1;
-			}else{
-				if($total>=1){
-					$tabla.='
-						<tr class="has-text-centered" >
-			                <td colspan="6">
-			                    <a href="'.$url.'1/" class="button is-link is-rounded is-small mt-4 mb-4">
-			                        Haga clic acá para recargar el listado
-			                    </a>
-			                </td>
-			            </tr>
-					';
-				}else{
-					$tabla.='
-						<tr class="has-text-centered" >
-			                <td colspan="6">
-			                    No hay registros en el sistema
-			                </td>
-			            </tr>
-					';
+				$pag_final = $contador - 1;
+			} else {
+				if ($total >= 1) {
+					$tabla .= '
+					<tr class="has-text-centered">
+						<td colspan="6">
+							<a href="' . $url . '1/" class="button is-link is-rounded is-small mt-4 mb-4">
+								Haga clic acá para recargar el listado
+							</a>
+						</td>
+					</tr>';
+				} else {
+					$tabla .= '
+					<tr class="has-text-centered">
+						<td colspan="6">
+							No hay registros en el sistema
+						</td>
+					</tr>';
 				}
 			}
 
-			$tabla.='</tbody></table></div>';
+			$tabla .= '
+				</tbody>
+			</table>
+			</div>';
 
 			### Paginacion ###
-			if($total>0 && $pagina<=$numeroPaginas){
-				$tabla.='<p class="has-text-right">Mostrando categorías <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>';
-
-				$tabla.=$this->paginadorTablas($pagina,$numeroPaginas,$url,7);
+			if ($total > 0 && $pagina <= $numeroPaginas) {
+				$tabla .= '<p class="has-text-right">Mostrando categorías <strong>' . $pag_inicio . '</strong> al <strong>' . $pag_final . '</strong> de un <strong>total de ' . $total . '</strong></p>';
+				$tabla .= $this->paginadorTablas($pagina, $numeroPaginas, $url, 7);
 			}
 
 			return $tabla;
-		}
+			}
 
 
 		/*----------  Controlador eliminar categoria  ----------*/

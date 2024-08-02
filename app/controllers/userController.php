@@ -359,7 +359,7 @@
 							<td>'.$rows['usuario_nombre'].' '.$rows['usuario_apellido'].'</td>
 							<td>'.$rows['usuario_usuario'].'</td>
 							<td>'.$rows['usuario_email'].'</td>
-							<td>'.($rows['usuario_rol'] == 1 ? "Administrador" : ($rows['usuario_rol'] == 2 ? "Usuario Paracho" : ($rows['usuario_rol'] == 3 ? "Usuario Cotija" : ($rows['usuario_rol'] == 4 ? "Usuario Uruapan" : "Usuario")))).'</td>
+							<td>'.($rows['usuario_rol'] == 1 ? "Administrador" : ($rows['usuario_rol'] == 2 ? "Usuario Uruapan" : ($rows['usuario_rol'] == 3 ? "Usuario Paracho" : ($rows['usuario_rol'] == 4 ? "Usuario Cotija" : "Usuario")))).'</td>
 							<td>
 			                    <a href="'.APP_URL.'userPhoto/'.$rows['usuario_id'].'/" class="button is-info is-rounded is-small">
 			                    	<i class="fas fa-camera fa-fw"></i>

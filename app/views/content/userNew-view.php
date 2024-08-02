@@ -65,6 +65,21 @@
 					</label>
 				</div>
 		  	</div>
+			  <div id="previewFoto" class="column"></div>
+		  	<div class="column">
+		  		<div class="control">
+					<label>Rol <?php echo CAMPO_OBLIGATORIO; ?></label><br>
+					<div class="select">
+					  	<select name="usuario_rol">
+					    	<option value="" selected="" >Seleccione un rol</option>
+	                        <option value="1">Administrador</option>
+	                        <option value="2">Usuario Uruapan</option>
+	                        <option value="3">Usuario Paracho</option>
+	                        <option value="4">Usuario Cotija</option>
+					  	</select>
+					</div>
+			  	</div>
+		  	</div>
 		  	<div class="column">
 		  		<label>Caja de ventas <?php echo CAMPO_OBLIGATORIO; ?></label><br>
 				<div class="select">

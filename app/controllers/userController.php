@@ -18,6 +18,8 @@
 		    $clave2=$this->limpiarCadena($_POST['usuario_clave_2']);
 
 		    $caja=$this->limpiarCadena($_POST['usuario_caja']);
+			$usuario_rol=$this->limpiarCadena($_POST['usuario_rol']);
+
 
 
 		    # Verificando campos obligatorios #
@@ -255,6 +257,11 @@
 					"campo_nombre"=>"caja_id",
 					"campo_marcador"=>":Caja",
 					"campo_valor"=>$caja
+				],
+				[
+					"campo_nombre"=>"usuario_rol",
+					"campo_marcador"=>":usuario_rol",
+					"campo_valor"=>$usuario_rol
 				]
 			];
 
@@ -333,6 +340,7 @@
 		                    <th class="has-text-centered">Nombre</th>
 		                    <th class="has-text-centered">Usuario</th>
 		                    <th class="has-text-centered">Email</th>
+							<th class="has-text-centered">Rol</th>
 		                    <th class="has-text-centered">Foto</th>
 		                    <th class="has-text-centered">Actualizar</th>
 		                    <th class="has-text-centered">Eliminar</th>
@@ -351,6 +359,7 @@
 							<td>'.$rows['usuario_nombre'].' '.$rows['usuario_apellido'].'</td>
 							<td>'.$rows['usuario_usuario'].'</td>
 							<td>'.$rows['usuario_email'].'</td>
+							<td>'.($rows['usuario_rol'] == 1 ? "Administrador" : ($rows['usuario_rol'] == 2 ? "Usuario Paracho" : ($rows['usuario_rol'] == 3 ? "Usuario Cotija" : ($rows['usuario_rol'] == 4 ? "Usuario Uruapan" : "Usuario")))).'</td>
 							<td>
 			                    <a href="'.APP_URL.'userPhoto/'.$rows['usuario_id'].'/" class="button is-info is-rounded is-small">
 			                    	<i class="fas fa-camera fa-fw"></i>
@@ -581,6 +590,7 @@
 		    $clave2=$this->limpiarCadena($_POST['usuario_clave_2']);
 
 		    $caja=$this->limpiarCadena($_POST['usuario_caja']);
+			$usuario_rol=$this->limpiarCadena($_POST['usuario_rol']);
 
 		    # Verificando campos obligatorios #
 		    if($nombre=="" || $apellido=="" || $usuario==""){
@@ -745,6 +755,11 @@
 					"campo_nombre"=>"caja_id",
 					"campo_marcador"=>":Caja",
 					"campo_valor"=>$caja
+				],
+				[
+					"campo_nombre"=>"usuario_rol",
+					"campo_marcador"=>":usuario_rol",
+					"campo_valor"=>$usuario_rol
 				]
 			];
 
@@ -760,6 +775,7 @@
 					$_SESSION['nombre']=$nombre;
 					$_SESSION['apellido']=$apellido;
 					$_SESSION['usuario']=$usuario;
+					$_SESSION['usuario_rol']=$usuario_rol;
 				}
 
 				$alerta=[

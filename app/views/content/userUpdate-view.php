@@ -70,6 +70,18 @@
 				</div>
 		  	</div>
 		</div>
+		<div class="column">
+    <label>Rol <?php echo CAMPO_OBLIGATORIO; ?></label><br>
+    <div class="select">
+        <select name="usuario_rol">
+            <option value="" <?php echo ($_SESSION['rol'] == '') ? 'selected' : ''; ?>>Seleccione un rol</option>
+            <option value="1" <?php echo ($_SESSION['rol'] == '1') ? 'selected' : ''; ?>>Administrador</option>
+            <option value="2" <?php echo ($_SESSION['rol'] == '2') ? 'selected' : ''; ?>>Usuario Uruapan</option>
+            <option value="3" <?php echo ($_SESSION['rol'] == '3') ? 'selected' : ''; ?>>Usuario Paracho</option>
+            <option value="4" <?php echo ($_SESSION['rol'] == '4') ? 'selected' : ''; ?>>Usuario Cotija</option>
+        </select>
+    </div>
+</div>
 		<div class="columns">
 		  	<div class="column">
 		  		<label>Caja de ventas <?php echo CAMPO_OBLIGATORIO; ?></label><br>

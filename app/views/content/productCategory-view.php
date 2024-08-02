@@ -42,7 +42,7 @@
 
                     echo '
                         <h2 class="title has-text-centered">'.$categoria['categoria_nombre'].'</h2>
-                        <p class="has-text-centered pb-6" >'.$categoria['categoria_ubicacion'].'</p>
+                        <p class="has-text-centered pb-6" >'.$categoria['categoria_router'].'</p>
                     ';
 
                     echo $insProducto->listarProductoControlador($url[2],10,$url[0],"",$url[1]);

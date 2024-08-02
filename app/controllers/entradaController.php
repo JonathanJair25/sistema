@@ -5,63 +5,41 @@
 
 	class entradaController extends mainModel{
 
-		/*---------- Controlador buscar codigo de producto ----------*/
-        public function buscarCodigoVentaControlador(){
+		/*---------- Controlador buscar todas las facturas ----------*/
+public function buscarTodasFacturasControlador() {
+    /*== Seleccionando todas las facturas en la DB ==*/
+    $datos_facturas = $this->ejecutarConsulta("SELECT * FROM facturas ORDER BY facturas_nombre ASC");
 
-            /*== Recuperando codigo de busqueda ==*/
-			$producto=$this->limpiarCadena($_POST['buscar_codigo']);
+    if ($datos_facturas->rowCount() >= 1) {
+        $datos_facturas = $datos_facturas->fetchAll();
 
-			/*== Comprobando que no este vacio el campo ==*/
-			if($producto==""){
-				return '
-				<article class="message is-warning mt-4 mb-4">
-					 <div class="message-header">
-					    <p>¡Ocurrio un error inesperado!</p>
-					 </div>
-				    <div class="message-body has-text-centered">
-				    	<i class="fas fa-exclamation-triangle fa-2x"></i><br>
-						Debes de introducir el Nombre, Marca o Modelo del producto
-				    </div>
-				</article>';
-				exit();
-            }
+        $tabla = '<div class="table-container mb-6"><table class="table is-striped is-narrow is-hoverable is-fullwidth"><tbody>';
 
-            /*== Seleccionando productos en la DB ==*/
-            $datos_productos=$this->ejecutarConsulta("SELECT * FROM facturas WHERE (facturas_nombre LIKE '%$producto%' OR facturas_etiqueta LIKE '%$producto%') ORDER BY facturas_nombre ASC");
-
-            if($datos_productos->rowCount()>=1){
-
-				$datos_productos=$datos_productos->fetchAll();
-
-				$tabla='<div class="table-container mb-6"><table class="table is-striped is-narrow is-hoverable is-fullwidth"><tbody>';
-
-				foreach($datos_productos as $rows){
-					$tabla.='
-					<tr class="has-text-left" >
-                        <td><i class="fas fa-box fa-fw"></i> &nbsp; '.$rows['facturas_nombre'].'</td>
-                        <td class="has-text-centered">
-                            <button type="button" class="button is-link is-rounded is-small" onclick="agregar_codigo(\''.$rows['facturas_etiqueta'].'\')"><i class="fas fa-plus-circle"></i></button>
-                        </td>
-                    </tr>
-                    ';
-				}
-
-				$tabla.='</tbody></table></div>';
-				return $tabla;
-			}else{
-				return '<article class="message is-warning mt-4 mb-4">
-					 <div class="message-header">
-					    <p>¡Ocurrio un error inesperado!</p>
-					 </div>
-				    <div class="message-body has-text-centered">
-				    	<i class="fas fa-exclamation-triangle fa-2x"></i><br>
-						No hemos encontrado ningún producto en el sistema que coincida con <strong>“'.$producto.'”
-				    </div>
-				</article>';
-
-				exit();
-			}
+        foreach ($datos_facturas as $rows) {
+            $tabla .= '
+            <tr class="has-text-left">
+                <td><i class="fas fa-file-invoice fa-fw"></i> &nbsp; ' . $rows['facturas_nombre'] . '</td>
+                <td class="has-text-centered">
+                    <button type="button" class="button is-link is-rounded is-small" onclick="agregar_codigo(\'' . $rows['facturas_etiqueta'] . '\')"><i class="fas fa-plus-circle"></i></button>
+                </td>
+            </tr>';
         }
+
+        $tabla .= '</tbody></table></div>';
+        return $tabla;
+    } else {
+        return '<article class="message is-warning mt-4 mb-4">
+                 <div class="message-header">
+                    <p>¡Ocurrio un error inesperado!</p>
+                 </div>
+                <div class="message-body has-text-centered">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i><br>
+                    No hemos encontrado ninguna factura en el sistema
+                </div>
+            </article>';
+    }
+}
+
 
 
        /*---------- Controlador agregar producto a venta ----------*/
@@ -127,7 +105,7 @@ public function agregarProductoCarritoControlador(){
             "entrada_detalle_descripcion" => $campos['facturas_nombre']
         ];
 
-        $_SESSION['alerta_factura_agregado'] = "Se agregó <strong>".$campos['facturas_nombre']."</strong> a la venta";
+        $_SESSION['alerta_factura_agregado'] = "Se agregó <strong>".$campos['facturas_nombre']."</strong>";
     } else {
         $detalle_cantidad = ($_SESSION['datos_factura_cliente'][$codigo]['entrada_detalle_cantidad']) + 1;
         $detalle_total = $detalle_cantidad * $campos['facturas_precio'];
@@ -147,8 +125,8 @@ public function agregarProductoCarritoControlador(){
 
     $alerta = [
         "tipo" => "recargar",
-        "titulo" => "Cliente Agregado",
-        "texto" => "El cliente se ha agregado correctamente.",
+        "titulo" => "Producto Agregado",
+        "texto" => "El producto se ha agregado correctamente.",
         "icono" => "success"
     ];
 
@@ -168,8 +146,8 @@ public function agregarProductoCarritoControlador(){
             if(empty($_SESSION['datos_factura_cliente'][$codigo])){
 				$alerta=[
 					"tipo"=>"recargar",
-					"titulo"=>"¡Cliente removido!",
-					"texto"=>"El cliente se ha removido del pago",
+					"titulo"=>"¡Producto removido!",
+					"texto"=>"El producto se ha removido de la factura",
 					"icono"=>"success"
 				];
 				

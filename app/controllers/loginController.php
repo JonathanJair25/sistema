@@ -56,6 +56,7 @@
 					            $_SESSION['usuario']=$check_usuario['usuario_usuario'];
 					            $_SESSION['foto']=$check_usuario['usuario_foto'];
 					            $_SESSION['caja']=$check_usuario['caja_id'];
+					            $_SESSION['rol']=$check_usuario['usuario_id'];
 
 
 					            if(headers_sent()){

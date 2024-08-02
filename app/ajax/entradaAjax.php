@@ -54,8 +54,14 @@
 		if($_POST['modulo_entrada']=="eliminar_venta"){
 			echo $insEntrada->eliminarVentaControlador();
 		}
+
+		/*--------- Buscar todas las facturas ---------*/
+		if($_POST['modulo_entrada']=="buscar_todas_facturas"){
+			echo $insEntrada->buscarTodasFacturasControlador();
+		}
 		
 	}else{
 		session_destroy();
 		header("Location: ".APP_URL."login/");
 	}
+?>

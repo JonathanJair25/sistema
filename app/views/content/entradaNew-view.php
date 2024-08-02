@@ -37,19 +37,18 @@ $datos = $insLogin->seleccionarDatos("Unico", "facturas", "facturas_id", $id);
     <div class="columns">
     <div class="column is-one-quarter">
             <button type="button" class="button is-link is-light js-modal-trigger" data-target="modal-js-product" >
-                <i class="fas fa-search"></i> &nbsp; Buscar cliente
+                <i class="fas fa-search"></i> &nbsp; AÑADIR PRODUCTO
             </button>
         </div>
-        <div class="column">
+        <div class="column" style="display: none;">
             <div class="field is-grouped">
                 <p class="control is-expanded">
                     <input class="input" type="text" pattern="[a-zA-Z0-9- ]{1,70}" maxlength="70" autofocus="autofocus" placeholder="Código de cliente" id="entrada-barcode-input" >
                 </p>
                 <a class="control">
-                <button type="submit" class="button is-info" id="add-product-btn" disabled>
-    <i class="far fa-check-circle"></i> &nbsp; Agregar cliente
-</button>
-
+                    <button type="submit" class="button is-info" id="add-product-btn" disabled>
+                        <i class="far fa-check-circle"></i> &nbsp; Agregar cliente
+                    </button>
                 </a>
             </div>
         </div>
@@ -220,18 +219,17 @@ $datos = $insLogin->seleccionarDatos("Unico", "facturas", "facturas_id", $id);
     <div class="modal-background"></div>
     <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title is-uppercase"><i class="fas fa-search"></i> &nbsp; Buscar producto</p>
+          <p class="modal-card-title is-uppercase"><i class="fas fa-search"></i> &nbsp; FACTURAS</p>
           <button class="delete" aria-label="close"></button>
         </header>
-        <section class="modal-card-body">
+        <section class="modal-card-body" >
             <div class="field mt-6 mb-6">
-                <label class="label">Nombre, marca, modelo</label>
-                <div class="control">
+                <div class="control" style="display: none;">
                     <input class="input" type="text" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]{1,30}" name="input_codigo" id="input_codigo" maxlength="30" >
                 </div>
             </div>
             <div class="container" id="tabla_productos"></div>
-            <p class="has-text-centered">
+            <p class="has-text-centered" style="display: none;">
                 <button type="button" class="button is-link is-light" onclick="buscar_codigo()" ><i class="fas fa-search"></i> &nbsp; Buscar</button>
             </p>
         </section>
@@ -286,37 +284,26 @@ $datos = $insLogin->seleccionarDatos("Unico", "facturas", "facturas_id", $id);
     }
 
 
-    /*----------  Buscar codigo  ----------*/
-    function buscar_codigo(){
-        let input_codigo=document.querySelector('#input_codigo').value;
+   /*----------  Buscar todas las facturas  ----------*/
+function buscar_facturas() {
+    let datos = new FormData();
+    datos.append("modulo_entrada", "buscar_todas_facturas");
 
-        input_codigo=input_codigo.trim();
+    fetch('<?php echo APP_URL; ?>app/ajax/entradaAjax.php', {
+        method: 'POST',
+        body: datos
+    })
+    .then(respuesta => respuesta.text())
+    .then(respuesta => {
+        let tabla_productos = document.querySelector('#tabla_productos');
+        tabla_productos.innerHTML = respuesta;
+    });
+}
 
-        if(input_codigo!=""){
-
-            let datos = new FormData();
-            datos.append("buscar_codigo", input_codigo);
-            datos.append("modulo_entrada", "buscar_codigo");
-
-            fetch('<?php echo APP_URL; ?>app/ajax/entradaAjax.php',{
-                method: 'POST',
-                body: datos
-            })
-            .then(respuesta => respuesta.text())
-            .then(respuesta =>{
-                let tabla_productos=document.querySelector('#tabla_productos');
-                tabla_productos.innerHTML=respuesta;
-            });
-
-        }else{
-            Swal.fire({
-                icon: 'error',
-                title: 'Ocurrió un error inesperado',
-                text: 'Debes de introducir el Nombre, Marca o Modelo del producto',
-                confirmButtonText: 'Aceptar'
-            });
-        }
-    }
+// Llamar a la función buscar_facturas cuando se carga la página
+document.addEventListener('DOMContentLoaded', function () {
+    buscar_facturas();
+});
 
 
     /*----------  Agregar codigo  ----------*/

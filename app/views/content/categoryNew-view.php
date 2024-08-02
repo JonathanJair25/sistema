@@ -1,6 +1,6 @@
 <div class="container is-fluid mb-6">
-	<h1 class="title">Categorías</h1>
-	<h2 class="subtitle"><i class="fas fa-tag fa-fw"></i> &nbsp; Nueva categoría</h2>
+	<h1 class="title">Organizaciones</h1>
+	<h2 class="subtitle"><i class="fas fa-tag fa-fw"></i> &nbsp; Nueva organización</h2>
 </div>
 
 <div class="container pb-6 pt-6">
@@ -18,8 +18,8 @@
 		  	</div>
 		  	<div class="column">
 		    	<div class="control">
-					<label>Ubicación</label>
-				  	<input class="input" type="text" name="categoria_ubicacion" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]{5,150}" maxlength="150" >
+					<label>IP router</label>
+				  	<input class="input" type="text" name="categoria_router" maxlength="150" >
 				</div>
 		  	</div>
 		</div>

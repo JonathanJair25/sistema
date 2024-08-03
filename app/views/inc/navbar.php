@@ -6,7 +6,7 @@
                 <li class="noLink">
                     <div class="input-group">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
-                        <input type="text" class="form-control" id="search" placeholder="Buscar Producto" style="width: 500px; padding: 7px">
+                        <input type="text" class="form-control" id="search" placeholder="Buscar cliente..." style="width: 500px; padding: 7px">
                     </div>
                     <div id="result-container" style="position: left; top: 100%; left: 0; width: 500px; z-index: 1000;">
                         <div id="result" style="border: 1px solid #ccc; background-color: #000; max-height: 300px; overflow-y: auto;">

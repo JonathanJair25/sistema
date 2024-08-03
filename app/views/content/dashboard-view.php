@@ -1,5 +1,7 @@
 <div class="container is-fluid">
-	<h1 class="title">Home</h1>
+	<br>
+	<br>
+	<br>
   	<div class="columns is-flex is-justify-content-center">
     	<figure class="image is-128x128">
     		<?php

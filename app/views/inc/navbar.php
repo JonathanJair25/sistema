@@ -3,18 +3,22 @@
         <i class="fas fa-exchange-alt fa-fw" id="btn-menu"></i>
         <nav class="navBar-options-list">
             <ul class="list-unstyle">
-            <li class="noLink">
+                <li class="noLink">
                     <div class="input-group">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
-                        <input type="text" class="form-control" id="search" placeholder="Buscar Producto">
+                        <input type="text" class="form-control" id="search" placeholder="Buscar Producto" style="width: 500px; padding: 7px">
+                    </div>
+                    <div id="result-container" style="position: left; top: 100%; left: 0; width: 500px; z-index: 1000;">
+                        <div id="result" style="border: 1px solid #ccc; background-color: #000; max-height: 300px; overflow-y: auto;">
+                        </div>
                     </div>
                 </li>
-                <li class="text-condensedLight noLink" >
-                    <a class="btn-exit" href="<?php echo APP_URL."logOut/"; ?>" >
+                <li class="text-condensedLight noLink">
+                    <a class="btn-exit" href="<?php echo APP_URL."logOut/"; ?>">
                         <i class="fas fa-power-off"></i>
                     </a>
                 </li>
-                <li class="text-condensedLight noLink" >
+                <li class="text-condensedLight noLink">
                     <small><?php echo $_SESSION['usuario']; ?></small>
                 </li>
                 <li class="noLink">

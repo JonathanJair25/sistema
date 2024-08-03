@@ -22,7 +22,7 @@ function search() {
     $found = false; // Variable para verificar si se encontraron resultados
 
     while ($row = $res->fetch_array(MYSQLI_ASSOC)) {
-        echo "<p>$row[producto_nombre] -- ID : $row[producto_codigo]</p>";
+        echo "<p><a href='productUpdate/$row[producto_codigo]'>$row[producto_nombre] -- ID: $row[producto_codigo]</a></p>";
         $found = true; // Marcar que se encontró al menos un resultado
     }
     

@@ -6,11 +6,24 @@ require __DIR__ . '/../util.php';
 // Incluir archivo config
 require __DIR__ . '/../../config.php';
 
-
-// Función para registrar eventos en el archivo de log
+// Función para registrar eventos en el archivo de log con un máximo de 1000 líneas
 function log_event($message, $log_file) {
     $date = date('Y-m-d H:i:s');
-    file_put_contents($log_file, "[$date] $message\n", FILE_APPEND);
+    $log_entry = "[$date] $message\n";
+
+    // Verifica si el archivo de log existe
+    if (file_exists($log_file)) {
+        $lines = file($log_file, FILE_IGNORE_NEW_LINES);
+
+        // Si el log tiene 1000 líneas o más, lo reinicia
+        if (count($lines) >= 1000) {
+            file_put_contents($log_file, $log_entry);
+        } else {
+            file_put_contents($log_file, $log_entry, FILE_APPEND);
+        }
+    } else {
+        file_put_contents($log_file, $log_entry);
+    }
 }
 
 // Configuración de la base de datos
@@ -187,7 +200,7 @@ function process_product_changes($mysqli, &$connections, $log_file) {
 while (true) {
     process_product_changes($mysqli, $connections, $log_file);
     retry_connections($failed_connections, $connections, $router_user, $router_pass, $log_file);
-    sleep(60); // Esperar un minuto antes de la siguiente verificación
+    sleep(30); // Esperar un minuto antes de la siguiente verificación
 }
 
 $mysqli->close();

@@ -21,7 +21,7 @@ function manage_log_file($file_path) {
 $log_file = LOG_PATH . 'monitor_log.txt';
 
 while (true) {
-    $stmt = $db->query("SELECT * FROM producto_cambios WHERE procesado = 0");
+    $stmt = $db->query("SELECT * FROM producto_cambios_monitor WHERE procesado = 0");
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $producto_id = $row['producto_id'];
@@ -45,7 +45,7 @@ while (true) {
             file_put_contents($log_file, implode('', $lines));
         }
 
-        $db->prepare("UPDATE producto_cambios SET procesado = 1 WHERE id = ?")
+        $db->prepare("UPDATE producto_cambios_monitor SET procesado = 1 WHERE id = ?")
             ->execute([$row['id']]);
     }
 

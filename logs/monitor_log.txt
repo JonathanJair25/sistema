@@ -1,4 +1,4 @@
-[2024-08-02 17:39:47] Cambio detectado para producto_id: 2, nuevo_estado: deshabilitado
-[2024-08-02 17:39:47] Actualización de Redis exitosa para producto_id: 2
-[2024-08-02 17:41:12] Cambio detectado para producto_id: 1, nuevo_estado: habilitado
-[2024-08-02 17:41:12] Actualización de Redis exitosa para producto_id: 1
+[2024-08-04 17:02:37] Cambio detectado para producto_id: 1, nuevo_estado: deshabilitado
+[2024-08-04 17:02:37] Actualización de Redis exitosa para producto_id: 1
+[2024-08-04 17:03:02] Cambio detectado para producto_id: 1, nuevo_estado: habilitado
+[2024-08-04 17:03:02] Actualización de Redis exitosa para producto_id: 1

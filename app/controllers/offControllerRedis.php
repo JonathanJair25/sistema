@@ -46,6 +46,12 @@ while (true) {
                     $nombre = $row['producto_nombre'];
                     $apellidos = $row['producto_apellidos'];
                     $organizacion = $row['categoria_nombre'];
+
+                    if ($nuevo_estado === 'habilitado') {
+                        // Delay de 25 segundos antes de habilitar la TV
+                        sleep(25);
+                    }
+
                     $ssh = new SSH2($ip_address);
                     
                     try {

@@ -7,10 +7,11 @@ require __DIR__ . '/../util.php'; // Incluir el archivo de utilidades
 use phpseclib3\Net\SSH2;
 use phpseclib3\Exception\UnableToConnectException;
 
-$log_file = LOG_PATH . 'main_mikrotik_log.txt';
+$log_file = LOG_PATH . 'combined_mikrotik_log.txt';
 $failed_log = LOG_PATH . 'fallas_dispositivos.txt';
 
 $connections = [];
+$previous_states = []; // Array para mantener el estado previo de cada IP
 
 while (true) {
     // Obtener clientes deshabilitados
@@ -20,6 +21,14 @@ while (true) {
     foreach ($disabled_clients as $client) {
         $ip = $client['producto_ip'];
         $categoria_id = $client['categoria_id'];
+
+        // Verificar si el estado previo era 'Deshabilitado'
+        if (isset($previous_states[$ip]) && $previous_states[$ip] === 'Deshabilitado') {
+            continue; // Si el estado previo ya era 'Deshabilitado', no hacer nada
+        }
+
+        // Actualizar el estado previo
+        $previous_states[$ip] = 'Deshabilitado';
 
         // Obtener IP y puerto del router desde la base de datos
         $stmt = $db->prepare("SELECT categoria_ip, categoria_puerto FROM categoria WHERE categoria_id = ?");
@@ -51,7 +60,10 @@ while (true) {
 
             try {
                 $command = "ip firewall address-list add list=BLOCKED_USERS address=$ip";
-                $ssh->exec($command);
+                $output = $ssh->exec($command);
+                if (strpos($output, 'failure') !== false) {
+                    throw new UnableToConnectException("Error ejecutando comando en router: $router_ip, salida: $output");
+                }
 
                 $lines = manage_log_file($log_file);
                 $lines[] = "[" . date('Y-m-d H:i:s') . "] IP añadida al firewall: $ip en router: $router_ip\n";
@@ -76,6 +88,14 @@ while (true) {
     foreach ($enabled_clients as $client) {
         $ip = $client['producto_ip'];
         $categoria_id = $client['categoria_id'];
+
+        // Verificar si el estado previo era 'Habilitado'
+        if (isset($previous_states[$ip]) && $previous_states[$ip] === 'Habilitado') {
+            continue; // Si el estado previo ya era 'Habilitado', no hacer nada
+        }
+
+        // Actualizar el estado previo
+        $previous_states[$ip] = 'Habilitado';
 
         // Obtener IP y puerto del router desde la base de datos
         $stmt = $db->prepare("SELECT categoria_ip, categoria_puerto FROM categoria WHERE categoria_id = ?");
@@ -107,7 +127,10 @@ while (true) {
 
             try {
                 $command = "ip firewall address-list remove [find list=BLOCKED_USERS address=$ip]";
-                $ssh->exec($command);
+                $output = $ssh->exec($command);
+                if (strpos($output, 'failure') !== false) {
+                    throw new UnableToConnectException("Error ejecutando comando en router: $router_ip, salida: $output");
+                }
 
                 $lines = manage_log_file($log_file);
                 $lines[] = "[" . date('Y-m-d H:i:s') . "] IP eliminada del firewall: $ip en router: $router_ip\n";

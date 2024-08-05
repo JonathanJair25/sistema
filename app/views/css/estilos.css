@@ -133,7 +133,7 @@ body,html{
     padding: 0;
 }
 .navBar-options .fa-exchange-alt{
-    width: 40px;
+    width: px;
     left: 0;
     font-size: 23px;
     cursor: pointer;
@@ -163,13 +163,17 @@ body,html{
 .navBar-options-list ul li{ outline: none; }
 .navBar-options-list ul li a,
 .navBar-options-list ul li img{
-    margin: 0;
+    margin: 10px;
     padding: 0;
     padding-top: 0;
-    margin-top: 0;
+    margin-top: 1px;
     box-sizing: border-box;
-    color: #FFF;
+    color: #fff;
 }
+.navBar-options-list ul li a:hover{
+    color: #000000;
+}
+
 .navBar-options-list ul li img{
     border: 1px solid #E1E1E1;
     border-radius: 50%;
@@ -178,6 +182,7 @@ body,html{
     margin-top: 3px;
     margin-bottom: 0;
 }
+
 
 /*=============Estilos en comun navegacion lateral y contenido pagina*/
 .navLateral,

@@ -11,8 +11,22 @@ $redis = new Predis\Client();
 
 $log_file = LOG_PATH . 'offcontroller_log.txt';
 $failed_log = LOG_PATH . 'failed_ips.txt';
+$max_parallel_processes = 10; // Ajusta este valor según la capacidad de tu servidor
+$current_processes = [];
 
 while (true) {
+    // Esperar hasta que haya espacio en el pool de procesos
+    while (count($current_processes) >= $max_parallel_processes) {
+        foreach ($current_processes as $key => $process) {
+            $status = proc_get_status($process);
+            if (!$status['running']) {
+                proc_close($process);
+                unset($current_processes[$key]);
+            }
+        }
+        sleep(1); // Ajusta este tiempo según sea necesario
+    }
+
     $item = $redis->lpop('estado_actualizado');
 
     if ($item) {
@@ -27,17 +41,17 @@ while (true) {
                 $process = proc_open($cmd, [], $pipes);
 
                 if (is_resource($process)) {
-                    proc_close($process);
+                    $current_processes[] = $process;
                 }
             } else {
                 $lines = manage_log_file($failed_log);
-                $lines[] = "[" . date('Y-m-d H:i:s') . "] Datos incompletos en el mensaje de Redis: producto_id o nuevo_estado no definidos.\n";
-                file_put_contents($failed_log, implode('', $lines));
+                $lines[] = "[" . date('Y-m-d H:i:s') . "] Datos incompletos en el mensaje de Redis: producto_id o nuevo_estado no definidos.";
+                file_put_contents($failed_log, implode(PHP_EOL, $lines) . PHP_EOL);
             }
         } else {
             $lines = manage_log_file($failed_log);
-            $lines[] = "[" . date('Y-m-d H:i:s') . "] Error de decodificación JSON para producto_id: $data[producto_id] - Error: " . json_last_error_msg() . "\n";
-            file_put_contents($failed_log, implode('', $lines));
+            $lines[] = "[" . date('Y-m-d H:i:s') . "] Error de decodificación JSON para producto_id: $data[producto_id] - Error: " . json_last_error_msg();
+            file_put_contents($failed_log, implode(PHP_EOL, $lines) . PHP_EOL);
         }
     }
 

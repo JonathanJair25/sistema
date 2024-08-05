@@ -13,4 +13,9 @@ function log_message($message, $file_path) {
     file_put_contents($file_path, implode(PHP_EOL, $lines) . PHP_EOL);
 }
 
+function log_event($message, $log_file) {
+    $date = date('Y-m-d H:i:s');
+    $log_entry = "[$date] $message\n";
+    file_put_contents($log_file, $log_entry, FILE_APPEND);
+}
 ?>

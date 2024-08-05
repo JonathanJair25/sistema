@@ -1,0 +1,18 @@
+instalar composer
+reemplazar carpeta php de xampp ya que contiene todos los archivos modificados para ssh y redis
+en caso de que redis ni funcione instalar .exe de redis (Redis-x64-3.0.504.msi).
+ahora comando para ejecutar redis en windows
+
+
+primer reids (para offControllerRedis.php y monitorCambiosController.php)
+C:\Program Files\Redis>redis-server.exe redis.windows.conf
+
+segundo (para mikrotikController.php)
+C:\Users\Frabe>redis-server --port 6780
+
+recordatorio:
+deben estar ejecutandose siempre los scripts 
+offControllerRedis.php
+monitorCambiosController.php
+mikrotikController.php
+para su funcionamiento, asi como redis.

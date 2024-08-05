@@ -4,6 +4,10 @@ en caso de que redis ni funcione instalar .exe de redis (Redis-x64-3.0.504.msi).
 ahora comando para ejecutar redis en windows
 
 
+para saber si redis esta funcionando es necesario hacer copiar y pegar la liena siguiente en el cmd:
+redis-cli ping
+si esta funcionando correctamente recibiras un "PONG"
+
 primer reids (para offControllerRedis.php y monitorCambiosController.php)
 C:\Program Files\Redis>redis-server.exe redis.windows.conf
 

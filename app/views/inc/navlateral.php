@@ -3,26 +3,8 @@
 		<div class="full-width navLateral-body-logo has-text-centered tittles is-uppercase">
 			REDES ÓPTICAS
 		</div>
-		<figure class="full-width" style="height: 77px;">
-			<div class="navLateral-body-cl">
-				<?php
-                    if(is_file("./app/views/fotos/".$_SESSION['foto'])){
-                        echo '<img class="is-rounded img-responsive" src="'.APP_URL.'app/views/fotos/'.$_SESSION['foto'].'">';
-                    }else{
-                        echo '<img class="is-rounded img-responsive" src="'.APP_URL.'app/views/fotos/default.png">';
-                    }
-                ?>
-			</div>
-			<figcaption class="navLateral-body-cr">
-				<span>
-					<?php echo $_SESSION['nombre']; ?><br>
-					<small><?php echo $_SESSION['usuario']; ?></small>
-				</span>
-			</figcaption>
-		</figure>
-		<div class="full-width tittles navLateral-body-tittle-menu has-text-centered is-uppercase">
-			<i class="fas fa-th-large fa-fw"></i> &nbsp; <?php echo APP_NAME; ?>
-		</div>
+		
+		
 		<nav class="full-width">
 			<ul class="full-width list-unstyle menu-principal">
 
@@ -1241,22 +1223,30 @@
     }
 ?>
 
-
-
-				<li class="full-width divider-menu-h"></li>
-
-				<li class="full-width mt-5">
-					<a href="<?php echo APP_URL."logOut/"; ?>" class="full-width btn-exit" >
-						<div class="navLateral-body-cl">
-							<i class="fas fa-power-off"></i>
-						</div>
-						<div class="navLateral-body-cr">
-							Cerrar sesión
-						</div>
-					</a>
-				</li>
-
 			</ul>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <ul>
+            <li class="full-width divider-menu-h"></li>
+
+<li class="full-width mt-5">
+    <a href="<?php echo APP_URL."logOut/"; ?>" class="full-width btn-exit" >
+        <div class="navLateral-body-cl">
+            <i class="fas fa-power-off"></i>
+        </div>
+        <div class="navLateral-body-cr">
+            Cerrar sesión
+        </div>
+    </a>
+</li>
+            </ul>
+
 		</nav>
 	</div>
 </section>

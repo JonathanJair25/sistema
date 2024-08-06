@@ -110,78 +110,134 @@ body,html{
     background: rgba(29, 30, 34, 1);
 }
 /*=============Estilos barra superior*/
-.navBar{
-    background-color: #3F51B5;
-    height: 45px;
+.navBar {
+    background-color: #6D9BBA; /* Un color naranja vibrante */
+    height: 60px;
     color: #fff;
     position: relative;
     margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 1000;
 }
-.navBar-options{
-    line-height: 45px;
-    height: 45px;
-    padding: 0;
-    transition: all .3s ease-in-out;
+
+.navBar-options {
     display: flex;
     justify-content: space-between;
+    width: 100%;
 }
+
 .navBar-options .fa-exchange-alt,
-.navBar-options-list{
-    line-height: 45px;
-    height: 45px;
+.navBar-options-list {
+    display: flex;
+    align-items: center;
+}
+
+.navBar-options .fa-exchange-alt {
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    color: #FFFFFF;
+}
+
+.navBar-options .fa-exchange-alt:hover {
+    color: #FFC107; /* Color dorado para el hover */
+}
+
+.navBar-options-list {
+    display: flex;
+    align-items: center;
+}
+
+.navBar-options-list .noLink {
+    cursor: default;
+}
+
+.navBar-options-list ul {
+    display: flex;
+    align-items: center;
     margin: 0;
     padding: 0;
+    list-style: none;
 }
-.navBar-options .fa-exchange-alt{
-    width: px;
-    left: 0;
-    font-size: 23px;
-    cursor: pointer;
-    user-select: none;
-    text-align: center;
-    outline: none;
-    margin-left: 9px;
-}
-.navBar-options-list{
-    right: 9px;
-}
-.navBar-options-list .noLink{
-    cursor: inherit;
-}
-.navBar-options-list ul{
-    height: 45px;
+
+.navBar-options-list ul li {
+    margin: 0 10px;
     display: flex;
+    align-items: center;
 }
-.navBar-options-list ul li{
-    height: 45px;
-    line-height: 45px;
-    cursor: pointer;
-    padding: 0 7px;
-    font-size: 21px;
-    user-select: none;
-}
-.navBar-options-list ul li{ outline: none; }
+
 .navBar-options-list ul li a,
-.navBar-options-list ul li img{
-    margin: 10px;
-    padding: 0;
-    padding-top: 0;
-    margin-top: 1px;
-    box-sizing: border-box;
-    color: #fff;
+.navBar-options-list ul li img {
+    color: #FFFFFF;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
-.navBar-options-list ul li a:hover{
+
+.navBar-options-list ul li a:hover {
+    color: #FFC107; /* Color dorado para el hover */
+}
+
+.navBar-options-list ul li img {
+    border: 0px solid #E1E1E1;
+    width: 40px;
+    height: 40px;
+    transition: transform 0.3s ease;
+}
+
+.navBar-options-list ul li img:hover {
+    transform: scale(1.1);
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group-addon {
+    background-color: transparent;
+    border: none;
+    color: #FFFFFF;
+    font-size: 20px;
+    padding: 0 10px;
+}
+
+.form-control {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 16px;
+    transition: box-shadow 0.3s ease;
+    background-color: #FFFFFF;
     color: #000000;
 }
 
-.navBar-options-list ul li img{
-    border: 1px solid #E1E1E1;
-    border-radius: 50%;
-    width: 39px;
-    height: 39px;
-    margin-top: 3px;
-    margin-bottom: 0;
+.form-control:focus {
+    box-shadow: 0 0 15px rgba(255, 87, 34, 0.5); /* Sombra con el color de la barra */
+    outline: none;
 }
+
+#result-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 500px;
+    z-index: 1000;
+}
+
+#result {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #000;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
 
 
 /*=============Estilos en comun navegacion lateral y contenido pagina*/
@@ -194,33 +250,42 @@ body,html{
 .pageContent{
     overflow-y: auto;
 }
-/*=============Estilos navegacion lateral*/
-.navLateral{
+/*=============Estilos navegación lateral*/
+.navLateral {
     width: 300px;
     border-right: 1px solid #E1E1E1;
     transition: all .3s ease-in-out;
     position: relative;
+    background-color: #FAFAFA; /* Fondo claro y suave */
+    color: #333; /* Texto oscuro */
 }
-.navLateral-change{
+
+.navLateral-change {
     pointer-events: none;
     opacity: 0;
     width: 0;
     border-right: none;
 }
-.navLateral-body{
-    background-color: #fff;
+
+.navLateral-body {
+    background-color: #FFFFFF; /* Fondo blanco */
     position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.navLateral-body-logo{
-    height: 45px;
-    line-height: 45px;
+
+.navLateral-body-logo {
+    height: 60px; /* Aumentado para más espacio */
+    line-height: 60px;
     color: #fff;
     width: 100%;
     font-size: 25px;
-    background-color: #3F51B5;
+    background-color: #6D9BBA; /* Azul suave */
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 .navLateral-body-cl,
-.navLateral-body-cr{
+.navLateral-body-cr {
     box-sizing: border-box;
     height: 77px;
     float: left;
@@ -228,85 +293,113 @@ body,html{
     padding: 0;
     position: relative;
 }
-.navLateral-body-cl{
+
+.navLateral-body-cl {
     width: 30%;
 }
-.navLateral-body-cl img{
+
+.navLateral-body-cl img {
     width: 57px;
     height: 57px;
     margin: 0 auto;
     display: block;
     margin-top: 10px;
+    border: 0px solid #6D9BBA;
+    
 }
-.navLateral-body-cr{
+
+.navLateral-body-cr {
     width: 70%;
     font-family: "RobotoCondensedLight";
 }
-.navLateral-body-tittle-menu{
+
+.navLateral-body-tittle-menu {
     height: 70px;
     line-height: 70px; 
-    font-size:20px; 
-    background-color: #F5F5F5;
+    font-size: 20px; 
+    background-color: #E8F0F2; /* Azul claro suave */
     text-align: center;
+    color: #333;
 }
+
 .menu-principal li,
-.menu-principal li a{
+.menu-principal li a {
     display: block;
 }
-.menu-principal li a{
-    height: 45px;
+
+.menu-principal li a {
+    height: 50px; /* Aumentado para más espacio */
     color: #333;
     position: relative;
     transition: all .3s ease-in-out;
+    padding-left: 20px;
 }
-.menu-principal li a:hover{
-    color: #3F51B5;
+
+.menu-principal li a:hover {
+    color: #6D9BBA;
+    background-color: #F0F8FF; /* Azul claro */
 }
+
 .menu-principal li a div.navLateral-body-cl,
-.menu-principal li a div.navLateral-body-cr{
-    height: 45px;
-    line-height: 45px;
+.menu-principal li a div.navLateral-body-cr {
+    height: 50px;
+    line-height: 50px;
 }
-.menu-principal li a div.navLateral-body-cl{
+
+.menu-principal li a div.navLateral-body-cl {
     text-align: center;
     font-size: 20px;
 }
-.btn-subMenu span.fa-chevron-down{
+
+.btn-subMenu span.fa-chevron-down {
     position: absolute;
     top: 0;
-    right: 7px;
-    line-height: 45px;
-    height: 45px;
+    right: 15px;
+    line-height: 50px;
+    height: 50px;
     font-size: 19px;
     transition: all .3s ease-in-out;
 }
-.btn-subMenu + .sub-menu-options{
+
+.btn-subMenu + .sub-menu-options {
     transition: all .3s ease-in-out;
 }
-.sub-menu-options{
+
+.sub-menu-options {
     height: 0;
-    background-color: #F5F5F5;
+    background-color: #E8F0F2; /* Azul claro suave */
     overflow-y: hidden;
     transition: all .3s ease-in-out;
 }
-.sub-menu-options li a{ border-left: 4px solid transparent; }
-.sub-menu-options li a:hover{ border-left: 4px solid #3F51B5; }
-.btn-subMenu-show{
-    background-color: rgba(0, 0, 0, 0.1);
-}
-.btn-subMenu-show .navLateral-body-cl,
-.btn-subMenu-show .navLateral-body-cr{
-    color: #3F51B5;
-}
-.btn-subMenu-show + .sub-menu-options{
-    height: auto;
-    overflow-y: auto;
-    background-color: rgba(0, 0, 0, 0.1);
+
+.sub-menu-options li a { 
+    border-left: 4px solid transparent; 
+    padding-left: 25px;
 }
 
-.btn-subMenu-show span.fa-chevron-down{
+.sub-menu-options li a:hover { 
+    border-left: 4px solid #6D9BBA; 
+}
+
+.btn-subMenu-show {
+    background-color: rgba(109, 155, 186, 0.1); /* Azul suave */
+}
+
+.btn-subMenu-show .navLateral-body-cl,
+.btn-subMenu-show .navLateral-body-cr {
+    color: #6D9BBA;
+}
+
+.btn-subMenu-show + .sub-menu-options {
+    height: auto;
+    overflow-y: auto;
+    background-color: #F0F8FF; /* Azul claro */
+}
+
+.btn-subMenu-show span.fa-chevron-down {
     transform: rotate(180deg);
 }
+
 
 /*=============Estilos contenido pagina*/
 .pageContent{

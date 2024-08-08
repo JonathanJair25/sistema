@@ -10,3 +10,7 @@
 [2024-08-05 15:36:10] Actualización de Redis exitosa para producto_id: 1
 [2024-08-05 15:36:15] Cambio detectado para producto_id: 2, nuevo_estado: habilitado
 [2024-08-05 15:36:15] Actualización de Redis exitosa para producto_id: 2
+[2024-08-06 15:47:27] Cambio detectado para producto_id: 1, nuevo_estado: deshabilitado
+[2024-08-06 15:47:27] Actualización de Redis exitosa para producto_id: 1
+[2024-08-06 15:48:27] Cambio detectado para producto_id: 1, nuevo_estado: habilitado
+[2024-08-06 15:48:27] Actualización de Redis exitosa para producto_id: 1

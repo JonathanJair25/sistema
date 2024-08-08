@@ -17,3 +17,11 @@
 [2024-08-05 15:36:21] Cambio de estado procesado para el cliente 1.
 [2024-08-05 15:36:21] Comando ejecutado correctamente para actualizar la IP 10.10.136.119 en el router Paracho (172.16.20.30)
 [2024-08-05 15:36:21] Cambio de estado procesado para el cliente 2.
+[2024-08-06 15:37:19] Conexión SSH exitosa con el router Cotija (172.16.20.6)
+[2024-08-06 15:37:20] Conexión SSH exitosa con el router Paracho (172.16.20.30)
+[2024-08-06 15:47:50] Cliente 1 (10.10.136.166) deshabilitado.
+[2024-08-06 15:47:51] Comando ejecutado correctamente para actualizar la IP 10.10.136.166 en el router Paracho (172.16.20.30)
+[2024-08-06 15:47:51] Cambio de estado procesado para el cliente 1.
+[2024-08-06 15:48:50] Cliente 1 (10.10.136.166) habilitado.
+[2024-08-06 15:48:51] Comando ejecutado correctamente para actualizar la IP 10.10.136.166 en el router Paracho (172.16.20.30)
+[2024-08-06 15:48:51] Cambio de estado procesado para el cliente 1.

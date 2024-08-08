@@ -19,8 +19,7 @@ try {
 
     // Consulta para obtener productos con servicio activo y detalles del servicio
     $query = "
-        SELECT p.producto_id, p.servicio_precio_mensual, p.servicios_id, s.servicios_nombre, s.servicios_precio_mensual,
-               p.saldo_pendiente, p.saldo_cuenta, p.producto_credito
+        SELECT p.producto_id, p.servicio_precio_mensual, s.servicios_nombre, s.servicios_precio_mensual
         FROM producto p
         LEFT JOIN servicios s ON p.servicios_id = s.servicios_id
         WHERE p.servicios_id != 1 AND s.servicios_id IS NOT NULL
@@ -34,7 +33,7 @@ try {
     // Verificar si hay productos para facturar
     if (count($productos) > 0) {
 
-        // Preparar las sentencias SQL para inserciones y actualizaciones
+        // Preparar las sentencias SQL para inserciones
         $insertEntradaQuery = "
             INSERT INTO entrada (entrada_fecha, entrada_hora, entrada_total, usuario_id, facturas_id, producto_id, entrada_codigo) 
             VALUES (:entrada_fecha, :entrada_hora, :entrada_total, :usuario_id, :facturas_id, :producto_id, :entrada_codigo)
@@ -47,63 +46,39 @@ try {
         ";
         $insertEntradaDetalle = $conn->prepare($insertEntradaDetalleQuery);
 
-        $updateProductoQuery = "
-            UPDATE producto 
-            SET saldo_pendiente = :saldo_pendiente, saldo_cuenta = :saldo_cuenta, producto_credito = :producto_credito
-            WHERE producto_id = :producto_id
-        ";
-        $updateProducto = $conn->prepare($updateProductoQuery);
+        // Preparar la consulta para verificar la existencia de la factura
+        $stmtFacturas = $conn->prepare("
+            SELECT facturas_id 
+            FROM facturas 
+            WHERE facturas_nombre = :facturas_nombre
+        ");
 
         // Procesar cada producto individualmente
         foreach ($productos as $producto) {
             $productoId = $producto['producto_id'];
             $precioMensual = $producto['servicios_precio_mensual'];
-            $serviciosId = $producto['servicios_id'];
             $servicioNombre = $producto['servicios_nombre'];
-            $saldoPendiente = $producto['saldo_pendiente'];
-            $saldoCuenta = $producto['saldo_cuenta'];
-            $productoCredito = $producto['producto_credito'];
-
-            // Inicializar variables para los nuevos saldos
-            $nuevoSaldoPendiente = $saldoPendiente;
-            $nuevoSaldoCuenta = $saldoCuenta;
-            $nuevoSaldoCredito = $productoCredito;
-
-            // Calcular el nuevo saldo pendiente, saldo cuenta y crédito
-            if ($productoCredito >= $precioMensual) {
-                // El crédito es suficiente para cubrir la factura
-                $nuevoSaldoCredito -= $precioMensual;
-                $nuevoSaldoPendiente += 0; // El saldo pendiente no cambia si el crédito cubre la factura
-                $nuevoSaldoCuenta -= $precioMensual;
-            } else {
-                // El crédito no es suficiente para cubrir la factura
-                $nuevoSaldoPendiente += ($precioMensual - $productoCredito);
-                $nuevoSaldoCredito = 0;
-                $nuevoSaldoCuenta -= $precioMensual;
-            }
-
+            
             // Verificar si la factura ya existe en la tabla de facturas
-            $stmtFacturas = $conn->prepare("SELECT facturas_id FROM facturas WHERE facturas_id = :facturas_id");
-            $stmtFacturas->execute(['facturas_id' => $serviciosId]);
-            $facturaExists = $stmtFacturas->fetchColumn();
+            $stmtFacturas->execute([
+                'facturas_nombre' => $servicioNombre
+            ]);
+            $facturasId = $stmtFacturas->fetchColumn();
 
-            if (!$facturaExists) {
+            if (!$facturasId) {
                 // Insertar una nueva factura si no existe
                 $insertFacturaQuery = "
-                    INSERT INTO facturas (facturas_nombre, facturas_etiqueta, facturas_precio) 
-                    VALUES (:facturas_nombre, :facturas_etiqueta, :facturas_precio)
+                    INSERT INTO facturas (facturas_nombre, facturas_precio) 
+                    VALUES (:facturas_nombre, :facturas_precio)
                 ";
                 $insertFactura = $conn->prepare($insertFacturaQuery);
                 $insertFactura->execute([
-                    'facturas_nombre' => 'Nuevo Servicio', // Ajustar según sea necesario
-                    'facturas_etiqueta' => $serviciosId,   // Ajustar según sea necesario
+                    'facturas_nombre' => $servicioNombre,
                     'facturas_precio' => $precioMensual,
                 ]);
 
                 // Obtener el ID de la factura recién insertada
                 $facturasId = $conn->lastInsertId();
-            } else {
-                $facturasId = $serviciosId;
             }
 
             // Generar un código único para la entrada
@@ -125,23 +100,15 @@ try {
                 'entrada_detalle_cantidad' => 1,
                 'entrada_detalle_precio_venta' => $precioMensual,
                 'entrada_detalle_total' => $precioMensual,
-                'entrada_detalle_descripcion' => $servicioNombre, // Descripción personalizada
+                'entrada_detalle_descripcion' => $servicioNombre,
                 'facturas_id' => $facturasId,
                 'producto_id' => $productoId,
                 'entrada_codigo' => $entradaCodigo,
             ]);
-
-            // Actualizar el saldo pendiente, saldo cuenta y crédito en la tabla producto
-            $updateProducto->execute([
-                'saldo_pendiente' => $nuevoSaldoPendiente,
-                'saldo_cuenta' => $nuevoSaldoCuenta,
-                'producto_credito' => $nuevoSaldoCredito,
-                'producto_id' => $productoId,
-            ]);
         }
 
         // Mensaje de éxito
-        echo "Facturas generadas y saldos actualizados exitosamente.";
+        echo "Facturas generadas exitosamente.";
     } else {
         // Mensaje si no hay productos para facturar
         echo "No hay productos para facturar.";

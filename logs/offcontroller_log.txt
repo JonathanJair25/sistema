@@ -1,0 +1,1 @@
+[2024-08-06 15:47:31] Comando SSH ejecutado: flash set CATV_ENABLED 0 para producto_id: 1[2024-08-06 15:49:06] Comando SSH ejecutado: flash set CATV_ENABLED 1 para producto_id: 1

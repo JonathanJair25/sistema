@@ -450,61 +450,65 @@ public function agregarProductoCarritoControlador(){
                 }
         
             /*== Obtener y actualizar saldo_cuenta del producto ==*/
-            $check_producto = $this->ejecutarConsulta("SELECT saldo_cuenta, saldo_pendiente, producto_credito FROM producto WHERE producto_id='$producto_id'");
-            if($check_producto->rowCount() == 1){
-                $producto = $check_producto->fetch();
-                $saldo_cuenta_actual = $producto['saldo_cuenta'];
-                $saldo_pendiente_actual = $producto['saldo_pendiente'];
-                $producto_credito_actual = $producto['producto_credito'];
+$check_producto = $this->ejecutarConsulta("SELECT saldo_cuenta, saldo_pendiente, producto_credito FROM producto WHERE producto_id='$producto_id'");
+if ($check_producto->rowCount() == 1) {
+    $producto = $check_producto->fetch();
+    $saldo_cuenta_actual = $producto['saldo_cuenta'];
+    $saldo_pendiente_actual = $producto['saldo_pendiente'];
+    $producto_credito_actual = $producto['producto_credito'];
 
-                $factura_total = $venta_detalle['entrada_detalle_total'];
+    $factura_total = $venta_detalle['entrada_detalle_total'];
 
-                if ($producto_credito_actual >= $factura_total) {
-                    // Hay suficiente crédito para cubrir la factura
-                    $nuevo_producto_credito = $producto_credito_actual - $factura_total;
-                    $nuevo_saldo_pendiente = $saldo_pendiente_actual; // No hay nuevos pendientes
-                } else {
-                    // No hay suficiente crédito para cubrir la factura
-                    $nuevo_producto_credito = 0;
-                    $nuevo_saldo_pendiente = $saldo_pendiente_actual + ($factura_total - $producto_credito_actual);
-                }
+    // Inicializar los nuevos valores
+    $nuevo_saldo_cuenta = $saldo_cuenta_actual;
+    $nuevo_producto_credito = $producto_credito_actual;
+    $nuevo_saldo_pendiente = $saldo_pendiente_actual;
 
-                // Actualizar saldo_cuenta
-                $nuevo_saldo_cuenta = $saldo_cuenta_actual - $factura_total;
+    if ($producto_credito_actual >= $factura_total) {
+        // Hay suficiente crédito para cubrir la factura
+        $nuevo_producto_credito = $producto_credito_actual - $factura_total;
+        $nuevo_saldo_cuenta = $nuevo_producto_credito; // Queda un saldo a favor en la cuenta
+        $nuevo_saldo_pendiente = $saldo_pendiente_actual; // No hay nuevos pendientes
+    } else {
+        // No hay suficiente crédito para cubrir la factura
+        $nuevo_producto_credito = 0;
+        $nuevo_saldo_pendiente = $saldo_pendiente_actual + ($factura_total - $producto_credito_actual);
+        $nuevo_saldo_cuenta = $saldo_cuenta_actual - $factura_total; // Se refleja la deuda como saldo negativo
+    }
 
-                // Actualizar los campos producto_credito, saldo_pendiente y saldo_cuenta en la tabla producto
-                $datos_producto_saldo_up = [
-                    [
-                        "campo_nombre" => "saldo_cuenta",
-                        "campo_marcador" => ":SaldoCuenta",
-                        "campo_valor" => $nuevo_saldo_cuenta
-                    ],
-                    [
-                        "campo_nombre" => "saldo_pendiente",
-                        "campo_marcador" => ":SaldoPendiente",
-                        "campo_valor" => $nuevo_saldo_pendiente
-                    ],
-                    [
-                        "campo_nombre" => "producto_credito",
-                        "campo_marcador" => ":Credito",
-                        "campo_valor" => $nuevo_producto_credito
-                    ]
-                ];
+    // Actualizar los campos producto_credito, saldo_pendiente y saldo_cuenta en la tabla producto
+    $datos_producto_saldo_up = [
+        [
+            "campo_nombre" => "saldo_cuenta",
+            "campo_marcador" => ":SaldoCuenta",
+            "campo_valor" => $nuevo_saldo_cuenta
+        ],
+        [
+            "campo_nombre" => "saldo_pendiente",
+            "campo_marcador" => ":SaldoPendiente",
+            "campo_valor" => $nuevo_saldo_pendiente
+        ],
+        [
+            "campo_nombre" => "producto_credito",
+            "campo_marcador" => ":Credito",
+            "campo_valor" => $nuevo_producto_credito
+        ]
+    ];
 
-                $condicion_producto = [
-                    "condicion_campo" => "producto_id",
-                    "condicion_marcador" => ":ID",
-                    "condicion_valor" => $producto_id
-                ];
+    $condicion_producto = [
+        "condicion_campo" => "producto_id",
+        "condicion_marcador" => ":ID",
+        "condicion_valor" => $producto_id
+    ];
 
-                if(!$this->actualizarDatos("producto", $datos_producto_saldo_up, $condicion_producto)){
-                    $errores_venta_detalle = 1;
-                    break;
-                }
-            } else {
-                $errores_venta_detalle = 1;
-                break;
-            }
+    if (!$this->actualizarDatos("producto", $datos_producto_saldo_up, $condicion_producto)) {
+        $errores_venta_detalle = 1;
+    }
+} else {
+    $errores_venta_detalle = 1;
+}
+
+
 
             }
         

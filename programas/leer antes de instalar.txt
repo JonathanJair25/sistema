@@ -20,3 +20,231 @@ offControllerRedis.php
 monitorCambiosController.php
 mikrotikController.php
 para su funcionamiento, asi como redis.
+
+*****************Triggers de monitorCambiosController***************************
+trigger que actualice el campo estado_modificado solo cuando producto_estado cambie:
+DELIMITER //
+CREATE TRIGGER before_producto_update
+BEFORE UPDATE ON producto
+FOR EACH ROW
+BEGIN
+    IF NEW.producto_estado != OLD.producto_estado THEN
+        SET NEW.estado_modificado = NOW();
+    END IF;
+END;
+//
+DELIMITER ;
+
+trigger que se ejecute después de cada actualización de producto_estado:
+DELIMITER //
+
+CREATE TRIGGER after_producto_update
+AFTER UPDATE ON producto
+FOR EACH ROW
+BEGIN
+    IF OLD.producto_estado != NEW.producto_estado THEN
+        INSERT INTO producto_cambios (producto_id, nuevo_estado) VALUES (NEW.producto_id, NEW.producto_estado);
+    END IF;
+END //
+
+DELIMITER ;
+
+Trigger para monitorCambiosController
+DELIMITER $$
+
+CREATE TRIGGER after_producto_update_monitor
+AFTER UPDATE ON producto
+FOR EACH ROW
+BEGIN
+    IF OLD.producto_estado != NEW.producto_estado THEN
+        INSERT INTO producto_cambios_monitor (producto_id, nuevo_estado, cambio_timestamp, procesado)
+        VALUES (NEW.producto_id, NEW.producto_estado, NOW(), 0);
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+
+*****************Triggers para realizar las operaciones y modificacion campos saldo_cuenta, saldo_pendiente y producto_cuenta****************
+Trigger para insertar en la tabla entrada
+DELIMITER //
+
+CREATE TRIGGER after_entrada_insert
+AFTER INSERT ON entrada
+FOR EACH ROW
+BEGIN
+    DECLARE total_facturas DECIMAL(30,2);
+    DECLARE total_pagos DECIMAL(30,2);
+    DECLARE saldo_final DECIMAL(30,2);
+
+    -- Sumar todas las facturas del cliente
+    SELECT COALESCE(SUM(entrada_total), 0) INTO total_facturas 
+    FROM entrada 
+    WHERE producto_id = NEW.producto_id;
+
+    -- Sumar todos los pagos del cliente
+    SELECT COALESCE(SUM(venta_total), 0) INTO total_pagos 
+    FROM venta 
+    WHERE producto_id = NEW.producto_id;
+
+    -- Calcular el saldo final
+    SET saldo_final = total_pagos - total_facturas;
+
+    -- Actualizar saldo_cuenta
+    UPDATE producto
+    SET saldo_cuenta = saldo_final
+    WHERE producto_id = NEW.producto_id;
+
+    -- Actualizar producto_credito y saldo_pendiente
+    IF saldo_final >= 0 THEN
+        UPDATE producto
+        SET producto_credito = saldo_final,
+            saldo_pendiente = 0
+        WHERE producto_id = NEW.producto_id;
+    ELSE
+        UPDATE producto
+        SET producto_credito = 0,
+            saldo_pendiente = ABS(saldo_final)
+        WHERE producto_id = NEW.producto_id;
+    END IF;
+END //
+
+DELIMITER ;
+
+Trigger para eliminar de la tabla entrada
+DELIMITER //
+
+CREATE TRIGGER after_entrada_delete
+AFTER DELETE ON entrada
+FOR EACH ROW
+BEGIN
+    DECLARE total_facturas DECIMAL(30,2);
+    DECLARE total_pagos DECIMAL(30,2);
+    DECLARE saldo_final DECIMAL(30,2);
+
+    -- Sumar todas las facturas del cliente
+    SELECT COALESCE(SUM(entrada_total), 0) INTO total_facturas 
+    FROM entrada 
+    WHERE producto_id = OLD.producto_id;
+
+    -- Sumar todos los pagos del cliente
+    SELECT COALESCE(SUM(venta_total), 0) INTO total_pagos 
+    FROM venta 
+    WHERE producto_id = OLD.producto_id;
+
+    -- Calcular el saldo final
+    SET saldo_final = total_pagos - total_facturas;
+
+    -- Actualizar saldo_cuenta
+    UPDATE producto
+    SET saldo_cuenta = saldo_final
+    WHERE producto_id = OLD.producto_id;
+
+    -- Actualizar producto_credito y saldo_pendiente
+    IF saldo_final >= 0 THEN
+        UPDATE producto
+        SET producto_credito = saldo_final,
+            saldo_pendiente = 0
+        WHERE producto_id = OLD.producto_id;
+    ELSE
+        UPDATE producto
+        SET producto_credito = 0,
+            saldo_pendiente = ABS(saldo_final)
+        WHERE producto_id = OLD.producto_id;
+    END IF;
+END //
+
+DELIMITER ;
+
+Trigger para insertar en la tabla venta
+DELIMITER //
+
+CREATE TRIGGER after_venta_insert
+AFTER INSERT ON venta
+FOR EACH ROW
+BEGIN
+    DECLARE total_facturas DECIMAL(30,2);
+    DECLARE total_pagos DECIMAL(30,2);
+    DECLARE saldo_final DECIMAL(30,2);
+
+    -- Sumar todas las facturas del cliente
+    SELECT COALESCE(SUM(entrada_total), 0) INTO total_facturas 
+    FROM entrada 
+    WHERE producto_id = NEW.producto_id;
+
+    -- Sumar todos los pagos del cliente
+    SELECT COALESCE(SUM(venta_total), 0) INTO total_pagos 
+    FROM venta 
+    WHERE producto_id = NEW.producto_id;
+
+    -- Calcular el saldo final
+    SET saldo_final = total_pagos - total_facturas;
+
+    -- Actualizar saldo_cuenta
+    UPDATE producto
+    SET saldo_cuenta = saldo_final
+    WHERE producto_id = NEW.producto_id;
+
+    -- Actualizar producto_credito y saldo_pendiente
+    IF saldo_final >= 0 THEN
+        UPDATE producto
+        SET producto_credito = saldo_final,
+            saldo_pendiente = 0
+        WHERE producto_id = NEW.producto_id;
+    ELSE
+        UPDATE producto
+        SET producto_credito = 0,
+            saldo_pendiente = ABS(saldo_final)
+        WHERE producto_id = NEW.producto_id;
+    END IF;
+END //
+
+DELIMITER ;
+
+trigger para eliminar tabla venta after_venta_delete
+DELIMITER //
+
+CREATE TRIGGER after_venta_delete
+AFTER DELETE ON venta
+FOR EACH ROW
+BEGIN
+    DECLARE total_facturas DECIMAL(30,2);
+    DECLARE total_pagos DECIMAL(30,2);
+    DECLARE saldo_final DECIMAL(30,2);
+
+    -- Sumar todas las facturas del cliente
+    SELECT COALESCE(SUM(entrada_total), 0) INTO total_facturas 
+    FROM entrada 
+    WHERE producto_id = OLD.producto_id;
+
+    -- Sumar todos los pagos del cliente
+    SELECT COALESCE(SUM(venta_total), 0) INTO total_pagos 
+    FROM venta 
+    WHERE producto_id = OLD.producto_id;
+
+    -- Calcular el saldo final
+    SET saldo_final = total_pagos - total_facturas;
+
+    -- Actualizar saldo_cuenta
+    UPDATE producto
+    SET saldo_cuenta = saldo_final
+    WHERE producto_id = OLD.producto_id;
+
+    -- Actualizar producto_credito y saldo_pendiente
+    IF saldo_final >= 0 THEN
+        UPDATE producto
+        SET producto_credito = saldo_final,
+            saldo_pendiente = 0
+        WHERE producto_id = OLD.producto_id;
+    ELSE
+        UPDATE producto
+        SET producto_credito = 0,
+            saldo_pendiente = ABS(saldo_final)
+        WHERE producto_id = OLD.producto_id;
+    END IF;
+END //
+
+DELIMITER ;
+
+

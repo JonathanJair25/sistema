@@ -379,6 +379,127 @@
         }
     });
 </script>
+<br>
+<p class="has-text-centered" style="font-size: 1.5em;">
+    <strong id="toggle-button3" style="cursor: pointer;">
+        GRAFICA DE CONSUMO <span id="toggle-arrow3">▼</span>
+    </strong>
+</p>
+<br><br>
+<div id="grafica" style="display: none;">
+    <canvas id="trafficChart" width="600" height="300"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    async function fetchQueueData() {
+        try {
+            // Asegúrate de que la ruta es correcta
+            const response = await fetch('/sistemaredes/app/views/content/queueTrafficController.php?producto_id=<?php echo $datos['producto_id']; ?>');
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+
+            const data = await response.json();
+            console.log('Data fetched:', data); // Debugging line
+
+            if (data.error) {
+                console.error('Error fetching queue data:', data.error);
+                return;
+            }
+
+            // Convert bytes to megabits (1 byte = 8 bits, 1 megabit = 1,000,000 bits)
+            const upload = (data.upload * 8) / 1_000_000; // Convert bytes per second to megabits per second
+            const download = (data.download * 8) / 1_000_000_0; // Convert bytes per second to megabits per second
+
+            return {
+                upload,
+                download,
+                name: data.name
+            };
+        } catch (error) {
+            console.error('Error fetching queue data:', error);
+        }
+    }
+
+    async function updateChart(chart) {
+        const data = await fetchQueueData();
+        if (data) {
+            chart.data.labels.push(new Date().toLocaleTimeString()); // Add a timestamp
+            chart.data.datasets[0].data.push(data.upload); // Upload data
+            chart.data.datasets[1].data.push(data.download); // Download data
+
+            // Limit the number of data points displayed
+            if (chart.data.labels.length > 20) {
+                chart.data.labels.shift();
+                chart.data.datasets[0].data.shift();
+                chart.data.datasets[1].data.shift();
+            }
+
+            chart.update();
+        }
+    }
+
+    function startChart() {
+        const ctx = document.getElementById('trafficChart').getContext('2d');
+        const trafficChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [], // Initialize empty
+                datasets: [{
+                    label: 'Upload (Mbps)',
+                    borderColor: 'red',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    data: [] // Initialize empty
+                }, {
+                    label: 'Download (Mbps)',
+                    borderColor: 'blue',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    data: [] // Initialize empty
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Mbps'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value.toFixed(2) + ' Mbps';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Update the chart every second
+        setInterval(() => updateChart(trafficChart), 1000);
+    }
+
+    document.getElementById('toggle-button3').addEventListener('click', function() {
+        var grafica = document.getElementById('grafica');
+        var toggleArrow3 = document.getElementById('toggle-arrow3');
+        if (grafica.style.display === 'none' || grafica.style.display === '') {
+            grafica.style.display = 'block';
+            toggleArrow3.textContent = '▲';
+            startChart();
+        } else {
+            grafica.style.display = 'none';
+            toggleArrow3.textContent = '▼';
+        }
+    });
+</script>
+
 
         <p class="has-text-centered pt-6">
             <small>Los campos marcados con <?php echo CAMPO_OBLIGATORIO; ?> son obligatorios</small>
